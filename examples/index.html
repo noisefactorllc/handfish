@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Handfish Design System - Component Preview</title>
+    
+    <!-- Import Handfish styles -->
+    <link rel="stylesheet" href="../src/styles/index.css">
+    
+    <style>
+        /* Demo-specific styles */
+        body {
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .demo-header {
+            margin-bottom: 3rem;
+        }
+
+        .demo-header h1 {
+            font-size: var(--hf-size-2xl);
+            font-weight: var(--hf-weight-bold);
+            color: var(--hf-color-7);
+            margin: 0 0 0.5rem 0;
+        }
+
+        .demo-header p {
+            font-size: var(--hf-size-base);
+            color: var(--hf-color-5);
+            margin: 0;
+        }
+
+        .demo-section {
+            margin-bottom: 3rem;
+        }
+
+        .demo-section h2 {
+            font-size: var(--hf-size-lg);
+            font-weight: var(--hf-weight-semibold);
+            color: var(--hf-accent-3);
+            text-transform: lowercase;
+            letter-spacing: var(--hf-tracking-wide);
+            margin: 0 0 1.5rem 0;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--hf-border);
+        }
+
+        .demo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .demo-item {
+            padding: 1.5rem;
+            background: color-mix(in srgb, var(--hf-color-2) 80%, transparent 20%);
+            border: 1px solid var(--hf-border);
+            border-radius: var(--hf-radius);
+        }
+
+        .demo-item h3 {
+            font-size: var(--hf-size-sm);
+            font-weight: var(--hf-weight-semibold);
+            text-transform: uppercase;
+            letter-spacing: var(--hf-tracking-wide);
+            color: var(--hf-color-5);
+            margin: 0 0 1rem 0;
+        }
+
+        .demo-item-content {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .demo-row {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .demo-label {
+            font-size: var(--hf-size-sm);
+            color: var(--hf-color-5);
+            min-width: 80px;
+        }
+
+        /* Color swatches */
+        .color-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 0.5rem;
+        }
+
+        .color-swatch {
+            aspect-ratio: 1;
+            border-radius: var(--hf-radius-sm);
+            border: 1px solid var(--hf-border);
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            padding-bottom: 0.25rem;
+            font-size: var(--hf-size-xs);
+            color: var(--hf-color-5);
+        }
+
+        .accent-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.5rem;
+        }
+
+        /* Typography samples */
+        .type-sample {
+            color: var(--hf-color-6);
+        }
+
+        /* Theme toggle */
+        .theme-toggle {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            z-index: 1000;
+        }
+
+        /* Output display */
+        .output {
+            padding: 0.5rem;
+            background: var(--hf-color-1);
+            border-radius: var(--hf-radius-sm);
+            font-family: var(--hf-font-family-mono);
+            font-size: var(--hf-size-sm);
+            color: var(--hf-accent-3);
+        }
+    </style>
+</head>
+<body>
+    <div class="theme-toggle">
+        <toggle-switch id="themeToggle" label="Dark Mode" checked></toggle-switch>
+    </div>
+
+    <header class="demo-header">
+        <h1>🐟 Handfish Design System</h1>
+        <p>A modern, accessible component library for creative tools</p>
+    </header>
+
+    <!-- Colors Section -->
+    <section class="demo-section">
+        <h2>Colors</h2>
+        
+        <div class="demo-item" style="grid-column: 1 / -1;">
+            <h3>Base Palette</h3>
+            <div class="color-grid">
+                <div class="color-swatch" style="background: var(--hf-color-1);">1</div>
+                <div class="color-swatch" style="background: var(--hf-color-2);">2</div>
+                <div class="color-swatch" style="background: var(--hf-color-3);">3</div>
+                <div class="color-swatch" style="background: var(--hf-color-4);">4</div>
+                <div class="color-swatch" style="background: var(--hf-color-5); color: var(--hf-color-1);">5</div>
+                <div class="color-swatch" style="background: var(--hf-color-6); color: var(--hf-color-1);">6</div>
+                <div class="color-swatch" style="background: var(--hf-color-7); color: var(--hf-color-1);">7</div>
+            </div>
+        </div>
+
+        <div class="demo-item" style="grid-column: 1 / -1;">
+            <h3>Accent Palette</h3>
+            <div class="accent-grid">
+                <div class="color-swatch" style="background: var(--hf-accent-1);">1</div>
+                <div class="color-swatch" style="background: var(--hf-accent-2);">2</div>
+                <div class="color-swatch" style="background: var(--hf-accent-3); color: var(--hf-color-1);">3</div>
+                <div class="color-swatch" style="background: var(--hf-accent-4); color: var(--hf-color-1);">4</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Typography Section -->
+    <section class="demo-section">
+        <h2>Typography</h2>
+        <div class="demo-grid">
+            <div class="demo-item">
+                <h3>Font Sizes</h3>
+                <div class="demo-item-content">
+                    <div class="type-sample hf-text-xs">Extra Small (10px)</div>
+                    <div class="type-sample hf-text-sm">Small (12px)</div>
+                    <div class="type-sample hf-text-base">Base (14px)</div>
+                    <div class="type-sample hf-text-md">Medium (16px)</div>
+                    <div class="type-sample hf-text-lg">Large (18px)</div>
+                    <div class="type-sample hf-text-xl">Extra Large (20px)</div>
+                    <div class="type-sample hf-text-2xl">2X Large (24px)</div>
+                </div>
+            </div>
+
+            <div class="demo-item">
+                <h3>Font Weights</h3>
+                <div class="demo-item-content">
+                    <div class="type-sample hf-font-normal">Normal (400)</div>
+                    <div class="type-sample hf-font-medium">Medium (500)</div>
+                    <div class="type-sample hf-font-semibold">Semibold (600)</div>
+                    <div class="type-sample hf-font-bold">Bold (700)</div>
+                </div>
+            </div>
+
+            <div class="demo-item">
+                <h3>Text Colors</h3>
+                <div class="demo-item-content">
+                    <div class="hf-text-muted">Muted text</div>
+                    <div class="hf-text-dim">Dim text</div>
+                    <div class="hf-text-normal">Normal text</div>
+                    <div class="hf-text-bright">Bright text</div>
+                    <div class="hf-text-accent">Accent text</div>
+                    <div class="hf-text-accent-bright">Accent bright text</div>
+                    <div class="hf-text-error">Error text</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Components Section -->
+    <section class="demo-section">
+        <h2>Components</h2>
+        <div class="demo-grid">
+
+            <!-- Toggle Switch -->
+            <div class="demo-item">
+                <h3>Toggle Switch</h3>
+                <div class="demo-item-content">
+                    <div class="demo-row">
+                        <toggle-switch id="toggle1" label="Default"></toggle-switch>
+                    </div>
+                    <div class="demo-row">
+                        <toggle-switch id="toggle2" label="Checked" checked></toggle-switch>
+                    </div>
+                    <div class="demo-row">
+                        <toggle-switch id="toggle3" label="Disabled" disabled></toggle-switch>
+                    </div>
+                    <div class="output" id="toggleOutput">Toggle: unchecked</div>
+                </div>
+            </div>
+
+            <!-- Slider Value -->
+            <div class="demo-item">
+                <h3>Slider Value</h3>
+                <div class="demo-item-content">
+                    <div class="demo-row" style="width: 100%;">
+                        <span class="demo-label">Volume</span>
+                        <slider-value id="slider1" min="0" max="100" value="50" suffix="%"></slider-value>
+                    </div>
+                    <div class="demo-row" style="width: 100%;">
+                        <span class="demo-label">Speed</span>
+                        <slider-value id="slider2" min="0" max="2" value="1" step="0.1" suffix="x"></slider-value>
+                    </div>
+                    <div class="demo-row" style="width: 100%;">
+                        <span class="demo-label">Disabled</span>
+                        <slider-value min="0" max="100" value="30" disabled></slider-value>
+                    </div>
+                    <div class="output" id="sliderOutput">Value: 50</div>
+                </div>
+            </div>
+
+            <!-- Select Dropdown -->
+            <div class="demo-item">
+                <h3>Select Dropdown</h3>
+                <div class="demo-item-content">
+                    <div class="demo-row" style="width: 100%;">
+                        <span class="demo-label">Effect</span>
+                        <select-dropdown id="select1" value="blur">
+                            <option value="none">None</option>
+                            <option value="blur">Blur</option>
+                            <option value="glow">Glow</option>
+                            <option value="shadow">Shadow</option>
+                        </select-dropdown>
+                    </div>
+                    <div class="demo-row" style="width: 100%;">
+                        <span class="demo-label">Mode</span>
+                        <select-dropdown id="select2">
+                            <option value="linear">Linear</option>
+                            <option value="radial">Radial</option>
+                            <option value="angular">Angular</option>
+                            <option value="diamond">Diamond</option>
+                            <option value="spiral">Spiral</option>
+                            <option value="wave">Wave</option>
+                            <option value="noise">Noise</option>
+                        </select-dropdown>
+                    </div>
+                    <div class="output" id="selectOutput">Selected: blur</div>
+                </div>
+            </div>
+
+            <!-- Justify Button Group -->
+            <div class="demo-item">
+                <h3>Justify Button Group</h3>
+                <div class="demo-item-content">
+                    <div class="demo-row">
+                        <span class="demo-label">Align</span>
+                        <justify-button-group id="justify1" value="center"></justify-button-group>
+                    </div>
+                    <div class="demo-row">
+                        <span class="demo-label">Disabled</span>
+                        <justify-button-group value="left" disabled></justify-button-group>
+                    </div>
+                    <div class="output" id="justifyOutput">Alignment: center</div>
+                </div>
+            </div>
+
+            <!-- Color Picker -->
+            <div class="demo-item">
+                <h3>Color Picker</h3>
+                <div class="demo-item-content">
+                    <div class="demo-row">
+                        <span class="demo-label">Fill</span>
+                        <color-picker id="colorPicker1" value="#a5b8ff"></color-picker>
+                    </div>
+                    <div class="demo-row">
+                        <span class="demo-label">Stroke</span>
+                        <color-picker id="colorPicker2" value="#ff5b6b"></color-picker>
+                    </div>
+                    <div class="output" id="colorOutput">Color: #a5b8ff</div>
+                </div>
+            </div>
+
+            <!-- Color Wheel (inline) -->
+            <div class="demo-item" style="grid-column: span 2;">
+                <h3>Color Wheel (Inline)</h3>
+                <div class="demo-item-content">
+                    <color-wheel id="colorWheel1" value="#6bffa5" mode="hsv"></color-wheel>
+                    <div class="output" id="wheelOutput">Color: #6bffa5</div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Buttons Section -->
+    <section class="demo-section">
+        <h2>Buttons</h2>
+        <div class="demo-grid">
+            <div class="demo-item">
+                <h3>Button Variants</h3>
+                <div class="demo-item-content" style="flex-direction: row; flex-wrap: wrap;">
+                    <button class="hf-btn">Default</button>
+                    <button class="hf-btn hf-btn-primary">Primary</button>
+                    <button class="hf-btn hf-btn-ghost">Ghost</button>
+                    <button class="hf-btn" disabled>Disabled</button>
+                </div>
+            </div>
+
+            <div class="demo-item">
+                <h3>With Icons</h3>
+                <div class="demo-item-content" style="flex-direction: row; flex-wrap: wrap;">
+                    <button class="hf-btn">
+                        <span class="hf-icon">add</span>
+                        Add
+                    </button>
+                    <button class="hf-btn hf-btn-primary">
+                        <span class="hf-icon">save</span>
+                        Save
+                    </button>
+                    <button class="hf-btn hf-btn-ghost">
+                        <span class="hf-icon">settings</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Inputs Section -->
+    <section class="demo-section">
+        <h2>Inputs</h2>
+        <div class="demo-grid">
+            <div class="demo-item">
+                <h3>Text Input</h3>
+                <div class="demo-item-content">
+                    <label class="hf-label">Project Name</label>
+                    <input type="text" class="hf-input" placeholder="Enter name...">
+                </div>
+            </div>
+
+            <div class="demo-item">
+                <h3>Input States</h3>
+                <div class="demo-item-content">
+                    <input type="text" class="hf-input" value="Normal state">
+                    <input type="text" class="hf-input" placeholder="Disabled" disabled>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Surfaces Section -->
+    <section class="demo-section">
+        <h2>Surfaces</h2>
+        <div class="demo-grid">
+            <div class="demo-item hf-panel">
+                <h3>Panel</h3>
+                <p class="hf-text-sm hf-text-dim">Glass panel with blur and border</p>
+            </div>
+
+            <div class="demo-item hf-card">
+                <h3>Card</h3>
+                <p class="hf-text-sm hf-text-dim">Card surface with padding</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Import components -->
+    <script type="module">
+        import {
+            ToggleSwitch,
+            SliderValue,
+            SelectDropdown,
+            JustifyButtonGroup,
+            ColorPicker,
+            ColorWheel
+        } from '../src/index.js'
+
+        // Theme toggle
+        document.getElementById('themeToggle').addEventListener('change', (e) => {
+            document.documentElement.dataset.theme = e.target.checked ? 'dark' : 'light'
+        })
+
+        // Toggle output
+        document.getElementById('toggle1').addEventListener('change', (e) => {
+            document.getElementById('toggleOutput').textContent = 
+                `Toggle: ${e.target.checked ? 'checked' : 'unchecked'}`
+        })
+
+        // Slider output
+        document.getElementById('slider1').addEventListener('input', (e) => {
+            document.getElementById('sliderOutput').textContent = `Value: ${e.target.value}`
+        })
+
+        // Select output
+        document.getElementById('select1').addEventListener('change', (e) => {
+            document.getElementById('selectOutput').textContent = `Selected: ${e.target.value}`
+        })
+
+        // Justify output
+        document.getElementById('justify1').addEventListener('change', (e) => {
+            document.getElementById('justifyOutput').textContent = `Alignment: ${e.target.value}`
+        })
+
+        // Color picker output
+        document.getElementById('colorPicker1').addEventListener('change', (e) => {
+            document.getElementById('colorOutput').textContent = `Color: ${e.target.value}`
+        })
+
+        // Color wheel output
+        document.getElementById('colorWheel1').addEventListener('colorinput', (e) => {
+            document.getElementById('wheelOutput').textContent = `Color: ${e.detail.value}`
+        })
+    </script>
+</body>
+</html>

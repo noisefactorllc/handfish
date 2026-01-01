@@ -1,0 +1,448 @@
+/**
+ * Handfish Design System - Main Stylesheet
+ *
+ * This file imports design tokens and provides base styles and utility classes.
+ */
+
+@import './tokens.css';
+
+/* ============================================================================
+ * Font Faces
+ * ============================================================================ */
+
+/* Nunito - Primary UI font */
+@font-face {
+    font-family: Nunito;
+    src: url('../fonts/Nunito-VariableFont_wght.ttf') format('truetype');
+    font-weight: 100 900;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Nunito Italic';
+    src: url('../fonts/Nunito-Italic-VariableFont_wght.ttf') format('truetype');
+    font-weight: normal;
+    font-style: italic;
+}
+
+/* Sono Mono - Monospace font */
+@font-face {
+    font-family: 'Sono Mono';
+    src: url('../fonts/Sono-VariableFont_MONO_wght.ttf') format('truetype');
+    font-weight: 200 700;
+    font-style: normal;
+}
+
+/* Material Symbols - Icons */
+@font-face {
+    font-family: 'Material Symbols Outlined';
+    font-style: normal;
+    src: url('../fonts/material-symbols-outlined.woff2') format('woff2');
+}
+
+/* ============================================================================
+ * Base Styles
+ * ============================================================================ */
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html {
+    font-family: var(--hf-font-family);
+    font-size: 16px;
+    line-height: var(--hf-leading-normal);
+    color: var(--hf-color-6);
+    background-color: var(--hf-color-1);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+}
+
+/* ============================================================================
+ * Material Symbols Icon Styles
+ * ============================================================================ */
+
+.material-symbols,
+.hf-icon {
+    font-family: 'Material Symbols Outlined';
+    font-weight: normal;
+    font-style: normal;
+    font-size: 1em;
+    display: inline-block;
+    line-height: 1;
+    text-transform: none;
+    letter-spacing: normal;
+    word-wrap: normal;
+    white-space: nowrap;
+    direction: ltr;
+    font-variation-settings: 'FILL' 0;
+    color: var(--hf-accent-3);
+}
+
+.hf-icon-lg {
+    font-size: 1.3em;
+    height: 1.3em;
+    line-height: 1.3em;
+}
+
+.hf-icon-md {
+    font-size: 0.875em;
+}
+
+.hf-icon-sm {
+    font-size: 0.75em;
+}
+
+.hf-icon-xs {
+    font-size: 0.625em;
+}
+
+/* Filled icon variant */
+.hf-icon-filled {
+    font-variation-settings: 'FILL' 1;
+}
+
+/* ============================================================================
+ * Typography Classes
+ * ============================================================================ */
+
+.hf-text-xs { font-size: var(--hf-size-xs); }
+.hf-text-sm { font-size: var(--hf-size-sm); }
+.hf-text-base { font-size: var(--hf-size-base); }
+.hf-text-md { font-size: var(--hf-size-md); }
+.hf-text-lg { font-size: var(--hf-size-lg); }
+.hf-text-xl { font-size: var(--hf-size-xl); }
+.hf-text-2xl { font-size: var(--hf-size-2xl); }
+
+.hf-font-normal { font-weight: var(--hf-weight-normal); }
+.hf-font-medium { font-weight: var(--hf-weight-medium); }
+.hf-font-semibold { font-weight: var(--hf-weight-semibold); }
+.hf-font-bold { font-weight: var(--hf-weight-bold); }
+
+.hf-mono { font-family: var(--hf-font-family-mono); }
+
+.hf-uppercase {
+    text-transform: uppercase;
+    letter-spacing: var(--hf-tracking-wide);
+}
+
+.hf-lowercase {
+    text-transform: lowercase;
+    letter-spacing: var(--hf-tracking-wide);
+}
+
+/* ============================================================================
+ * Color Classes
+ * ============================================================================ */
+
+.hf-text-dim { color: var(--hf-color-5); }
+.hf-text-muted { color: var(--hf-color-4); }
+.hf-text-normal { color: var(--hf-color-6); }
+.hf-text-bright { color: var(--hf-color-7); }
+.hf-text-accent { color: var(--hf-accent-3); }
+.hf-text-accent-bright { color: var(--hf-accent-4); }
+.hf-text-error { color: var(--hf-red); }
+
+.hf-bg-base { background-color: var(--hf-color-1); }
+.hf-bg-surface { background-color: var(--hf-color-2); }
+.hf-bg-elevated { background-color: var(--hf-color-3); }
+.hf-bg-accent { background-color: var(--hf-accent-1); }
+
+/* ============================================================================
+ * Surface Styles (Glassmorphism)
+ * ============================================================================ */
+
+.hf-surface {
+    background: color-mix(
+        in srgb,
+        var(--hf-color-2) var(--hf-surface-opacity),
+        transparent var(--hf-surface-transparency)
+    );
+    backdrop-filter: var(--hf-glass-blur);
+    -webkit-backdrop-filter: var(--hf-glass-blur);
+}
+
+.hf-panel {
+    background: color-mix(
+        in srgb,
+        var(--hf-color-2) var(--hf-panel-opacity),
+        transparent var(--hf-panel-transparency)
+    );
+    backdrop-filter: var(--hf-glass-blur);
+    -webkit-backdrop-filter: var(--hf-glass-blur);
+    border: 1px solid var(--hf-border);
+    border-radius: var(--hf-radius);
+}
+
+.hf-card {
+    background: color-mix(
+        in srgb,
+        var(--hf-color-2) var(--hf-panel-opacity),
+        transparent var(--hf-panel-transparency)
+    );
+    backdrop-filter: var(--hf-glass-blur);
+    -webkit-backdrop-filter: var(--hf-glass-blur);
+    border: 1px solid var(--hf-border);
+    border-radius: var(--hf-radius);
+    padding: var(--hf-space-4);
+}
+
+/* ============================================================================
+ * Border Styles
+ * ============================================================================ */
+
+.hf-border { border: 1px solid var(--hf-border); }
+.hf-border-top { border-top: 1px solid var(--hf-border); }
+.hf-border-bottom { border-bottom: 1px solid var(--hf-border); }
+.hf-border-left { border-left: 1px solid var(--hf-border); }
+.hf-border-right { border-right: 1px solid var(--hf-border); }
+
+.hf-rounded { border-radius: var(--hf-radius); }
+.hf-rounded-sm { border-radius: var(--hf-radius-sm); }
+.hf-rounded-lg { border-radius: var(--hf-radius-lg); }
+.hf-rounded-pill { border-radius: var(--hf-radius-pill); }
+.hf-rounded-full { border-radius: var(--hf-radius-full); }
+
+/* ============================================================================
+ * Spacing Classes
+ * ============================================================================ */
+
+.hf-p-0 { padding: var(--hf-space-0); }
+.hf-p-1 { padding: var(--hf-space-1); }
+.hf-p-2 { padding: var(--hf-space-2); }
+.hf-p-3 { padding: var(--hf-space-3); }
+.hf-p-4 { padding: var(--hf-space-4); }
+.hf-p-6 { padding: var(--hf-space-6); }
+
+.hf-px-2 { padding-left: var(--hf-space-2); padding-right: var(--hf-space-2); }
+.hf-px-3 { padding-left: var(--hf-space-3); padding-right: var(--hf-space-3); }
+.hf-px-4 { padding-left: var(--hf-space-4); padding-right: var(--hf-space-4); }
+
+.hf-py-1 { padding-top: var(--hf-space-1); padding-bottom: var(--hf-space-1); }
+.hf-py-2 { padding-top: var(--hf-space-2); padding-bottom: var(--hf-space-2); }
+.hf-py-3 { padding-top: var(--hf-space-3); padding-bottom: var(--hf-space-3); }
+
+.hf-m-0 { margin: var(--hf-space-0); }
+.hf-m-2 { margin: var(--hf-space-2); }
+.hf-m-4 { margin: var(--hf-space-4); }
+
+.hf-mb-2 { margin-bottom: var(--hf-space-2); }
+.hf-mb-4 { margin-bottom: var(--hf-space-4); }
+.hf-mt-2 { margin-top: var(--hf-space-2); }
+.hf-mt-4 { margin-top: var(--hf-space-4); }
+
+.hf-gap-1 { gap: var(--hf-space-1); }
+.hf-gap-2 { gap: var(--hf-space-2); }
+.hf-gap-3 { gap: var(--hf-space-3); }
+.hf-gap-4 { gap: var(--hf-space-4); }
+
+/* ============================================================================
+ * Layout Classes
+ * ============================================================================ */
+
+.hf-flex { display: flex; }
+.hf-inline-flex { display: inline-flex; }
+.hf-grid { display: grid; }
+.hf-block { display: block; }
+.hf-inline-block { display: inline-block; }
+.hf-hidden { display: none; }
+
+.hf-flex-row { flex-direction: row; }
+.hf-flex-col { flex-direction: column; }
+.hf-flex-wrap { flex-wrap: wrap; }
+
+.hf-items-start { align-items: flex-start; }
+.hf-items-center { align-items: center; }
+.hf-items-end { align-items: flex-end; }
+.hf-items-stretch { align-items: stretch; }
+
+.hf-justify-start { justify-content: flex-start; }
+.hf-justify-center { justify-content: center; }
+.hf-justify-end { justify-content: flex-end; }
+.hf-justify-between { justify-content: space-between; }
+
+.hf-flex-1 { flex: 1; }
+.hf-flex-none { flex: none; }
+
+/* ============================================================================
+ * Button Base Styles
+ * ============================================================================ */
+
+.hf-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--hf-space-2);
+    padding: var(--hf-space-2) var(--hf-space-3);
+    font-family: var(--hf-font-family);
+    font-size: var(--hf-size-sm);
+    font-weight: var(--hf-weight-medium);
+    color: var(--hf-accent-3);
+    background: color-mix(in srgb, var(--hf-accent-3) 15%, transparent 85%);
+    border: 1px solid var(--hf-border);
+    border-radius: var(--hf-radius-sm);
+    cursor: pointer;
+    transition: var(--hf-transition-color), var(--hf-transition-bg), var(--hf-transition-border);
+    user-select: none;
+}
+
+.hf-btn:hover {
+    color: var(--hf-accent-4);
+    background: color-mix(in srgb, var(--hf-accent-3) 25%, transparent 75%);
+    border-color: var(--hf-border-hover);
+}
+
+.hf-btn:focus {
+    outline: 2px solid var(--hf-accent-3);
+    outline-offset: 2px;
+}
+
+.hf-btn:active {
+    background: color-mix(in srgb, var(--hf-accent-3) 35%, transparent 65%);
+}
+
+.hf-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.hf-btn-primary {
+    background: var(--hf-accent-3);
+    color: var(--hf-color-1);
+    border-color: var(--hf-accent-3);
+}
+
+.hf-btn-primary:hover {
+    background: var(--hf-accent-4);
+    color: var(--hf-color-1);
+    border-color: var(--hf-accent-4);
+}
+
+.hf-btn-ghost {
+    background: transparent;
+    border-color: transparent;
+}
+
+.hf-btn-ghost:hover {
+    background: color-mix(in srgb, var(--hf-accent-3) 15%, transparent 85%);
+}
+
+/* ============================================================================
+ * Input Base Styles
+ * ============================================================================ */
+
+.hf-input {
+    display: block;
+    width: 100%;
+    padding: var(--hf-space-2) var(--hf-space-3);
+    font-family: var(--hf-font-family);
+    font-size: var(--hf-size-sm);
+    color: var(--hf-color-6);
+    background: color-mix(in srgb, var(--hf-accent-3) 15%, transparent 85%);
+    border: 1px solid var(--hf-border);
+    border-radius: var(--hf-radius-sm);
+    transition: var(--hf-transition-border);
+}
+
+.hf-input:hover {
+    border-color: var(--hf-border-hover);
+}
+
+.hf-input:focus {
+    outline: none;
+    border-color: var(--hf-border-focus);
+}
+
+.hf-input::placeholder {
+    color: var(--hf-color-4);
+}
+
+.hf-input:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* ============================================================================
+ * Label Styles
+ * ============================================================================ */
+
+.hf-label {
+    display: block;
+    font-size: var(--hf-size-xs);
+    font-weight: var(--hf-weight-semibold);
+    text-transform: uppercase;
+    letter-spacing: var(--hf-tracking-wide);
+    color: var(--hf-color-5);
+    margin-bottom: var(--hf-space-1);
+}
+
+/* ============================================================================
+ * Control Group (Label + Input pairs)
+ * ============================================================================ */
+
+.hf-control-group {
+    display: grid;
+    grid-template-columns: minmax(80px, auto) 1fr;
+    align-items: center;
+    gap: var(--hf-space-2);
+    min-height: var(--hf-control-height);
+}
+
+.hf-control-label {
+    font-size: var(--hf-size-sm);
+    color: var(--hf-color-5);
+    text-align: right;
+    padding-right: var(--hf-space-2);
+}
+
+/* ============================================================================
+ * Focus Ring Utility
+ * ============================================================================ */
+
+.hf-focus-ring:focus {
+    outline: 2px solid var(--hf-accent-3);
+    outline-offset: 2px;
+}
+
+.hf-focus-ring:focus:not(:focus-visible) {
+    outline: none;
+}
+
+.hf-focus-ring:focus-visible {
+    outline: 2px solid var(--hf-accent-3);
+    outline-offset: 2px;
+}
+
+/* ============================================================================
+ * Accessibility
+ * ============================================================================ */
+
+.hf-sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
