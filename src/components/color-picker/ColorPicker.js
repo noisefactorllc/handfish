@@ -39,15 +39,16 @@ if (!document.getElementById(COLOR_PICKER_STYLES_ID)) {
             display: flex;
             align-items: center;
             gap: 6px;
-            padding: 0.375rem 0.5rem;
+            padding: var(--hf-control-padding, 0.25rem 0.5rem);
             cursor: pointer;
             width: 100%;
-            height: 1.75rem;
+            height: var(--hf-control-height, 1.875rem);
             box-sizing: border-box;
-            font-size: 0.75rem;
+            font-size: var(--hf-size-sm, 0.75rem);
             color: var(--hf-text-normal, #d9deeb);
             background: var(--hf-bg-elevated, #1b2538);
             border-radius: var(--hf-radius-sm, 0.375rem);
+            border: 1px solid var(--hf-border-subtle);
         }
 
         color-picker .swatch {

@@ -279,7 +279,8 @@
 
 :root {
     --hf-control-height-sm: 1.5rem;  /* 24px */
-    --hf-control-height: 1.75rem;    /* 28px */
+    --hf-control-height: 1.875rem;   /* 30px */
     --hf-control-height-lg: 2.25rem; /* 36px */
+    --hf-control-padding: 0.25rem 0.5rem; /* 4px 8px */
     --hf-titlebar-height: 2.25rem;   /* 36px */
 }

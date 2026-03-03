@@ -136,7 +136,8 @@ input[type="radio"].hf-radio:disabled,
 
 input[type="number"].hf-number,
 .hf-form input[type="number"] {
-    padding: 0.25rem 0.375rem;
+    min-height: var(--hf-control-height);
+    padding: var(--hf-control-padding);
     background: color-mix(in srgb, var(--hf-accent) 15%, transparent 85%);
     border: 1px solid var(--hf-border);
     border-radius: var(--hf-radius-sm);
@@ -191,7 +192,8 @@ input[type="url"].hf-text,
 .hf-form input[type="password"],
 .hf-form input[type="search"],
 .hf-form input[type="url"] {
-    padding: 0.375rem 0.5rem;
+    min-height: var(--hf-control-height);
+    padding: var(--hf-control-padding);
     background: color-mix(in srgb, var(--hf-accent) 15%, transparent 85%);
     border: 1px solid var(--hf-border);
     border-radius: var(--hf-radius-sm);
@@ -440,10 +442,13 @@ input[type="file"].hf-file,
     width: 100%;
     font-size: var(--hf-size-sm);
     color: var(--hf-text-normal);
+    font-family: var(--hf-font-family);
 }
 
 input[type="file"].hf-file::file-selector-button,
 .hf-form input[type="file"]::file-selector-button {
+    box-sizing: border-box;
+    height: var(--hf-control-height);
     padding: 0.25rem 0.5rem;
     font-size: var(--hf-size-xs);
     font-family: var(--hf-font-family);

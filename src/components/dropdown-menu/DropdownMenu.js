@@ -38,12 +38,14 @@ if (!document.getElementById(DROPDOWN_MENU_STYLES_ID)) {
             all: unset;
             display: inline-flex;
             align-items: center;
+            box-sizing: border-box;
             gap: 0.5rem;
-            padding: var(--hf-space-2, 0.5rem) var(--hf-space-3, 0.75rem);
+            min-height: var(--hf-control-height, 1.875rem);
+            padding: var(--hf-control-padding, 0.25rem 0.5rem);
             cursor: pointer;
-            font-size: 0.875rem;
+            font-size: var(--hf-size-sm, 0.75rem);
             font-weight: 500;
-            line-height: 1.25;
+            line-height: var(--hf-leading-normal, 1.5);
             text-wrap: nowrap;
             font-family: var(--hf-font-family, 'Nunito', system-ui, sans-serif);
             color: var(--hf-text-normal);
@@ -134,6 +136,7 @@ if (!document.getElementById(DROPDOWN_MENU_STYLES_ID)) {
 
         /* Small variant */
         dropdown-menu[small] .dropdown-trigger {
+            min-height: var(--hf-control-height-sm, 1.5rem);
             padding: var(--hf-space-1, 0.25rem) var(--hf-space-2, 0.5rem);
             font-size: 0.75rem;
             gap: 0.25rem;
