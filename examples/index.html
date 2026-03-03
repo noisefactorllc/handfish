@@ -271,7 +271,136 @@
     </section>
 
     <!-- ================================================================
-         4. Toggle Switch
+         4. Form Elements
+         ================================================================ -->
+    <section class="demo-section">
+        <h2>form elements</h2>
+        <div class="demo-grid">
+            <div class="demo-item">
+                <h3>Checkboxes</h3>
+                <div class="demo-item-content hf-form">
+                    <label><input type="checkbox" checked> Enable effect</label>
+                    <label><input type="checkbox"> Loop animation</label>
+                    <label><input type="checkbox" disabled> Locked</label>
+                </div>
+            </div>
+            <div class="demo-item">
+                <h3>Radio Buttons</h3>
+                <div class="demo-item-content hf-form">
+                    <div class="hf-radio-group">
+                        <label><input type="radio" name="demo-blend" value="add" checked> Add</label>
+                        <label><input type="radio" name="demo-blend" value="multiply"> Multiply</label>
+                        <label><input type="radio" name="demo-blend" value="screen"> Screen</label>
+                    </div>
+                    <div class="hf-radio-group-vertical" style="margin-top: 0.5rem;">
+                        <label><input type="radio" name="demo-quality" value="low"> Low quality</label>
+                        <label><input type="radio" name="demo-quality" value="med" checked> Medium quality</label>
+                        <label><input type="radio" name="demo-quality" value="high"> High quality</label>
+                    </div>
+                </div>
+            </div>
+            <div class="demo-item">
+                <h3>Number Input</h3>
+                <div class="demo-item-content hf-form">
+                    <div class="demo-row">
+                        <span class="demo-label">Width</span>
+                        <input type="number" value="1920" min="1" max="7680" style="width: 80px;">
+                    </div>
+                    <div class="demo-row">
+                        <span class="demo-label">Height</span>
+                        <input type="number" value="1080" min="1" max="4320" style="width: 80px;">
+                    </div>
+                    <div class="demo-row">
+                        <span class="demo-label">FPS</span>
+                        <input type="number" value="60" min="1" max="240" step="1" style="width: 80px;" disabled>
+                    </div>
+                </div>
+            </div>
+            <div class="demo-item">
+                <h3>Text Inputs</h3>
+                <div class="demo-item-content hf-form">
+                    <input type="text" placeholder="Project name...">
+                    <input type="email" placeholder="Email address...">
+                    <input type="password" placeholder="Password..." value="secret">
+                </div>
+            </div>
+            <div class="demo-item wide">
+                <h3>Textarea</h3>
+                <div class="demo-item-content hf-form">
+                    <textarea placeholder="Enter description..." rows="3"></textarea>
+                    <textarea class="hf-textarea-mono" placeholder="// code or config..." rows="3">uniform float time;
+void main() {
+    gl_FragColor = vec4(sin(time), 0.5, 1.0, 1.0);
+}</textarea>
+                </div>
+            </div>
+            <div class="demo-item">
+                <h3>File Input</h3>
+                <div class="demo-item-content hf-form">
+                    <input type="file" accept="image/*">
+                </div>
+            </div>
+            <div class="demo-item">
+                <h3>Progress Bars</h3>
+                <div class="demo-item-content" style="gap: 1rem;">
+                    <div>
+                        <span class="hf-text-xs hf-text-dim" style="display: block; margin-bottom: 4px;">Default (40%)</span>
+                        <div class="hf-progress"><div class="hf-progress-bar" style="width: 40%;"></div></div>
+                    </div>
+                    <div>
+                        <span class="hf-text-xs hf-text-dim" style="display: block; margin-bottom: 4px;">Gradient (75%)</span>
+                        <div class="hf-progress hf-progress-lg hf-progress-gradient"><div class="hf-progress-bar" style="width: 75%;"></div></div>
+                    </div>
+                    <div>
+                        <span class="hf-text-xs hf-text-dim" style="display: block; margin-bottom: 4px;">Indeterminate</span>
+                        <div class="hf-progress hf-progress-indeterminate"><div class="hf-progress-bar"></div></div>
+                    </div>
+                </div>
+            </div>
+            <div class="demo-item">
+                <h3>Separators</h3>
+                <div class="demo-item-content">
+                    <span class="hf-text-sm">Content above</span>
+                    <hr class="hf-separator">
+                    <span class="hf-text-sm">Default separator</span>
+                    <hr class="hf-separator hf-separator-accent">
+                    <span class="hf-text-sm">Accent separator</span>
+                    <div class="demo-row" style="height: 2rem;">
+                        <span class="hf-text-sm">Left</span>
+                        <div class="hf-separator-vertical"></div>
+                        <span class="hf-text-sm">Right</span>
+                    </div>
+                </div>
+            </div>
+            <div class="demo-item">
+                <h3>Inline Code &amp; Kbd</h3>
+                <div class="demo-item-content">
+                    <p class="hf-text-sm" style="margin: 0;">Use <code class="hf-code">noise(freq: 4)</code> to generate patterns.</p>
+                    <p class="hf-text-sm" style="margin: 0;">Press <kbd class="hf-kbd">Ctrl</kbd> + <kbd class="hf-kbd">S</kbd> to save.</p>
+                    <pre class="hf-pre">o0 = noise(freq: 4.0)
+render(o0)</pre>
+                </div>
+            </div>
+            <div class="demo-item">
+                <h3>Scrollbar</h3>
+                <div class="hf-scrollbar" style="height: 100px; overflow-y: auto; background: var(--hf-color-1); border-radius: var(--hf-radius-sm); padding: 0.5rem;">
+                    <div class="hf-text-sm" style="color: var(--hf-color-5);">
+                        <p style="margin: 0 0 0.5rem;">Scroll to see themed scrollbar.</p>
+                        <p style="margin: 0 0 0.5rem;">Line 2</p>
+                        <p style="margin: 0 0 0.5rem;">Line 3</p>
+                        <p style="margin: 0 0 0.5rem;">Line 4</p>
+                        <p style="margin: 0 0 0.5rem;">Line 5</p>
+                        <p style="margin: 0 0 0.5rem;">Line 6</p>
+                        <p style="margin: 0 0 0.5rem;">Line 7</p>
+                        <p style="margin: 0 0 0.5rem;">Line 8</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================================================================
+         5. Toggle Switch
          ================================================================ -->
     <section class="demo-section">
         <h2>toggle switch</h2>

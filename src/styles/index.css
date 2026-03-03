@@ -5,6 +5,7 @@
  */
 
 @import './tokens.css';
+@import './forms.css';
 @import './dialogs.css';
 
 /* ============================================================================
@@ -366,7 +367,7 @@ body {
 }
 
 .hf-input::placeholder {
-    color: var(--hf-color-4);
+    color: var(--hf-color-5);
 }
 
 .hf-input:disabled {

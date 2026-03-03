@@ -1,0 +1,500 @@
+/**
+ * Handfish Form Element Styles
+ *
+ * Styled form controls that integrate with the design system tokens.
+ * Covers checkboxes, radio buttons, number inputs, textareas,
+ * progress bars, scrollbars, and separators.
+ */
+
+/* ============================================================================
+ * Checkboxes
+ * ============================================================================ */
+
+input[type="checkbox"].hf-checkbox,
+.hf-form input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    border: 1px solid var(--hf-color-4);
+    border-radius: var(--hf-radius-sm);
+    cursor: pointer;
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    vertical-align: middle;
+    flex-shrink: 0;
+    transition: border-color var(--hf-transition);
+    background: transparent;
+}
+
+input[type="checkbox"].hf-checkbox::after,
+.hf-form input[type="checkbox"]::after {
+    content: "";
+    width: 8px;
+    height: 8px;
+    border-radius: 2px;
+    background-color: var(--hf-color-4);
+    transition: background-color 0.2s, transform 0.2s;
+    transform: scale(0);
+}
+
+input[type="checkbox"].hf-checkbox:hover,
+.hf-form input[type="checkbox"]:hover {
+    border-color: var(--hf-color-6);
+}
+
+input[type="checkbox"].hf-checkbox:checked,
+.hf-form input[type="checkbox"]:checked {
+    border-color: var(--hf-accent-3);
+}
+
+input[type="checkbox"].hf-checkbox:checked::after,
+.hf-form input[type="checkbox"]:checked::after {
+    background-color: var(--hf-accent-3);
+    transform: scale(1);
+}
+
+input[type="checkbox"].hf-checkbox:focus-visible,
+.hf-form input[type="checkbox"]:focus-visible {
+    outline: 1px solid var(--hf-accent-3);
+    outline-offset: 3px;
+}
+
+input[type="checkbox"].hf-checkbox:disabled,
+.hf-form input[type="checkbox"]:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* ============================================================================
+ * Radio Buttons
+ * ============================================================================ */
+
+input[type="radio"].hf-radio,
+.hf-form input[type="radio"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 18px;
+    height: 18px;
+    border: 1px solid var(--hf-color-4);
+    border-radius: var(--hf-radius-full);
+    cursor: pointer;
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    vertical-align: middle;
+    flex-shrink: 0;
+    transition: border-color var(--hf-transition);
+    background: transparent;
+}
+
+input[type="radio"].hf-radio::after,
+.hf-form input[type="radio"]::after {
+    content: "";
+    width: 8px;
+    height: 8px;
+    border-radius: var(--hf-radius-full);
+    background-color: var(--hf-color-4);
+    transition: background-color 0.2s, transform 0.2s;
+    transform: scale(0);
+}
+
+input[type="radio"].hf-radio:hover,
+.hf-form input[type="radio"]:hover {
+    border-color: var(--hf-color-6);
+}
+
+input[type="radio"].hf-radio:checked,
+.hf-form input[type="radio"]:checked {
+    border-color: var(--hf-accent-3);
+}
+
+input[type="radio"].hf-radio:checked::after,
+.hf-form input[type="radio"]:checked::after {
+    background-color: var(--hf-accent-3);
+    transform: scale(1);
+}
+
+input[type="radio"].hf-radio:focus-visible,
+.hf-form input[type="radio"]:focus-visible {
+    outline: 1px solid var(--hf-accent-3);
+    outline-offset: 3px;
+}
+
+input[type="radio"].hf-radio:disabled,
+.hf-form input[type="radio"]:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* ============================================================================
+ * Number Input
+ * ============================================================================ */
+
+input[type="number"].hf-number,
+.hf-form input[type="number"] {
+    padding: 0.25rem 0.375rem;
+    background: color-mix(in srgb, var(--hf-accent-3) 15%, transparent 85%);
+    border: 1px solid var(--hf-border);
+    border-radius: var(--hf-radius-sm);
+    color: var(--hf-color-6);
+    font-family: var(--hf-font-family);
+    font-size: var(--hf-size-sm);
+    outline: none;
+    transition: all var(--hf-transition);
+    appearance: textfield;
+    -moz-appearance: textfield;
+}
+
+input[type="number"].hf-number:hover,
+.hf-form input[type="number"]:hover {
+    background: color-mix(in srgb, var(--hf-accent-3) 22%, transparent 78%);
+    border-color: var(--hf-border-hover);
+}
+
+input[type="number"].hf-number:focus,
+.hf-form input[type="number"]:focus {
+    border-color: var(--hf-border-focus);
+    background: color-mix(in srgb, var(--hf-accent-3) 25%, transparent 75%);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--hf-accent-3) 25%, transparent 75%);
+}
+
+/* Hide spinners */
+input[type="number"].hf-number::-webkit-outer-spin-button,
+input[type="number"].hf-number::-webkit-inner-spin-button,
+.hf-form input[type="number"]::-webkit-outer-spin-button,
+.hf-form input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type="number"].hf-number:disabled,
+.hf-form input[type="number"]:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* ============================================================================
+ * Text Input (extends .hf-input for explicit class usage)
+ * ============================================================================ */
+
+input[type="text"].hf-text,
+input[type="email"].hf-text,
+input[type="password"].hf-text,
+input[type="search"].hf-text,
+input[type="url"].hf-text,
+.hf-form input[type="text"],
+.hf-form input[type="email"],
+.hf-form input[type="password"],
+.hf-form input[type="search"],
+.hf-form input[type="url"] {
+    padding: 0.375rem 0.5rem;
+    background: color-mix(in srgb, var(--hf-accent-3) 15%, transparent 85%);
+    border: 1px solid var(--hf-border);
+    border-radius: var(--hf-radius-sm);
+    color: var(--hf-color-6);
+    font-family: var(--hf-font-family);
+    font-size: var(--hf-size-sm);
+    outline: none;
+    transition: border-color var(--hf-transition);
+    width: 100%;
+}
+
+input[type="text"].hf-text:hover,
+input[type="email"].hf-text:hover,
+input[type="password"].hf-text:hover,
+input[type="search"].hf-text:hover,
+input[type="url"].hf-text:hover,
+.hf-form input[type="text"]:hover,
+.hf-form input[type="email"]:hover,
+.hf-form input[type="password"]:hover,
+.hf-form input[type="search"]:hover,
+.hf-form input[type="url"]:hover {
+    border-color: var(--hf-border-hover);
+}
+
+input[type="text"].hf-text:focus,
+input[type="email"].hf-text:focus,
+input[type="password"].hf-text:focus,
+input[type="search"].hf-text:focus,
+input[type="url"].hf-text:focus,
+.hf-form input[type="text"]:focus,
+.hf-form input[type="email"]:focus,
+.hf-form input[type="password"]:focus,
+.hf-form input[type="search"]:focus,
+.hf-form input[type="url"]:focus {
+    border-color: var(--hf-border-focus);
+}
+
+input[type="text"].hf-text::placeholder,
+input[type="email"].hf-text::placeholder,
+input[type="password"].hf-text::placeholder,
+input[type="search"].hf-text::placeholder,
+input[type="url"].hf-text::placeholder,
+.hf-form input[type="text"]::placeholder,
+.hf-form input[type="email"]::placeholder,
+.hf-form input[type="password"]::placeholder,
+.hf-form input[type="search"]::placeholder,
+.hf-form input[type="url"]::placeholder {
+    color: var(--hf-color-5);
+}
+
+/* ============================================================================
+ * Textarea
+ * ============================================================================ */
+
+textarea.hf-textarea,
+.hf-form textarea {
+    width: 100%;
+    padding: 0.375rem 0.5rem;
+    background: color-mix(in srgb, var(--hf-accent-3) 15%, transparent 85%);
+    border: 1px solid var(--hf-border);
+    border-radius: var(--hf-radius-sm);
+    color: var(--hf-color-6);
+    font-family: var(--hf-font-family);
+    font-size: var(--hf-size-sm);
+    line-height: var(--hf-leading-normal);
+    outline: none;
+    transition: border-color var(--hf-transition);
+    resize: vertical;
+    min-height: 3em;
+}
+
+textarea.hf-textarea:hover,
+.hf-form textarea:hover {
+    border-color: var(--hf-border-hover);
+}
+
+textarea.hf-textarea:focus,
+.hf-form textarea:focus {
+    border-color: var(--hf-border-focus);
+}
+
+textarea.hf-textarea::placeholder,
+.hf-form textarea::placeholder {
+    color: var(--hf-color-5);
+}
+
+textarea.hf-textarea:disabled,
+.hf-form textarea:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Monospace variant for code/config */
+textarea.hf-textarea-mono,
+.hf-form textarea.hf-textarea-mono {
+    font-family: var(--hf-font-family-mono);
+    font-size: var(--hf-size-xs);
+    tab-size: 4;
+}
+
+/* ============================================================================
+ * Labels (within .hf-form)
+ * ============================================================================ */
+
+.hf-form label {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-size: var(--hf-size-sm);
+    color: var(--hf-color-6);
+    cursor: pointer;
+}
+
+.hf-form label:has(input:disabled) {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+/* ============================================================================
+ * Radio/Checkbox Groups
+ * ============================================================================ */
+
+.hf-radio-group,
+.hf-checkbox-group {
+    display: flex;
+    gap: 1rem;
+}
+
+.hf-radio-group-vertical,
+.hf-checkbox-group-vertical {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+/* ============================================================================
+ * Progress Bar
+ * ============================================================================ */
+
+.hf-progress {
+    width: 100%;
+    height: 4px;
+    background: color-mix(in srgb, var(--hf-accent-3) 10%, transparent 90%);
+    border-radius: var(--hf-radius-pill);
+    overflow: hidden;
+}
+
+.hf-progress-bar {
+    height: 100%;
+    background: var(--hf-accent-3);
+    border-radius: var(--hf-radius-pill);
+    width: 0%;
+    transition: width 0.2s ease;
+}
+
+/* Gradient variant */
+.hf-progress-gradient .hf-progress-bar {
+    background: linear-gradient(90deg, var(--hf-accent-3), var(--hf-accent-4));
+}
+
+/* Large variant */
+.hf-progress-lg {
+    height: 8px;
+}
+
+/* Indeterminate */
+.hf-progress-indeterminate .hf-progress-bar {
+    width: 30%;
+    animation: hf-progress-slide 1.5s ease-in-out infinite;
+}
+
+@keyframes hf-progress-slide {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(400%); }
+}
+
+/* ============================================================================
+ * Scrollbar Theming
+ * ============================================================================ */
+
+.hf-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color:
+        color-mix(in srgb, var(--hf-accent-3) 30%, transparent 70%)
+        transparent;
+}
+
+.hf-scrollbar::-webkit-scrollbar {
+    width: 0.5rem;
+    height: 0.5rem;
+}
+
+.hf-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.hf-scrollbar::-webkit-scrollbar-thumb {
+    background: color-mix(in srgb, var(--hf-accent-3) 30%, transparent 70%);
+    border-radius: var(--hf-radius-pill);
+}
+
+.hf-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: color-mix(in srgb, var(--hf-accent-3) 50%, transparent 50%);
+}
+
+/* Hidden scrollbar (still scrollable) */
+.hf-scrollbar-hidden {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.hf-scrollbar-hidden::-webkit-scrollbar {
+    display: none;
+}
+
+/* ============================================================================
+ * Separator / Divider
+ * ============================================================================ */
+
+.hf-separator {
+    border: none;
+    height: 1px;
+    background: var(--hf-border);
+    margin: var(--hf-space-2) 0;
+}
+
+.hf-separator-accent {
+    background: color-mix(in srgb, var(--hf-accent-3) 25%, transparent 75%);
+}
+
+/* Vertical separator (for flex rows) */
+.hf-separator-vertical {
+    width: 1px;
+    height: auto;
+    align-self: stretch;
+    background: var(--hf-border);
+    margin: 0 var(--hf-space-2);
+}
+
+/* ============================================================================
+ * File Input
+ * ============================================================================ */
+
+input[type="file"].hf-file,
+.hf-form input[type="file"] {
+    width: 100%;
+    font-size: var(--hf-size-sm);
+    color: var(--hf-color-6);
+}
+
+input[type="file"].hf-file::file-selector-button,
+.hf-form input[type="file"]::file-selector-button {
+    padding: 0.25rem 0.5rem;
+    font-size: var(--hf-size-xs);
+    font-family: var(--hf-font-family);
+    background: color-mix(in srgb, var(--hf-accent-3) 15%, transparent 85%);
+    border: 1px solid var(--hf-border);
+    border-radius: var(--hf-radius-sm);
+    color: var(--hf-accent-3);
+    cursor: pointer;
+    margin-right: 0.5rem;
+    transition: all var(--hf-transition);
+}
+
+input[type="file"].hf-file::file-selector-button:hover,
+.hf-form input[type="file"]::file-selector-button:hover {
+    background: color-mix(in srgb, var(--hf-accent-3) 25%, transparent 75%);
+    border-color: var(--hf-border-hover);
+}
+
+/* ============================================================================
+ * Inline Code & Kbd
+ * ============================================================================ */
+
+.hf-code {
+    font-family: var(--hf-font-family-mono);
+    font-size: 0.85em;
+    padding: 0.15em 0.4em;
+    background: color-mix(in srgb, var(--hf-accent-3) 10%, transparent 90%);
+    border-radius: var(--hf-radius-sm);
+    color: var(--hf-accent-3);
+}
+
+.hf-pre {
+    font-family: var(--hf-font-family-mono);
+    font-size: var(--hf-size-sm);
+    padding: var(--hf-space-3);
+    background: color-mix(in srgb, var(--hf-color-1) 80%, var(--hf-color-2) 20%);
+    border: 1px solid var(--hf-border);
+    border-radius: var(--hf-radius);
+    color: var(--hf-color-6);
+    overflow-x: auto;
+    white-space: pre;
+    tab-size: 4;
+}
+
+.hf-kbd {
+    font-family: var(--hf-font-family-mono);
+    font-size: 0.8em;
+    padding: 0.1em 0.4em;
+    background: var(--hf-color-3);
+    border: 1px solid var(--hf-color-4);
+    border-radius: var(--hf-radius-sm);
+    color: var(--hf-color-6);
+    box-shadow: 0 1px 0 var(--hf-color-4);
+}
