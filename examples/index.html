@@ -979,8 +979,19 @@ render(o0)</pre>
         initEscapeHandler()
 
         // Theme toggle
+        const editor1 = document.getElementById('editor1')
+        const editor2 = document.getElementById('editor2')
+        const editorThemeMenu = document.getElementById('editorThemeMenu')
+
         document.getElementById('themeToggle').addEventListener('change', (e) => {
-            document.documentElement.dataset.theme = e.target.checked ? 'dark' : 'light'
+            const isDark = e.target.checked
+            document.documentElement.dataset.theme = isDark ? 'dark' : 'light'
+
+            // Sync code editor themes
+            const editorTheme = isDark ? 'default' : 'githubLight'
+            applyEditorTheme(editor1, editorTheme)
+            applyEditorTheme(editor2, editorTheme)
+            editorThemeMenu.value = editorTheme
         })
 
         // Toggle output
@@ -1085,7 +1096,6 @@ render(o0)</pre>
         })
 
         // Code editor - set DSL tokenizer and sample code
-        const editor1 = document.getElementById('editor1')
         editor1.setTokenizer(dslTokenizer)
         editor1.value = `// Noisemaker DSL example
 o0 = noise(freq: 4.0, speed: 0.5)
@@ -1094,12 +1104,11 @@ o2 = blend(o0, o1, mix: 0.65)
 render(o2, brightness: 1.2)`
 
         // Editor theme switcher
-        document.getElementById('editorThemeMenu').addEventListener('change', (e) => {
+        editorThemeMenu.addEventListener('change', (e) => {
             applyEditorTheme(editor1, e.detail.value)
         })
 
         // Plain text editor
-        const editor2 = document.getElementById('editor2')
         editor2.value = 'Plain text editor\nNo syntax highlighting\nJust line numbers'
 
         // Image magnifier - draw a sample gradient on canvas
