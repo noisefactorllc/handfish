@@ -57,8 +57,8 @@ if (!document.getElementById(STYLES_ID)) {
 
         color-swatch[selected] {
             box-shadow:
-                0 0 0 2px var(--hf-color-1),
-                0 0 0 4px var(--hf-accent-3);
+                0 0 0 2px var(--hf-bg-base),
+                0 0 0 4px var(--hf-accent);
         }
 
         /* Hex tooltip */
@@ -68,10 +68,10 @@ if (!document.getElementById(STYLES_ID)) {
             left: 50%;
             transform: translateX(-50%);
             padding: 4px 8px;
-            background: var(--hf-color-1);
-            border: 1px solid var(--hf-color-3);
+            background: var(--hf-bg-base);
+            border: 1px solid var(--hf-bg-elevated);
             border-radius: 4px;
-            color: var(--hf-color-6);
+            color: var(--hf-text-normal);
             font-family: var(--hf-font-family-mono, monospace);
             font-size: 0.625rem;
             white-space: nowrap;
@@ -88,7 +88,7 @@ if (!document.getElementById(STYLES_ID)) {
             left: 50%;
             transform: translateX(-50%);
             border: 4px solid transparent;
-            border-top-color: var(--hf-color-3);
+            border-top-color: var(--hf-bg-elevated);
         }
 
         color-swatch:hover .swatch-tooltip {
@@ -114,9 +114,9 @@ if (!document.getElementById(STYLES_ID)) {
             right: 2px;
             width: 8px;
             height: 8px;
-            background: var(--hf-color-1);
+            background: var(--hf-bg-base);
             border-radius: 50%;
-            border: 1px solid var(--hf-color-4);
+            border: 1px solid var(--hf-border-subtle);
             opacity: 0;
             transition: opacity 0.15s ease;
         }

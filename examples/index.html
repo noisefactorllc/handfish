@@ -15,19 +15,19 @@
         .demo-header h1 {
             font-size: var(--hf-size-2xl);
             font-weight: var(--hf-weight-bold);
-            color: var(--hf-color-7);
+            color: var(--hf-text-bright);
             margin: 0 0 0.5rem 0;
         }
         .demo-header p {
             font-size: var(--hf-size-base);
-            color: var(--hf-color-5);
+            color: var(--hf-text-dim);
             margin: 0;
         }
         .demo-section { margin-bottom: 3rem; }
         .demo-section h2 {
             font-size: var(--hf-size-lg);
             font-weight: var(--hf-weight-semibold);
-            color: var(--hf-accent-3);
+            color: var(--hf-accent);
             text-transform: lowercase;
             letter-spacing: var(--hf-tracking-wide);
             margin: 0 0 1.5rem 0;
@@ -41,7 +41,7 @@
         }
         .demo-item {
             padding: 1.5rem;
-            background: color-mix(in srgb, var(--hf-color-2) 80%, transparent 20%);
+            background: color-mix(in srgb, var(--hf-bg-surface) 80%, transparent 20%);
             border: 1px solid var(--hf-border);
             border-radius: var(--hf-radius);
         }
@@ -50,7 +50,7 @@
             font-weight: var(--hf-weight-semibold);
             text-transform: uppercase;
             letter-spacing: var(--hf-tracking-wide);
-            color: var(--hf-color-5);
+            color: var(--hf-text-dim);
             margin: 0 0 1rem 0;
         }
         .demo-item-content {
@@ -65,7 +65,7 @@
         }
         .demo-label {
             font-size: var(--hf-size-sm);
-            color: var(--hf-color-5);
+            color: var(--hf-text-dim);
             min-width: 80px;
         }
         .color-grid {
@@ -82,7 +82,7 @@
             justify-content: center;
             padding-bottom: 0.25rem;
             font-size: var(--hf-size-xs);
-            color: var(--hf-color-5);
+            color: var(--hf-text-dim);
         }
         .accent-grid {
             display: grid;
@@ -102,14 +102,14 @@
         }
         .output {
             padding: 0.5rem;
-            background: var(--hf-color-1);
+            background: var(--hf-bg-base);
             border-radius: var(--hf-radius-sm);
             font-family: var(--hf-font-family-mono);
             font-size: var(--hf-size-sm);
-            color: var(--hf-accent-3);
+            color: var(--hf-accent);
             min-height: 1.5em;
         }
-        .type-sample { color: var(--hf-color-6); }
+        .type-sample { color: var(--hf-text-normal); }
         .swatch-row {
             display: flex;
             gap: 0.5rem;
@@ -399,8 +399,8 @@ render(o0)</pre>
             </div>
             <div class="demo-item">
                 <h3>Scrollbar</h3>
-                <div class="hf-scrollbar" style="height: 100px; overflow-y: auto; background: var(--hf-color-1); border-radius: var(--hf-radius-sm); padding: 0.5rem;">
-                    <div class="hf-text-sm" style="color: var(--hf-color-5);">
+                <div class="hf-scrollbar" style="height: 100px; overflow-y: auto; background: var(--hf-bg-base); border-radius: var(--hf-radius-sm); padding: 0.5rem;">
+                    <div class="hf-text-sm" style="color: var(--hf-text-dim);">
                         <p style="margin: 0 0 0.5rem;">Scroll to see themed scrollbar.</p>
                         <p style="margin: 0 0 0.5rem;">Line 2</p>
                         <p style="margin: 0 0 0.5rem;">Line 3</p>

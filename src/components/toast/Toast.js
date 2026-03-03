@@ -30,14 +30,14 @@ if (!document.getElementById(STYLES_ID)) {
             max-width: 400px;
             background: color-mix(
                 in srgb,
-                var(--hf-color-2, #1a1e2e) 95%,
+                var(--hf-bg-surface, #1a1e2e) 95%,
                 transparent 5%
             );
             backdrop-filter: blur(12px);
-            border: 1px solid var(--hf-color-3);
+            border: 1px solid var(--hf-bg-elevated);
             border-radius: var(--hf-radius-sm, 4px);
             box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
-            color: var(--hf-color-6);
+            color: var(--hf-text-normal);
             font-size: 0.875rem;
             pointer-events: auto;
             opacity: 0;
@@ -77,7 +77,7 @@ if (!document.getElementById(STYLES_ID)) {
             flex-shrink: 0;
             background: none;
             border: none;
-            color: var(--hf-color-5);
+            color: var(--hf-text-dim);
             cursor: pointer;
             font-size: 1rem;
             line-height: 1;
@@ -113,10 +113,10 @@ if (!document.getElementById(STYLES_ID)) {
         }
 
         .hf-toast.hf-toast-info {
-            border-color: color-mix(in srgb, var(--hf-accent-3, #a5b8ff) 30%, transparent 70%);
+            border-color: color-mix(in srgb, var(--hf-accent, #a5b8ff) 30%, transparent 70%);
         }
         .hf-toast.hf-toast-info .hf-toast-icon {
-            color: var(--hf-accent-3, #a5b8ff);
+            color: var(--hf-accent, #a5b8ff);
         }
 
         /* Progress bar for auto-dismiss */
@@ -126,14 +126,14 @@ if (!document.getElementById(STYLES_ID)) {
             left: 0;
             right: 0;
             height: 3px;
-            background: var(--hf-color-4);
+            background: var(--hf-bg-muted);
             border-radius: 0 0 var(--hf-radius, 8px) var(--hf-radius, 8px);
             overflow: hidden;
         }
 
         .hf-toast-progress-bar {
             height: 100%;
-            background: var(--hf-accent-3);
+            background: var(--hf-accent);
             transition: width linear;
         }
 

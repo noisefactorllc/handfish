@@ -40,13 +40,13 @@ if (!document.getElementById(VECTOR3D_PICKER_STYLES_ID)) {
             height: 1.75rem;
             box-sizing: border-box;
             font-size: 0.75rem;
-            color: var(--hf-color-6);
-            background: var(--hf-color-3);
+            color: var(--hf-text-normal);
+            background: var(--hf-bg-elevated);
             border-radius: var(--hf-radius-sm, 0.375rem);
         }
 
         vector3d-picker .vector-button:hover {
-            background: var(--hf-color-4);
+            background: var(--hf-bg-muted);
         }
 
         vector3d-picker .vector-preview {
@@ -55,7 +55,7 @@ if (!document.getElementById(VECTOR3D_PICKER_STYLES_ID)) {
             gap: 4px;
             font-family: var(--hf-font-family-mono, monospace);
             font-size: 0.6875rem;
-            color: var(--hf-color-6);
+            color: var(--hf-text-normal);
         }
 
         vector3d-picker .vector-preview .axis {
@@ -76,7 +76,7 @@ if (!document.getElementById(VECTOR3D_PICKER_STYLES_ID)) {
 
         vector3d-picker .dropdown-arrow {
             font-size: 0.6rem;
-            color: var(--hf-color-5);
+            color: var(--hf-text-dim);
             flex-shrink: 0;
             margin-left: auto;
             transition: transform 0.15s ease;
@@ -90,14 +90,14 @@ if (!document.getElementById(VECTOR3D_PICKER_STYLES_ID)) {
         vector3d-picker .vector-dialog {
             background: color-mix(
                 in srgb,
-                var(--hf-color-2, #1a1e2e) var(--hf-surface-opacity, 85%),
+                var(--hf-bg-surface, #1a1e2e) var(--hf-surface-opacity, 85%),
                 transparent var(--hf-surface-transparency, 15%)
             );
             backdrop-filter: var(--hf-glass-blur, blur(12px));
             border: none;
             border-radius: var(--hf-radius, 8px);
             padding: 0;
-            color: var(--hf-color-6, #d9deeb);
+            color: var(--hf-text-normal, #d9deeb);
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
             overflow: hidden;
             min-width: 320px;
@@ -111,7 +111,7 @@ if (!document.getElementById(VECTOR3D_PICKER_STYLES_ID)) {
         vector3d-picker .dialog-titlebar {
             background-color: color-mix(
                 in srgb,
-                var(--hf-accent-3, #a5b8ff) var(--hf-header-opacity, 30%),
+                var(--hf-accent, #a5b8ff) var(--hf-header-opacity, 30%),
                 transparent var(--hf-header-transparency, 70%)
             );
             border-bottom: none;
@@ -120,7 +120,7 @@ if (!document.getElementById(VECTOR3D_PICKER_STYLES_ID)) {
             height: 1.75rem;
             font-size: 0.95rem;
             font-weight: 600;
-            color: var(--hf-color-6, #d9deeb);
+            color: var(--hf-text-normal, #d9deeb);
             text-transform: lowercase;
             letter-spacing: 0.05em;
             display: flex;
@@ -139,7 +139,7 @@ if (!document.getElementById(VECTOR3D_PICKER_STYLES_ID)) {
         vector3d-picker .dialog-close {
             background: transparent;
             border: none;
-            color: var(--hf-color-5, #98a7c8);
+            color: var(--hf-text-dim, #98a7c8);
             cursor: pointer;
             font-size: 0.875rem;
             padding: 0.25em 0.5em;
@@ -151,7 +151,7 @@ if (!document.getElementById(VECTOR3D_PICKER_STYLES_ID)) {
 
         vector3d-picker .dialog-close:hover {
             opacity: 1;
-            color: var(--hf-color-6, #d9deeb);
+            color: var(--hf-text-normal, #d9deeb);
         }
 
         vector3d-picker .dialog-body {
@@ -175,16 +175,16 @@ if (!document.getElementById(VECTOR3D_PICKER_STYLES_ID)) {
             border-radius: 50%;
             background: radial-gradient(
                 circle at 30% 30%,
-                var(--hf-color-4) 0%,
-                var(--hf-color-3) 50%,
-                var(--hf-color-2) 100%
+                var(--hf-bg-muted) 0%,
+                var(--hf-bg-elevated) 50%,
+                var(--hf-bg-surface) 100%
             );
             position: relative;
             cursor: crosshair;
             box-shadow:
                 inset 0 0 30px rgba(0, 0, 0, 0.3),
                 0 4px 12px rgba(0, 0, 0, 0.3);
-            border: 2px solid var(--hf-color-4);
+            border: 2px solid var(--hf-border-subtle);
         }
 
         vector3d-picker .sphere-gizmo::before {
@@ -213,7 +213,7 @@ if (!document.getElementById(VECTOR3D_PICKER_STYLES_ID)) {
         vector3d-picker .sphere-grid::after {
             content: '';
             position: absolute;
-            background: var(--hf-color-5);
+            background: var(--hf-text-dim);
             opacity: 0.2;
         }
 
@@ -241,8 +241,8 @@ if (!document.getElementById(VECTOR3D_PICKER_STYLES_ID)) {
             width: 16px;
             height: 16px;
             border-radius: 50%;
-            background: var(--hf-accent-3);
-            border: 2px solid var(--hf-color-7);
+            background: var(--hf-accent);
+            border: 2px solid var(--hf-text-bright);
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
             transform: translate(-50%, -50%);
             transition: transform 0.05s ease-out;
@@ -271,8 +271,8 @@ if (!document.getElementById(VECTOR3D_PICKER_STYLES_ID)) {
             background: linear-gradient(
                 to right,
                 transparent 0%,
-                var(--hf-accent-3) 20%,
-                var(--hf-accent-3) 100%
+                var(--hf-accent) 20%,
+                var(--hf-accent) 100%
             );
             transform-origin: left center;
             pointer-events: none;
@@ -341,7 +341,7 @@ if (!document.getElementById(VECTOR3D_PICKER_STYLES_ID)) {
             appearance: none;
             width: 100%;
             height: 6px;
-            background: var(--hf-color-3);
+            background: var(--hf-bg-elevated);
             border-radius: 3px;
             outline: none;
             cursor: pointer;
@@ -354,7 +354,7 @@ if (!document.getElementById(VECTOR3D_PICKER_STYLES_ID)) {
             height: 14px;
             border-radius: 50%;
             cursor: pointer;
-            border: 2px solid var(--hf-color-7);
+            border: 2px solid var(--hf-text-bright);
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
         }
 
@@ -367,7 +367,7 @@ if (!document.getElementById(VECTOR3D_PICKER_STYLES_ID)) {
             height: 14px;
             border-radius: 50%;
             cursor: pointer;
-            border: 2px solid var(--hf-color-7);
+            border: 2px solid var(--hf-text-bright);
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
         }
 
@@ -380,9 +380,9 @@ if (!document.getElementById(VECTOR3D_PICKER_STYLES_ID)) {
             padding: 0.25rem 0.375rem;
             font-size: 0.6875rem;
             font-family: var(--hf-font-family-mono, monospace);
-            color: var(--hf-color-6);
-            background: var(--hf-color-3);
-            border: 1px solid var(--hf-color-4);
+            color: var(--hf-text-normal);
+            background: var(--hf-bg-elevated);
+            border: 1px solid var(--hf-border-subtle);
             border-radius: 4px;
             text-align: right;
             box-sizing: border-box;
@@ -390,7 +390,7 @@ if (!document.getElementById(VECTOR3D_PICKER_STYLES_ID)) {
 
         vector3d-picker .axis-input:focus {
             outline: none;
-            border-color: var(--hf-accent-3);
+            border-color: var(--hf-accent);
         }
 
         /* Options row */
@@ -400,7 +400,7 @@ if (!document.getElementById(VECTOR3D_PICKER_STYLES_ID)) {
             justify-content: space-between;
             gap: 1rem;
             padding-top: 0.5rem;
-            border-top: 1px solid var(--hf-color-4);
+            border-top: 1px solid var(--hf-border-subtle);
         }
 
         vector3d-picker .normalize-toggle {
@@ -408,12 +408,12 @@ if (!document.getElementById(VECTOR3D_PICKER_STYLES_ID)) {
             align-items: center;
             gap: 0.5rem;
             font-size: 0.75rem;
-            color: var(--hf-color-5);
+            color: var(--hf-text-dim);
             cursor: pointer;
         }
 
         vector3d-picker .normalize-toggle input {
-            accent-color: var(--hf-accent-3);
+            accent-color: var(--hf-accent);
             width: 14px;
             height: 14px;
             cursor: pointer;
@@ -422,23 +422,23 @@ if (!document.getElementById(VECTOR3D_PICKER_STYLES_ID)) {
         vector3d-picker .magnitude-display {
             font-size: 0.6875rem;
             font-family: var(--hf-font-family-mono, monospace);
-            color: var(--hf-color-5);
+            color: var(--hf-text-dim);
         }
 
         vector3d-picker .reset-button {
             padding: 0.25rem 0.75rem;
             font-size: 0.6875rem;
-            color: var(--hf-color-5);
-            background: var(--hf-color-3);
-            border: 1px solid var(--hf-color-4);
+            color: var(--hf-text-dim);
+            background: var(--hf-bg-elevated);
+            border: 1px solid var(--hf-border-subtle);
             border-radius: 4px;
             cursor: pointer;
             transition: all 0.15s ease;
         }
 
         vector3d-picker .reset-button:hover {
-            color: var(--hf-color-6);
-            background: var(--hf-color-4);
+            color: var(--hf-text-normal);
+            background: var(--hf-bg-muted);
         }
     `
     document.head.appendChild(styleEl)

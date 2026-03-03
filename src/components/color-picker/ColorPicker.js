@@ -45,8 +45,8 @@ if (!document.getElementById(COLOR_PICKER_STYLES_ID)) {
             height: 1.75rem;
             box-sizing: border-box;
             font-size: 0.75rem;
-            color: var(--hf-color-6, #d9deeb);
-            background: var(--hf-color-3, #1b2538);
+            color: var(--hf-text-normal, #d9deeb);
+            background: var(--hf-bg-elevated, #1b2538);
             border-radius: var(--hf-radius-sm, 0.375rem);
         }
 
@@ -58,13 +58,13 @@ if (!document.getElementById(COLOR_PICKER_STYLES_ID)) {
 
         color-picker .hex-display {
             font-size: 0.62rem;
-            color: var(--hf-color-6, #d9deeb);
+            color: var(--hf-text-normal, #d9deeb);
             font-family: var(--hf-font-family-mono, ui-monospace, 'Cascadia Mono', 'Consolas', monospace);
         }
 
         color-picker .dropdown-arrow {
             font-size: 0.6rem;
-            color: var(--hf-color-5, #98a7c8);
+            color: var(--hf-text-dim, #98a7c8);
             flex-shrink: 0;
             margin-left: auto;
             transition: transform 0.15s ease;
@@ -78,14 +78,14 @@ if (!document.getElementById(COLOR_PICKER_STYLES_ID)) {
         color-picker .color-dialog {
             background: color-mix(
                 in srgb,
-                var(--hf-color-2, #1a1e2e) var(--hf-surface-opacity, 85%),
+                var(--hf-bg-surface, #1a1e2e) var(--hf-surface-opacity, 85%),
                 transparent var(--hf-surface-transparency, 15%)
             );
             backdrop-filter: var(--hf-glass-blur, blur(12px));
             border: none;
             border-radius: var(--hf-radius, 8px);
             padding: 0;
-            color: var(--hf-color-6, #d9deeb);
+            color: var(--hf-text-normal, #d9deeb);
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
             overflow: hidden;
         }
@@ -98,7 +98,7 @@ if (!document.getElementById(COLOR_PICKER_STYLES_ID)) {
         color-picker .dialog-titlebar {
             background-color: color-mix(
                 in srgb,
-                var(--hf-accent-3, #a5b8ff) var(--hf-header-opacity, 30%),
+                var(--hf-accent, #a5b8ff) var(--hf-header-opacity, 30%),
                 transparent var(--hf-header-transparency, 70%)
             );
             border-bottom: none;
@@ -107,7 +107,7 @@ if (!document.getElementById(COLOR_PICKER_STYLES_ID)) {
             height: 1.75rem;
             font-size: 0.95rem;
             font-weight: 600;
-            color: var(--hf-color-6, #d9deeb);
+            color: var(--hf-text-normal, #d9deeb);
             text-transform: lowercase;
             letter-spacing: 0.05em;
             display: flex;
@@ -126,7 +126,7 @@ if (!document.getElementById(COLOR_PICKER_STYLES_ID)) {
         color-picker .dialog-close {
             background: transparent;
             border: none;
-            color: var(--hf-color-5, #98a7c8);
+            color: var(--hf-text-dim, #98a7c8);
             cursor: pointer;
             font-size: 0.875rem;
             padding: 0.25em 0.5em;
@@ -138,7 +138,7 @@ if (!document.getElementById(COLOR_PICKER_STYLES_ID)) {
 
         color-picker .dialog-close:hover {
             opacity: 1;
-            color: var(--hf-color-6, #d9deeb);
+            color: var(--hf-text-normal, #d9deeb);
         }
 
         color-picker .dialog-body {

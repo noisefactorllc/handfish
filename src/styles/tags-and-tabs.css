@@ -15,10 +15,10 @@
     font-size: var(--hf-size-sm);
     font-weight: var(--hf-weight-medium);
     padding: 0.15rem 0.45rem;
-    background: color-mix(in srgb, var(--hf-accent-3) 12%, transparent 88%);
+    background: color-mix(in srgb, var(--hf-accent) 12%, transparent 88%);
     border: 1px solid var(--hf-border);
     border-radius: var(--hf-radius-sm);
-    color: color-mix(in srgb, var(--hf-color-5) 85%, var(--hf-accent-3) 15%);
+    color: color-mix(in srgb, var(--hf-text-dim) 85%, var(--hf-accent) 15%);
     text-transform: lowercase;
     letter-spacing: 0.03em;
     white-space: nowrap;
@@ -36,16 +36,16 @@ a.hf-tag,
 button.hf-tag:hover,
 a.hf-tag:hover,
 .hf-tag[role="button"]:hover {
-    background: color-mix(in srgb, var(--hf-accent-3) 20%, transparent 80%);
+    background: color-mix(in srgb, var(--hf-accent) 20%, transparent 80%);
     border-color: var(--hf-border-hover);
 }
 
 /* Active / selected tag */
 .hf-tag.active,
 .hf-tag[aria-selected="true"] {
-    background: color-mix(in srgb, var(--hf-accent-3) 25%, transparent 75%);
-    border-color: var(--hf-accent-3);
-    color: var(--hf-accent-3);
+    background: color-mix(in srgb, var(--hf-accent) 25%, transparent 75%);
+    border-color: var(--hf-accent);
+    color: var(--hf-accent);
 }
 
 /* Small tag variant */
@@ -77,9 +77,9 @@ a.hf-tag:hover,
     gap: 0.25rem;
     font-size: 0.7rem;
     font-weight: var(--hf-weight-semibold);
-    color: var(--hf-accent-3);
-    background: color-mix(in srgb, var(--hf-accent-3) 12%, transparent 88%);
-    border: 1px solid color-mix(in srgb, var(--hf-accent-3) 30%, transparent 70%);
+    color: var(--hf-accent);
+    background: color-mix(in srgb, var(--hf-accent) 12%, transparent 88%);
+    border: 1px solid color-mix(in srgb, var(--hf-accent) 30%, transparent 70%);
     border-radius: var(--hf-radius-pill);
     padding: 0.15em 0.6em;
     white-space: nowrap;
@@ -95,8 +95,8 @@ a.hf-badge {
 
 button.hf-badge:hover,
 a.hf-badge:hover {
-    background: color-mix(in srgb, var(--hf-accent-3) 20%, transparent 80%);
-    color: var(--hf-accent-4);
+    background: color-mix(in srgb, var(--hf-accent) 20%, transparent 80%);
+    color: var(--hf-accent-hover);
 }
 
 /* Semantic badge variants */
@@ -120,9 +120,9 @@ a.hf-badge:hover {
 
 /* Muted / subtle badge */
 .hf-badge-muted {
-    color: var(--hf-color-5);
-    background: color-mix(in srgb, var(--hf-color-5) 10%, transparent 90%);
-    border-color: color-mix(in srgb, var(--hf-color-5) 20%, transparent 80%);
+    color: var(--hf-text-dim);
+    background: color-mix(in srgb, var(--hf-text-dim) 10%, transparent 90%);
+    border-color: color-mix(in srgb, var(--hf-text-dim) 20%, transparent 80%);
 }
 
 /* ============================================================================
@@ -142,7 +142,7 @@ a.hf-badge:hover {
     padding: 0.5rem 0.75rem;
     font-size: var(--hf-size-sm);
     font-weight: var(--hf-weight-medium);
-    color: var(--hf-color-5);
+    color: var(--hf-text-dim);
     background: transparent;
     border: none;
     border-bottom: 2px solid transparent;
@@ -152,17 +152,17 @@ a.hf-badge:hover {
 }
 
 .hf-tab:hover {
-    color: var(--hf-color-6);
+    color: var(--hf-text-normal);
 }
 
 .hf-tab.active,
 .hf-tab[aria-selected="true"] {
-    color: var(--hf-accent-3);
-    border-bottom-color: var(--hf-accent-3);
+    color: var(--hf-accent);
+    border-bottom-color: var(--hf-accent);
 }
 
 .hf-tab:focus-visible {
-    outline: 1px solid var(--hf-accent-3);
+    outline: 1px solid var(--hf-accent);
     outline-offset: -1px;
 }
 
@@ -176,7 +176,7 @@ a.hf-badge:hover {
 .hf-tabs-pill {
     border-bottom: none;
     gap: 0.25rem;
-    background: color-mix(in srgb, var(--hf-accent-3) 8%, transparent 92%);
+    background: color-mix(in srgb, var(--hf-accent) 8%, transparent 92%);
     border-radius: var(--hf-radius);
     padding: 0.2rem;
 }
@@ -190,6 +190,6 @@ a.hf-badge:hover {
 
 .hf-tabs-pill .hf-tab.active,
 .hf-tabs-pill .hf-tab[aria-selected="true"] {
-    background: color-mix(in srgb, var(--hf-accent-3) 20%, transparent 80%);
-    color: var(--hf-accent-3);
+    background: color-mix(in srgb, var(--hf-accent) 20%, transparent 80%);
+    color: var(--hf-accent);
 }

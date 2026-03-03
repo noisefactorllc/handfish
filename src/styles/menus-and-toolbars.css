@@ -14,17 +14,17 @@
     flex-direction: column;
     background: color-mix(
         in srgb,
-        var(--hf-color-2) var(--hf-surface-opacity),
+        var(--hf-bg-surface) var(--hf-surface-opacity),
         transparent var(--hf-surface-transparency)
     );
     backdrop-filter: var(--hf-glass-blur);
     -webkit-backdrop-filter: var(--hf-glass-blur);
     border-radius: var(--hf-radius);
-    box-shadow: 0 0 12px 2px color-mix(in srgb, var(--hf-accent-3) 15%, transparent 85%);
+    box-shadow: 0 0 12px 2px color-mix(in srgb, var(--hf-accent) 15%, transparent 85%);
     min-width: 160px;
     width: max-content;
     padding: 0.25rem 0;
-    color: var(--hf-accent-3);
+    color: var(--hf-accent);
     z-index: var(--hf-z-dropdown);
 }
 
@@ -49,8 +49,8 @@
 }
 
 .hf-menu-item:hover {
-    background: color-mix(in srgb, var(--hf-accent-3) 12%, transparent 88%);
-    color: var(--hf-accent-4);
+    background: color-mix(in srgb, var(--hf-accent) 12%, transparent 88%);
+    color: var(--hf-accent-hover);
 }
 
 .hf-menu-item .hf-icon {
@@ -61,7 +61,7 @@
 .hf-menu-item.active,
 .hf-menu-item[aria-checked="true"] {
     font-weight: var(--hf-weight-semibold);
-    color: var(--hf-color-7);
+    color: var(--hf-text-bright);
 }
 
 .hf-menu-item.active::before,
@@ -109,7 +109,7 @@
 
 .hf-menu-separator {
     border: none;
-    border-top: 1px solid color-mix(in srgb, var(--hf-accent-3) 20%, transparent 80%);
+    border-top: 1px solid color-mix(in srgb, var(--hf-accent) 20%, transparent 80%);
     margin: 0.25rem 0;
 }
 
@@ -123,7 +123,7 @@
     font-weight: var(--hf-weight-semibold);
     text-transform: uppercase;
     letter-spacing: var(--hf-tracking-wide);
-    color: var(--hf-color-5);
+    color: var(--hf-text-dim);
     pointer-events: none;
 }
 
@@ -142,23 +142,23 @@
     font-weight: var(--hf-weight-semibold);
     text-transform: lowercase;
     background: transparent;
-    border: 1px solid color-mix(in srgb, var(--hf-accent-3) 30%, transparent 70%);
+    border: 1px solid color-mix(in srgb, var(--hf-accent) 30%, transparent 70%);
     border-radius: var(--hf-radius-sm);
-    color: color-mix(in srgb, var(--hf-color-5) 70%, transparent 30%);
+    color: color-mix(in srgb, var(--hf-text-dim) 70%, transparent 30%);
     cursor: pointer;
     transition: all var(--hf-transition);
 }
 
 .hf-action-btn:hover {
-    background: color-mix(in srgb, var(--hf-accent-3) 20%, transparent 80%);
-    border-color: color-mix(in srgb, var(--hf-accent-3) 50%, transparent 50%);
-    color: var(--hf-color-6);
+    background: color-mix(in srgb, var(--hf-accent) 20%, transparent 80%);
+    border-color: color-mix(in srgb, var(--hf-accent) 50%, transparent 50%);
+    color: var(--hf-text-normal);
 }
 
 .hf-action-btn.active {
-    background: color-mix(in srgb, var(--hf-accent-3) 40%, transparent 60%);
-    border-color: var(--hf-accent-3);
-    color: var(--hf-color-6);
+    background: color-mix(in srgb, var(--hf-accent) 40%, transparent 60%);
+    border-color: var(--hf-accent);
+    color: var(--hf-text-normal);
 }
 
 .hf-action-btn:disabled {
@@ -181,7 +181,7 @@
     cursor: pointer;
     opacity: 0.6;
     transition: opacity var(--hf-transition);
-    color: var(--hf-color-5);
+    color: var(--hf-text-dim);
 }
 
 .hf-icon-btn:hover {
@@ -189,7 +189,7 @@
 }
 
 .hf-icon-btn:hover .hf-icon {
-    color: var(--hf-color-6);
+    color: var(--hf-text-normal);
 }
 
 .hf-icon-btn.active {
@@ -197,7 +197,7 @@
 }
 
 .hf-icon-btn.active .hf-icon {
-    color: var(--hf-accent-3);
+    color: var(--hf-accent);
 }
 
 .hf-icon-btn:disabled {

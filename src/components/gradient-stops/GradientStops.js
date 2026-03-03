@@ -51,7 +51,7 @@ if (!document.getElementById(STYLES_ID)) {
         }
 
         gradient-stops .stop-handle.selected .stop-body {
-            box-shadow: 0 0 0 2px var(--hf-accent-3);
+            box-shadow: 0 0 0 2px var(--hf-accent);
         }
 
         gradient-stops .stop-handle:hover .stop-body {
@@ -88,10 +88,10 @@ if (!document.getElementById(STYLES_ID)) {
             right: -6px;
             width: 14px;
             height: 14px;
-            background: var(--hf-color-2);
-            border: 1px solid var(--hf-color-4);
+            background: var(--hf-bg-surface);
+            border: 1px solid var(--hf-border-subtle);
             border-radius: 50%;
-            color: var(--hf-color-5);
+            color: var(--hf-text-dim);
             font-size: 10px;
             line-height: 12px;
             text-align: center;

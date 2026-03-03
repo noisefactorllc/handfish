@@ -46,11 +46,34 @@
     --hf-yellow: #ffd66b;
 
     /* Computed colors */
-    --hf-ui-accent: color-mix(in srgb, var(--hf-accent-3) 80%, var(--hf-color-7) 20%);
-    --hf-ui-neutral: var(--hf-color-6);
     --hf-border: color-mix(in srgb, var(--hf-accent-3) 25%, transparent 75%);
     --hf-border-hover: color-mix(in srgb, var(--hf-accent-3) 40%, transparent 60%);
     --hf-border-focus: var(--hf-accent-3);
+
+    /* Semantic Color Tokens
+     * Readable aliases for the numbered primitives.
+     * Defined once here — they auto-resolve when primitives change per theme.
+     */
+
+    /* Backgrounds */
+    --hf-bg-base:     var(--hf-color-1);
+    --hf-bg-surface:  var(--hf-color-2);
+    --hf-bg-elevated: var(--hf-color-3);
+    --hf-bg-muted:    var(--hf-color-4);
+
+    /* Text */
+    --hf-text-muted:  var(--hf-color-4);
+    --hf-text-dim:    var(--hf-color-5);
+    --hf-text-normal: var(--hf-color-6);
+    --hf-text-bright: var(--hf-color-7);
+
+    /* Borders */
+    --hf-border-subtle: var(--hf-color-4);
+
+    /* Accent */
+    --hf-accent-bg:    var(--hf-accent-1);
+    --hf-accent:       var(--hf-accent-3);
+    --hf-accent-hover: var(--hf-accent-4);
 }
 
 /* Light mode override */

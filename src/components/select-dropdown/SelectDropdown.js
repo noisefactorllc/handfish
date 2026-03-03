@@ -46,8 +46,8 @@ if (!document.getElementById(SELECT_DROPDOWN_STYLES_ID)) {
             box-sizing: border-box;
             font-size: 0.75rem;
             font-family: var(--hf-font-family, Nunito, system-ui, sans-serif);
-            color: var(--hf-color-6, #d9deeb);
-            background: var(--hf-color-3, #1b2538);
+            color: var(--hf-text-normal, #d9deeb);
+            background: var(--hf-bg-elevated, #1b2538);
             border: none;
             border-radius: var(--hf-radius-sm, 0.375rem);
         }
@@ -61,7 +61,7 @@ if (!document.getElementById(SELECT_DROPDOWN_STYLES_ID)) {
 
         select-dropdown .trigger-arrow {
             font-size: 0.5rem;
-            color: var(--hf-color-5, #98a7c8);
+            color: var(--hf-text-dim, #98a7c8);
             flex-shrink: 0;
             margin-left: auto;
             transition: transform 0.15s ease;
@@ -81,11 +81,11 @@ if (!document.getElementById(SELECT_DROPDOWN_STYLES_ID)) {
             min-width: 100px;
             background: color-mix(
                 in srgb,
-                var(--hf-color-2, #1a1f2e) 95%,
+                var(--hf-bg-surface, #1a1f2e) 95%,
                 transparent 5%
             );
             backdrop-filter: var(--hf-blur, blur(12px));
-            border: 1px solid color-mix(in srgb, var(--hf-accent-3, #4a5568) 30%, transparent 70%);
+            border: 1px solid color-mix(in srgb, var(--hf-accent, #4a5568) 30%, transparent 70%);
             border-radius: var(--hf-radius-sm, 0.375rem);
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
             overflow: hidden;
@@ -120,30 +120,30 @@ if (!document.getElementById(SELECT_DROPDOWN_STYLES_ID)) {
             cursor: pointer;
             transition: background 0.1s ease;
             font-size: 0.75rem;
-            color: var(--hf-color-6, #d9deeb);
+            color: var(--hf-text-normal, #d9deeb);
         }
 
         select-dropdown .inline-dropdown .option:hover,
         select-dropdown .inline-dropdown .option.focused {
-            background: color-mix(in srgb, var(--hf-accent-3, #a5b8ff) 25%, transparent 75%);
+            background: color-mix(in srgb, var(--hf-accent, #a5b8ff) 25%, transparent 75%);
         }
 
         select-dropdown .inline-dropdown .option.selected {
-            background: color-mix(in srgb, var(--hf-accent-3, #a5b8ff) 35%, transparent 65%);
+            background: color-mix(in srgb, var(--hf-accent, #a5b8ff) 35%, transparent 65%);
         }
 
         /* Dialog mode (>= 6 options) */
         select-dropdown .select-dialog {
             background: color-mix(
                 in srgb,
-                var(--hf-color-2, #101522) 92%,
+                var(--hf-bg-surface, #101522) 92%,
                 transparent 8%
             );
             backdrop-filter: var(--hf-blur, blur(20px));
             border: none;
             border-radius: var(--hf-radius, 0.5rem);
             padding: 0;
-            color: var(--hf-color-6, #d9deeb);
+            color: var(--hf-text-normal, #d9deeb);
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
             min-width: 200px;
             max-width: 400px;
@@ -158,7 +158,7 @@ if (!document.getElementById(SELECT_DROPDOWN_STYLES_ID)) {
         select-dropdown .dialog-titlebar {
             background-color: color-mix(
                 in srgb,
-                var(--hf-accent-1, #141a2d) 65%,
+                var(--hf-accent-bg, #141a2d) 65%,
                 transparent 35%
             );
             border-bottom: none;
@@ -167,7 +167,7 @@ if (!document.getElementById(SELECT_DROPDOWN_STYLES_ID)) {
             height: 2.25em;
             font-size: 0.95rem;
             font-weight: 600;
-            color: var(--hf-color-6, #d9deeb);
+            color: var(--hf-text-normal, #d9deeb);
             text-transform: lowercase;
             letter-spacing: 0.05em;
             display: flex;
@@ -186,7 +186,7 @@ if (!document.getElementById(SELECT_DROPDOWN_STYLES_ID)) {
         select-dropdown .dialog-close {
             background: transparent;
             border: none;
-            color: var(--hf-color-5, #98a7c8);
+            color: var(--hf-text-dim, #98a7c8);
             cursor: pointer;
             font-size: 0.875rem;
             padding: 0.25em 0.5em;
@@ -198,7 +198,7 @@ if (!document.getElementById(SELECT_DROPDOWN_STYLES_ID)) {
 
         select-dropdown .dialog-close:hover {
             opacity: 1;
-            color: var(--hf-color-6, #d9deeb);
+            color: var(--hf-text-normal, #d9deeb);
         }
 
         select-dropdown .dialog-body {
@@ -220,7 +220,7 @@ if (!document.getElementById(SELECT_DROPDOWN_STYLES_ID)) {
             padding: 0.375rem 0.5rem;
             cursor: pointer;
             transition: background 0.1s ease;
-            border-bottom: 1px solid color-mix(in srgb, var(--hf-accent-3, #a5b8ff) 8%, transparent 92%);
+            border-bottom: 1px solid color-mix(in srgb, var(--hf-accent, #a5b8ff) 8%, transparent 92%);
             font-size: 0.875rem;
         }
 
@@ -239,18 +239,18 @@ if (!document.getElementById(SELECT_DROPDOWN_STYLES_ID)) {
 
         select-dropdown .dialog-options .option:hover,
         select-dropdown .dialog-options .option.focused {
-            background: color-mix(in srgb, var(--hf-accent-3, #a5b8ff) 20%, transparent 80%);
+            background: color-mix(in srgb, var(--hf-accent, #a5b8ff) 20%, transparent 80%);
         }
 
         select-dropdown .dialog-options .option.selected {
-            background: color-mix(in srgb, var(--hf-accent-3, #a5b8ff) 30%, transparent 70%);
+            background: color-mix(in srgb, var(--hf-accent, #a5b8ff) 30%, transparent 70%);
         }
 
         select-dropdown .empty-message {
             padding: 0.5rem;
             font-size: 0.625rem;
             font-style: italic;
-            color: var(--hf-color-5, #98a7c8);
+            color: var(--hf-text-dim, #98a7c8);
             text-align: center;
         }
 
@@ -267,19 +267,19 @@ if (!document.getElementById(SELECT_DROPDOWN_STYLES_ID)) {
 
         select-dropdown .inline-dropdown::-webkit-scrollbar-thumb,
         select-dropdown .dialog-options::-webkit-scrollbar-thumb {
-            background: color-mix(in srgb, var(--hf-accent-3, #a5b8ff) 30%, transparent 70%);
+            background: color-mix(in srgb, var(--hf-accent, #a5b8ff) 30%, transparent 70%);
             border-radius: 0.2rem;
         }
 
         select-dropdown .inline-dropdown::-webkit-scrollbar-thumb:hover,
         select-dropdown .dialog-options::-webkit-scrollbar-thumb:hover {
-            background: color-mix(in srgb, var(--hf-accent-3, #a5b8ff) 50%, transparent 50%);
+            background: color-mix(in srgb, var(--hf-accent, #a5b8ff) 50%, transparent 50%);
         }
 
         select-dropdown .inline-dropdown,
         select-dropdown .dialog-options {
             scrollbar-width: thin;
-            scrollbar-color: color-mix(in srgb, var(--hf-accent-3, #a5b8ff) 30%, transparent 70%) transparent;
+            scrollbar-color: color-mix(in srgb, var(--hf-accent, #a5b8ff) 30%, transparent 70%) transparent;
         }
     `
     document.head.appendChild(style)

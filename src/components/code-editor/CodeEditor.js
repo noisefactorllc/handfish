@@ -58,7 +58,7 @@ if (!document.getElementById(CODE_EDITOR_STYLES_ID)) {
             text-align: right;
             padding-right: 0.5em;
             box-sizing: border-box;
-            color: var(--code-editor-line-number-color, var(--hf-color-5, #666));
+            color: var(--code-editor-line-number-color, var(--hf-text-dim, #666));
             background: var(--code-editor-gutter-bg, rgba(7, 9, 13, 0.75));
             font: inherit;
             line-height: inherit;
@@ -90,7 +90,7 @@ if (!document.getElementById(CODE_EDITOR_STYLES_ID)) {
             letter-spacing: inherit;
             word-spacing: inherit;
             color: transparent;
-            caret-color: var(--code-editor-caret-color, var(--hf-accent-3, #5a7fdd));
+            caret-color: var(--code-editor-caret-color, var(--hf-accent, #5a7fdd));
             white-space: pre-wrap;
             overflow-wrap: break-word;
             word-break: break-word;
@@ -112,12 +112,12 @@ if (!document.getElementById(CODE_EDITOR_STYLES_ID)) {
 
         /* Selection styling */
         code-editor .code-editor-textarea::selection {
-            background: var(--code-editor-selection-bg, var(--hf-accent-3, #5a7fdd));
+            background: var(--code-editor-selection-bg, var(--hf-accent, #5a7fdd));
             color: var(--code-editor-selection-fg, #fff);
         }
 
         code-editor .code-editor-textarea::-moz-selection {
-            background: var(--code-editor-selection-bg, var(--hf-accent-3, #5a7fdd));
+            background: var(--code-editor-selection-bg, var(--hf-accent, #5a7fdd));
             color: var(--code-editor-selection-fg, #fff);
         }
 
@@ -199,7 +199,7 @@ if (!document.getElementById(CODE_EDITOR_STYLES_ID)) {
         }
 
         code-editor .hl-punctuation {
-            color: var(--hl-punctuation, var(--hf-color-6, #e0e0e0));
+            color: var(--hl-punctuation, var(--hf-text-normal, #e0e0e0));
         }
 
         code-editor .hl-operator {
@@ -207,7 +207,7 @@ if (!document.getElementById(CODE_EDITOR_STYLES_ID)) {
         }
 
         code-editor .hl-identifier {
-            color: var(--hl-identifier, var(--hf-color-6, #e0e0e0));
+            color: var(--hl-identifier, var(--hf-text-normal, #e0e0e0));
         }
 
         /* Selection highlight overlay */

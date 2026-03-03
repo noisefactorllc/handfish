@@ -32,9 +32,9 @@ if (!document.getElementById(IMAGE_MAGNIFIER_STYLES_ID)) {
             z-index: 10000;
             display: none;
             --mag-size: ${MAGNIFIER_SIZE}px;
-            --mag-border: var(--hf-color-4, #4a5568);
-            --mag-bg: var(--hf-color-1, #1a202c);
-            --mag-text: var(--hf-color-6, #e2e8f0);
+            --mag-border: var(--hf-border-subtle, #4a5568);
+            --mag-bg: var(--hf-bg-base, #1a202c);
+            --mag-text: var(--hf-text-normal, #e2e8f0);
             --mag-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
         }
 

@@ -21,8 +21,8 @@ if (!document.getElementById(JUSTIFY_BUTTON_GROUP_STYLES_ID)) {
             display: inline-flex;
             border-radius: var(--hf-radius-sm, 0.375rem);
             overflow: hidden;
-            background: var(--hf-color-2, #333);
-            border: 1px solid var(--hf-color-3, #444);
+            background: var(--hf-bg-surface, #333);
+            border: 1px solid var(--hf-bg-elevated, #444);
         }
 
         justify-button-group .justify-btn {
@@ -34,19 +34,19 @@ if (!document.getElementById(JUSTIFY_BUTTON_GROUP_STYLES_ID)) {
             padding: 0;
             border: none;
             background: transparent;
-            color: var(--hf-color-5, #888);
+            color: var(--hf-text-dim, #888);
             cursor: pointer;
             transition: background 0.15s, color 0.15s;
         }
 
         justify-button-group .justify-btn:hover:not(:disabled):not(.selected) {
-            background: var(--hf-color-3, #444);
-            color: var(--hf-color-6, #ccc);
+            background: var(--hf-bg-elevated, #444);
+            color: var(--hf-text-normal, #ccc);
         }
 
         justify-button-group .justify-btn.selected {
-            background: var(--hf-accent-3, #0066cc);
-            color: var(--hf-color-6, #fff);
+            background: var(--hf-accent, #0066cc);
+            color: var(--hf-text-normal, #fff);
         }
 
         justify-button-group .justify-btn:disabled {
@@ -56,7 +56,7 @@ if (!document.getElementById(JUSTIFY_BUTTON_GROUP_STYLES_ID)) {
 
         /* Remove internal borders, only outer group has border-radius */
         justify-button-group .justify-btn:not(:last-child) {
-            border-right: 1px solid var(--hf-color-3, #444);
+            border-right: 1px solid var(--hf-bg-elevated, #444);
         }
 
         justify-button-group .material-symbols {

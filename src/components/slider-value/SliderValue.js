@@ -28,7 +28,7 @@ if (!document.getElementById(SLIDER_VALUE_STYLES_ID)) {
             appearance: none;
             width: 100%;
             height: 0.5rem;
-            background: color-mix(in srgb, var(--hf-accent-3, #5a7fdd) 15%, transparent 85%);
+            background: color-mix(in srgb, var(--hf-accent, #5a7fdd) 15%, transparent 85%);
             border-radius: var(--hf-radius-sm, 0.375rem);
             outline: none;
             cursor: pointer;
@@ -36,7 +36,7 @@ if (!document.getElementById(SLIDER_VALUE_STYLES_ID)) {
         }
 
         slider-value .slider:hover {
-            background: color-mix(in srgb, var(--hf-accent-3, #5a7fdd) 22%, transparent 78%);
+            background: color-mix(in srgb, var(--hf-accent, #5a7fdd) 22%, transparent 78%);
         }
 
         slider-value .slider::-webkit-slider-thumb {
@@ -45,15 +45,15 @@ if (!document.getElementById(SLIDER_VALUE_STYLES_ID)) {
             width: 0.875rem;
             height: 0.875rem;
             border-radius: 50%;
-            background: var(--hf-accent-3, #5a7fdd);
+            background: var(--hf-accent, #5a7fdd);
             cursor: pointer;
-            border: 2px solid color-mix(in srgb, var(--hf-accent-3, #5a7fdd) 100%, var(--hf-color-7, #fff) 0%);
+            border: 2px solid color-mix(in srgb, var(--hf-accent, #5a7fdd) 100%, var(--hf-text-bright, #fff) 0%);
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
             transition: all 0.15s ease;
         }
 
         slider-value .slider:hover::-webkit-slider-thumb {
-            background: color-mix(in srgb, var(--hf-accent-3, #5a7fdd) 85%, var(--hf-color-7, #fff) 15%);
+            background: color-mix(in srgb, var(--hf-accent, #5a7fdd) 85%, var(--hf-text-bright, #fff) 15%);
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
         }
 
@@ -61,22 +61,22 @@ if (!document.getElementById(SLIDER_VALUE_STYLES_ID)) {
             width: 0.875rem;
             height: 0.875rem;
             border-radius: 50%;
-            background: var(--hf-accent-3, #5a7fdd);
+            background: var(--hf-accent, #5a7fdd);
             cursor: pointer;
-            border: 2px solid color-mix(in srgb, var(--hf-accent-3, #5a7fdd) 100%, var(--hf-color-7, #fff) 0%);
+            border: 2px solid color-mix(in srgb, var(--hf-accent, #5a7fdd) 100%, var(--hf-text-bright, #fff) 0%);
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
             transition: all 0.15s ease;
         }
 
         slider-value .slider:hover::-moz-range-thumb {
-            background: color-mix(in srgb, var(--hf-accent-3, #5a7fdd) 85%, var(--hf-color-7, #fff) 15%);
+            background: color-mix(in srgb, var(--hf-accent, #5a7fdd) 85%, var(--hf-text-bright, #fff) 15%);
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
         }
 
         slider-value .value-display {
             font-size: 0.6875rem;
             font-family: monospace;
-            color: var(--hf-color-5, #8fa8ff);
+            color: var(--hf-text-dim, #8fa8ff);
             text-align: right;
             min-width: 2.5em;
             user-select: none;
@@ -91,11 +91,11 @@ if (!document.getElementById(SLIDER_VALUE_STYLES_ID)) {
         }
 
         slider-value .value-display:hover {
-            background-color: color-mix(in srgb, var(--hf-accent-3, #5a7fdd) 10%, transparent 90%);
+            background-color: color-mix(in srgb, var(--hf-accent, #5a7fdd) 10%, transparent 90%);
         }
 
         slider-value .value-display:focus {
-            background-color: color-mix(in srgb, var(--hf-accent-3, #5a7fdd) 20%, transparent 80%);
+            background-color: color-mix(in srgb, var(--hf-accent, #5a7fdd) 20%, transparent 80%);
         }
     `
     document.head.appendChild(styleEl)

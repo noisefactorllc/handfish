@@ -24,7 +24,7 @@ if (!document.getElementById(STYLES_ID)) {
 
         slider-control .slider-label {
             min-width: 2em;
-            color: var(--hf-color-5);
+            color: var(--hf-text-dim);
             font-size: 0.75rem;
             text-transform: uppercase;
             letter-spacing: 0.05em;
@@ -36,7 +36,7 @@ if (!document.getElementById(STYLES_ID)) {
             -webkit-appearance: none;
             appearance: none;
             height: 6px;
-            background: var(--hf-color-3);
+            background: var(--hf-bg-elevated);
             border-radius: 3px;
             outline: none;
             cursor: pointer;
@@ -47,7 +47,7 @@ if (!document.getElementById(STYLES_ID)) {
             appearance: none;
             width: 14px;
             height: 14px;
-            background: var(--hf-accent-3);
+            background: var(--hf-accent);
             border-radius: 50%;
             cursor: pointer;
             transition: transform 0.1s ease, background-color 0.1s ease;
@@ -56,7 +56,7 @@ if (!document.getElementById(STYLES_ID)) {
         slider-control .slider-input::-moz-range-thumb {
             width: 14px;
             height: 14px;
-            background: var(--hf-accent-3);
+            background: var(--hf-accent);
             border: none;
             border-radius: 50%;
             cursor: pointer;
@@ -65,26 +65,26 @@ if (!document.getElementById(STYLES_ID)) {
 
         slider-control .slider-input::-webkit-slider-thumb:hover {
             transform: scale(1.2);
-            background: var(--hf-accent-4);
+            background: var(--hf-accent-hover);
         }
 
         slider-control .slider-input::-moz-range-thumb:hover {
             transform: scale(1.2);
-            background: var(--hf-accent-4);
+            background: var(--hf-accent-hover);
         }
 
         slider-control .slider-input:focus::-webkit-slider-thumb {
-            box-shadow: 0 0 0 3px color-mix(in srgb, var(--hf-accent-3) 30%, transparent);
+            box-shadow: 0 0 0 3px color-mix(in srgb, var(--hf-accent) 30%, transparent);
         }
 
         slider-control .slider-input:focus::-moz-range-thumb {
-            box-shadow: 0 0 0 3px color-mix(in srgb, var(--hf-accent-3) 30%, transparent);
+            box-shadow: 0 0 0 3px color-mix(in srgb, var(--hf-accent) 30%, transparent);
         }
 
         slider-control .slider-value {
             min-width: 3.5em;
             text-align: right;
-            color: var(--hf-color-6);
+            color: var(--hf-text-normal);
             font-family: var(--hf-font-family-mono, monospace);
             font-size: 0.75rem;
             flex-shrink: 0;

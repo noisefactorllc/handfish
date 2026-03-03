@@ -45,12 +45,12 @@ if (!document.getElementById(COLOR_WHEEL_STYLES_ID)) {
             display: inline-block;
             font-family: var(--hf-font-family, Nunito, system-ui, sans-serif);
             font-size: 12px;
-            --cw-bg: var(--hf-color-2, #101522);
-            --cw-border: color-mix(in srgb, var(--hf-accent-3, #a5b8ff) 25%, transparent 75%);
-            --cw-text: var(--hf-color-6, #d9deeb);
-            --cw-text-dim: var(--hf-color-5, #98a7c8);
-            --cw-accent: var(--hf-accent-3, #a5b8ff);
-            --cw-input-bg: var(--hf-color-1, #07090d);
+            --cw-bg: var(--hf-bg-surface, #101522);
+            --cw-border: color-mix(in srgb, var(--hf-accent, #a5b8ff) 25%, transparent 75%);
+            --cw-text: var(--hf-text-normal, #d9deeb);
+            --cw-text-dim: var(--hf-text-dim, #98a7c8);
+            --cw-accent: var(--hf-accent, #a5b8ff);
+            --cw-input-bg: var(--hf-bg-base, #07090d);
             --cw-radius: var(--hf-radius-sm, 4px);
         }
 

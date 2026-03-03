@@ -58,8 +58,8 @@ html {
     font-family: var(--hf-font-family);
     font-size: 16px;
     line-height: var(--hf-leading-normal);
-    color: var(--hf-color-6);
-    background-color: var(--hf-color-1);
+    color: var(--hf-text-normal);
+    background-color: var(--hf-bg-base);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
@@ -87,7 +87,7 @@ body {
     white-space: nowrap;
     direction: ltr;
     font-variation-settings: 'FILL' 0;
-    color: var(--hf-accent-3);
+    color: var(--hf-accent);
 }
 
 .hf-icon-lg {
@@ -146,20 +146,20 @@ body {
  * Color Classes
  * ============================================================================ */
 
-.hf-text-dim { color: var(--hf-color-5); }
-.hf-text-muted { color: var(--hf-color-4); }
-.hf-text-normal { color: var(--hf-color-6); }
-.hf-text-bright { color: var(--hf-color-7); }
-.hf-text-accent { color: var(--hf-accent-3); }
-.hf-text-accent-bright { color: var(--hf-accent-4); }
+.hf-text-dim { color: var(--hf-text-dim); }
+.hf-text-muted { color: var(--hf-text-muted); }
+.hf-text-normal { color: var(--hf-text-normal); }
+.hf-text-bright { color: var(--hf-text-bright); }
+.hf-text-accent { color: var(--hf-accent); }
+.hf-text-accent-bright { color: var(--hf-accent-hover); }
 .hf-text-success { color: var(--hf-green); }
 .hf-text-warning { color: var(--hf-yellow); }
 .hf-text-error { color: var(--hf-red); }
 
-.hf-bg-base { background-color: var(--hf-color-1); }
-.hf-bg-surface { background-color: var(--hf-color-2); }
-.hf-bg-elevated { background-color: var(--hf-color-3); }
-.hf-bg-accent { background-color: var(--hf-accent-1); }
+.hf-bg-base { background-color: var(--hf-bg-base); }
+.hf-bg-surface { background-color: var(--hf-bg-surface); }
+.hf-bg-elevated { background-color: var(--hf-bg-elevated); }
+.hf-bg-accent { background-color: var(--hf-accent-bg); }
 .hf-bg-success { background-color: color-mix(in srgb, var(--hf-green) 12%, transparent 88%); }
 .hf-bg-warning { background-color: color-mix(in srgb, var(--hf-yellow) 12%, transparent 88%); }
 .hf-bg-error { background-color: color-mix(in srgb, var(--hf-red) 12%, transparent 88%); }
@@ -175,7 +175,7 @@ body {
 .hf-surface {
     background: color-mix(
         in srgb,
-        var(--hf-color-2) var(--hf-surface-opacity),
+        var(--hf-bg-surface) var(--hf-surface-opacity),
         transparent var(--hf-surface-transparency)
     );
     backdrop-filter: var(--hf-glass-blur);
@@ -185,7 +185,7 @@ body {
 .hf-panel {
     background: color-mix(
         in srgb,
-        var(--hf-color-2) var(--hf-panel-opacity),
+        var(--hf-bg-surface) var(--hf-panel-opacity),
         transparent var(--hf-panel-transparency)
     );
     backdrop-filter: var(--hf-glass-blur);
@@ -197,7 +197,7 @@ body {
 .hf-card {
     background: color-mix(
         in srgb,
-        var(--hf-color-2) var(--hf-panel-opacity),
+        var(--hf-bg-surface) var(--hf-panel-opacity),
         transparent var(--hf-panel-transparency)
     );
     backdrop-filter: var(--hf-glass-blur);
@@ -297,8 +297,8 @@ body {
     font-family: var(--hf-font-family);
     font-size: var(--hf-size-sm);
     font-weight: var(--hf-weight-medium);
-    color: var(--hf-accent-3);
-    background: color-mix(in srgb, var(--hf-accent-3) 15%, transparent 85%);
+    color: var(--hf-accent);
+    background: color-mix(in srgb, var(--hf-accent) 15%, transparent 85%);
     border: 1px solid var(--hf-border);
     border-radius: var(--hf-radius-sm);
     cursor: pointer;
@@ -307,18 +307,18 @@ body {
 }
 
 .hf-btn:hover {
-    color: var(--hf-accent-4);
-    background: color-mix(in srgb, var(--hf-accent-3) 25%, transparent 75%);
+    color: var(--hf-accent-hover);
+    background: color-mix(in srgb, var(--hf-accent) 25%, transparent 75%);
     border-color: var(--hf-border-hover);
 }
 
 .hf-btn:focus {
-    outline: 2px solid var(--hf-accent-3);
+    outline: 2px solid var(--hf-accent);
     outline-offset: 2px;
 }
 
 .hf-btn:active {
-    background: color-mix(in srgb, var(--hf-accent-3) 35%, transparent 65%);
+    background: color-mix(in srgb, var(--hf-accent) 35%, transparent 65%);
 }
 
 .hf-btn:disabled {
@@ -327,9 +327,9 @@ body {
 }
 
 .hf-btn-primary {
-    background: var(--hf-accent-3);
-    color: var(--hf-color-1);
-    border-color: var(--hf-accent-3);
+    background: var(--hf-accent);
+    color: var(--hf-bg-base);
+    border-color: var(--hf-accent);
 }
 
 .hf-btn-primary .hf-icon {
@@ -337,9 +337,9 @@ body {
 }
 
 .hf-btn-primary:hover {
-    background: var(--hf-accent-4);
-    color: var(--hf-color-1);
-    border-color: var(--hf-accent-4);
+    background: var(--hf-accent-hover);
+    color: var(--hf-bg-base);
+    border-color: var(--hf-accent-hover);
 }
 
 .hf-btn-ghost {
@@ -348,7 +348,7 @@ body {
 }
 
 .hf-btn-ghost:hover {
-    background: color-mix(in srgb, var(--hf-accent-3) 15%, transparent 85%);
+    background: color-mix(in srgb, var(--hf-accent) 15%, transparent 85%);
 }
 
 /* ============================================================================
@@ -361,8 +361,8 @@ body {
     padding: var(--hf-space-2) var(--hf-space-3);
     font-family: var(--hf-font-family);
     font-size: var(--hf-size-sm);
-    color: var(--hf-color-6);
-    background: color-mix(in srgb, var(--hf-accent-3) 15%, transparent 85%);
+    color: var(--hf-text-normal);
+    background: color-mix(in srgb, var(--hf-accent) 15%, transparent 85%);
     border: 1px solid var(--hf-border);
     border-radius: var(--hf-radius-sm);
     transition: var(--hf-transition-border);
@@ -378,7 +378,7 @@ body {
 }
 
 .hf-input::placeholder {
-    color: var(--hf-color-5);
+    color: var(--hf-text-dim);
 }
 
 .hf-input:disabled {
@@ -396,7 +396,7 @@ body {
     font-weight: var(--hf-weight-semibold);
     text-transform: uppercase;
     letter-spacing: var(--hf-tracking-wide);
-    color: var(--hf-color-5);
+    color: var(--hf-text-dim);
     margin-bottom: var(--hf-space-1);
 }
 
@@ -414,7 +414,7 @@ body {
 
 .hf-control-label {
     font-size: var(--hf-size-sm);
-    color: var(--hf-color-5);
+    color: var(--hf-text-dim);
     text-align: right;
     padding-right: var(--hf-space-2);
 }
@@ -424,7 +424,7 @@ body {
  * ============================================================================ */
 
 .hf-focus-ring:focus {
-    outline: 2px solid var(--hf-accent-3);
+    outline: 2px solid var(--hf-accent);
     outline-offset: 2px;
 }
 
@@ -433,7 +433,7 @@ body {
 }
 
 .hf-focus-ring:focus-visible {
-    outline: 2px solid var(--hf-accent-3);
+    outline: 2px solid var(--hf-accent);
     outline-offset: 2px;
 }
 

@@ -42,14 +42,14 @@ function injectStyles() {
             position: relative;
             width: 2rem;
             height: 1rem;
-            background: color-mix(in srgb, var(--hf-color-4, #26314f) 60%, var(--hf-color-3, #1b2538) 40%);
+            background: color-mix(in srgb, var(--hf-bg-muted, #26314f) 60%, var(--hf-bg-elevated, #1b2538) 40%);
             border-radius: var(--hf-radius-pill, 999px);
             transition: background 0.15s ease;
             box-sizing: border-box;
         }
 
         toggle-switch:hover .ts-track {
-            background: color-mix(in srgb, var(--hf-color-4, #26314f) 75%, var(--hf-color-3, #1b2538) 25%);
+            background: color-mix(in srgb, var(--hf-bg-muted, #26314f) 75%, var(--hf-bg-elevated, #1b2538) 25%);
         }
 
         toggle-switch:focus-visible {
@@ -57,15 +57,15 @@ function injectStyles() {
         }
 
         toggle-switch:focus-visible .ts-track {
-            box-shadow: 0 0 0 2px color-mix(in srgb, var(--hf-accent-3, #a5b8ff) 25%, transparent 75%);
+            box-shadow: 0 0 0 2px color-mix(in srgb, var(--hf-accent, #a5b8ff) 25%, transparent 75%);
         }
 
         toggle-switch .ts-track.ts-checked {
-            background: color-mix(in srgb, var(--hf-accent-3, #a5b8ff) 35%, var(--hf-color-3, #1b2538) 65%);
+            background: color-mix(in srgb, var(--hf-accent, #a5b8ff) 35%, var(--hf-bg-elevated, #1b2538) 65%);
         }
 
         toggle-switch:hover .ts-track.ts-checked {
-            background: color-mix(in srgb, var(--hf-accent-3, #a5b8ff) 45%, var(--hf-color-3, #1b2538) 55%);
+            background: color-mix(in srgb, var(--hf-accent, #a5b8ff) 45%, var(--hf-bg-elevated, #1b2538) 55%);
         }
 
         toggle-switch .ts-thumb {
@@ -75,7 +75,7 @@ function injectStyles() {
             transform: translateY(-50%);
             width: 0.75rem;
             height: 0.75rem;
-            background: var(--hf-color-5, #98a7c8);
+            background: var(--hf-text-dim, #98a7c8);
             border-radius: 50%;
             transition: left 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
             box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
@@ -83,7 +83,7 @@ function injectStyles() {
 
         toggle-switch .ts-track.ts-checked .ts-thumb {
             left: calc(100% - 0.875rem);
-            background: var(--hf-accent-3, #a5b8ff);
+            background: var(--hf-accent, #a5b8ff);
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
         }
 

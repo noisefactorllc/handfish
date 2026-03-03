@@ -20,8 +20,8 @@ if (typeof document !== 'undefined' && !document.getElementById(TOOLTIP_STYLES_I
             padding: 0.375rem 0.625rem;
             font-family: var(--hf-font-family, Nunito, system-ui, sans-serif);
             font-size: var(--hf-size-xs, 0.625rem);
-            color: var(--hf-color-7, #eef1f8);
-            background: var(--hf-color-2, #1a1e2e);
+            color: var(--hf-text-bright, #eef1f8);
+            background: var(--hf-bg-surface, #1a1e2e);
             border: 1px solid var(--hf-border, rgba(255, 255, 255, 0.08));
             border-radius: var(--hf-radius-sm, 0.375rem);
             pointer-events: none;
