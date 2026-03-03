@@ -43,6 +43,7 @@ if (!document.getElementById(VECTOR3D_PICKER_STYLES_ID)) {
             color: var(--hf-text-normal);
             background: var(--hf-bg-elevated);
             border-radius: var(--hf-radius-sm, 0.375rem);
+            border: 1px solid var(--hf-border-subtle);
         }
 
         vector3d-picker .vector-button:hover {

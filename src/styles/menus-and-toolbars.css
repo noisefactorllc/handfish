@@ -20,7 +20,7 @@
     backdrop-filter: var(--hf-glass-blur);
     -webkit-backdrop-filter: var(--hf-glass-blur);
     border-radius: var(--hf-radius);
-    border: 1px solid var(--hf-border);
+    border: 1px solid var(--hf-border-subtle);
     box-shadow: var(--hf-shadow-md);
     min-width: 160px;
     width: max-content;

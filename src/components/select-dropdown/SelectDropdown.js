@@ -48,7 +48,7 @@ if (!document.getElementById(SELECT_DROPDOWN_STYLES_ID)) {
             font-family: var(--hf-font-family, Nunito, system-ui, sans-serif);
             color: var(--hf-text-normal, #d9deeb);
             background: var(--hf-bg-elevated, #1b2538);
-            border: none;
+            border: 1px solid var(--hf-border-subtle);
             border-radius: var(--hf-radius-sm, 0.375rem);
         }
 
