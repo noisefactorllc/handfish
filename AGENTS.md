@@ -13,7 +13,11 @@ npm run dev       # Start dev server at http://localhost:3000
                   # Open http://localhost:3000/examples/ for the style guide
 ```
 
-No test runner yet. Use `node --check <file>` for syntax validation of JS files.
+```bash
+npm test              # Playwright visual regression tests
+npm run test:update   # Update baseline snapshots after intentional changes
+node --check <file>   # Syntax validation for JS files
+```
 
 ## Architecture
 
@@ -44,16 +48,29 @@ This pattern means:
 
 All design tokens use the `--hf-` prefix. Components reference these for colors, spacing, radii, fonts:
 
-- `--hf-color-1` through `--hf-color-7` — Base palette (dark to light)
-- `--hf-accent-1` through `--hf-accent-4` — Accent colors
-- `--hf-red`, `--hf-green`, `--hf-yellow` — Semantic colors
+- `--hf-color-1` through `--hf-color-7` — Base palette (dark to light, OKLCH format)
+- `--hf-accent-1` through `--hf-accent-4` — Accent colors (higher chroma)
+- `--hf-red`, `--hf-green`, `--hf-yellow`, `--hf-blue` — Semantic colors
+- `--hf-bg-base`, `--hf-bg-surface`, `--hf-bg-elevated`, `--hf-bg-muted` — Background aliases
+- `--hf-text-muted`, `--hf-text-dim`, `--hf-text-normal`, `--hf-text-bright` — Text aliases
+- `--hf-border-subtle`, `--hf-border`, `--hf-border-hover`, `--hf-border-focus` — Border aliases
+- `--hf-accent`, `--hf-accent-hover`, `--hf-accent-bg` — Accent aliases
 - `--hf-radius-sm`, `--hf-radius`, `--hf-radius-lg` — Border radii
-- `--hf-space-1` through `--hf-space-6` — Spacing scale
+- `--hf-space-1` through `--hf-space-12` — Spacing scale
+- `--hf-shadow-sm` through `--hf-shadow-xl` — Box shadows
+- `--hf-control-height`, `--hf-control-padding` — Control sizing
 - `--hf-font-family`, `--hf-font-family-mono` — Typography
+- `--hf-size-xs` through `--hf-size-2xl` — Font sizes
+- `--hf-weight-normal` through `--hf-weight-bold` — Font weights
+- `--hf-transition-fast`, `--hf-transition`, `--hf-transition-slow` — Transitions
+- `--hf-z-dropdown` through `--hf-z-tooltip` — Z-index scale
+- `--hf-glass-blur`, `--hf-backdrop` — Glassmorphism effects
 
 When adapting components from other repos, always remap their CSS variables to `--hf-*` equivalents.
 
 ### Color Format
+
+Design tokens use **OKLCH** format (`oklch(lightness% chroma hue)`). Dark mode uses hue 264°, light mode uses hue 90°.
 
 Internal color objects use `{r, g, b}` with **0-255** integer values. Functions in `colorConversions.js` follow this convention:
 
@@ -68,9 +85,12 @@ parseHex('#ff8000')                    // => { r: 255, g: 128, b: 0 }
 src/
   index.js                           # All public exports
   styles/
-    tokens.css                       # Design tokens (CSS custom properties)
+    tokens.css                       # Design tokens (CSS custom properties, OKLCH colors)
     index.css                        # Main stylesheet (imports tokens, base styles, utilities)
+    forms.css                        # Form control styles
     dialogs.css                      # Dialog/modal base styles
+    menus-and-toolbars.css           # Menu and toolbar styles
+    tags-and-tabs.css                # Tag and tab styles
   fonts/                             # Nunito, Noto Sans Mono, Material Symbols
   utils/
     colorConversions.js              # RGB/HSV/OkLab/OKLCH/Hex conversions
@@ -79,8 +99,12 @@ src/
   components/
     <name>/
       <Name>.js                      # Component class + custom element registration
+tests/
+  visual.spec.js                     # Playwright visual regression tests
+  snapshots/                         # Baseline screenshots (dark + light mode)
 examples/
   index.html                         # Comprehensive style guide / demo page
+playwright.config.js                 # Playwright test configuration
 ```
 
 ### Component Directory Convention

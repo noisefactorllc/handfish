@@ -24,13 +24,13 @@ npm install @noisedeck/handfish
 ### Import Styles
 
 ```html
-<link rel="stylesheet" href="@noisedeck/handfish/dist/styles/index.css">
+<link rel="stylesheet" href="@noisedeck/handfish/styles/index.css">
 ```
 
 Or in JavaScript:
 
 ```js
-import '@noisedeck/handfish/dist/styles/index.css'
+import '@noisedeck/handfish/styles/index.css'
 ```
 
 ### Import Components
@@ -441,51 +441,148 @@ import { rgbToHex, parseHex, rgbToHsv, hsvToRgb, rgbToOklch, oklchToRgb } from '
 
 ## Design Tokens
 
-All colors, spacing, and other values are controlled via CSS custom properties. Override them in your CSS:
+All visual values are controlled via CSS custom properties with the `--hf-` prefix. Colors use [OKLCH](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value/oklch) for perceptually uniform color manipulation. Override any token in your CSS:
 
 ```css
 :root {
-    /* Colors */
-    --hf-color-1: #07090d;
-    --hf-accent-3: #a5b8ff;
+    /* Colors (OKLCH: lightness, chroma, hue) */
+    --hf-color-1: oklch(13.9% 0.010 264);
+    --hf-accent-3: oklch(79.5% 0.103 264);
 
     /* Typography */
     --hf-font-family: 'Your Font', sans-serif;
 
     /* Spacing */
     --hf-space-4: 1rem;
-
-    /* Radii */
-    --hf-radius: 0.5rem;
 }
 ```
 
 ### Color Tokens
 
+Colors are defined in OKLCH format. Dark mode uses hue 264°, light mode uses hue 90°.
+
 | Token | Description |
 |-------|-------------|
 | `--hf-color-1` through `--hf-color-7` | Base palette (dark to light) |
-| `--hf-accent-1` through `--hf-accent-4` | Accent colors |
-| `--hf-red`, `--hf-green`, `--hf-yellow` | Semantic colors |
+| `--hf-accent-1` through `--hf-accent-4` | Accent colors (higher chroma) |
+| `--hf-red`, `--hf-green`, `--hf-yellow`, `--hf-blue` | Semantic colors |
+
+#### Semantic Aliases
+
+These reference the base palette and auto-resolve when the theme changes:
+
+| Token | Maps to | Description |
+|-------|---------|-------------|
+| `--hf-bg-base` | `--hf-color-1` | Page background |
+| `--hf-bg-surface` | `--hf-color-2` | Card/panel background |
+| `--hf-bg-elevated` | `--hf-color-3` | Elevated surface (inputs, buttons) |
+| `--hf-bg-muted` | `--hf-color-4` | Muted/hover background |
+| `--hf-text-muted` | `--hf-color-4` | Muted text |
+| `--hf-text-dim` | `--hf-color-5` | Dim/secondary text |
+| `--hf-text-normal` | `--hf-color-6` | Normal text |
+| `--hf-text-bright` | `--hf-color-7` | Bright/emphasized text |
+| `--hf-border-subtle` | `--hf-color-4` | Subtle borders |
+| `--hf-accent` | `--hf-accent-3` | Primary accent |
+| `--hf-accent-hover` | `--hf-accent-4` | Accent hover state |
+| `--hf-border` | — | Semi-transparent accent border |
+| `--hf-border-hover` | — | Border hover state |
+| `--hf-border-focus` | — | Border focus state |
+
+### Typography Tokens
+
+| Token | Value |
+|-------|-------|
+| `--hf-font-family` | Nunito, system-ui, sans-serif |
+| `--hf-font-family-mono` | 'Noto Sans Mono', monospace |
+| `--hf-size-xs` | 0.625rem (10px) |
+| `--hf-size-sm` | 0.75rem (12px) |
+| `--hf-size-base` | 0.875rem (14px) |
+| `--hf-size-md` | 1rem (16px) |
+| `--hf-size-lg` | 1.125rem (18px) |
+| `--hf-size-xl` | 1.25rem (20px) |
+| `--hf-size-2xl` | 1.5rem (24px) |
+| `--hf-weight-normal` | 400 |
+| `--hf-weight-medium` | 500 |
+| `--hf-weight-semibold` | 600 |
+| `--hf-weight-bold` | 700 |
 
 ### Spacing Tokens
 
 | Token | Value |
 |-------|-------|
+| `--hf-space-0` | 0 |
 | `--hf-space-1` | 0.25rem (4px) |
 | `--hf-space-2` | 0.5rem (8px) |
 | `--hf-space-3` | 0.75rem (12px) |
 | `--hf-space-4` | 1rem (16px) |
+| `--hf-space-5` | 1.25rem (20px) |
 | `--hf-space-6` | 1.5rem (24px) |
+| `--hf-space-8` | 2rem (32px) |
+| `--hf-space-10` | 2.5rem (40px) |
+| `--hf-space-12` | 3rem (48px) |
 
 ### Border Radius Tokens
 
 | Token | Value |
 |-------|-------|
 | `--hf-radius-sm` | 0.25rem (4px) |
+| `--hf-radius-md` | 0.375rem (6px) |
 | `--hf-radius` | 0.5rem (8px) |
 | `--hf-radius-lg` | 0.75rem (12px) |
+| `--hf-radius-xl` | 1rem (16px) |
 | `--hf-radius-pill` | 999px |
+| `--hf-radius-full` | 50% |
+
+### Shadow Tokens
+
+| Token | Value |
+|-------|-------|
+| `--hf-shadow-sm` | 0 1px 2px rgba(0, 0, 0, 0.1) |
+| `--hf-shadow` | 0 2px 4px rgba(0, 0, 0, 0.15) |
+| `--hf-shadow-md` | 0 4px 8px rgba(0, 0, 0, 0.2) |
+| `--hf-shadow-lg` | 0 8px 16px rgba(0, 0, 0, 0.25) |
+| `--hf-shadow-xl` | 0 16px 32px rgba(0, 0, 0, 0.3) |
+
+### Control Tokens
+
+| Token | Value |
+|-------|-------|
+| `--hf-control-height-sm` | 1.5rem (24px) |
+| `--hf-control-height` | 1.875rem (30px) |
+| `--hf-control-height-lg` | 2.25rem (36px) |
+| `--hf-control-padding` | 0.25rem 0.5rem |
+
+### Transition Tokens
+
+| Token | Value |
+|-------|-------|
+| `--hf-transition-fast` | 0.1s ease |
+| `--hf-transition` | 0.15s ease |
+| `--hf-transition-slow` | 0.3s ease |
+
+### Z-Index Scale
+
+| Token | Value |
+|-------|-------|
+| `--hf-z-dropdown` | 100 |
+| `--hf-z-sticky` | 200 |
+| `--hf-z-fixed` | 300 |
+| `--hf-z-modal-backdrop` | 400 |
+| `--hf-z-modal` | 500 |
+| `--hf-z-popover` | 600 |
+| `--hf-z-tooltip` | 700 |
+
+### Glassmorphism Tokens
+
+| Token | Value |
+|-------|-------|
+| `--hf-glass-blur` | blur(20px) |
+| `--hf-glass-blur-sm` | blur(8px) |
+| `--hf-glass-blur-lg` | blur(32px) |
+| `--hf-backdrop` | rgba(0, 0, 0, 0.6) |
+| `--hf-surface-opacity` | 92% |
+| `--hf-panel-opacity` | 85% |
+| `--hf-header-opacity` | 65% |
 
 ## Theming
 
@@ -552,6 +649,7 @@ document.documentElement.dataset.theme =
 Requires support for:
 - Custom Elements v1
 - CSS Custom Properties
+- `oklch()` color values
 - `color-mix()` CSS function
 - `backdrop-filter` (with fallback)
 
@@ -565,6 +663,15 @@ npm install
 npm run dev
 
 # Open http://localhost:3000/examples/
+```
+
+### Testing
+
+Visual regression tests use Playwright to screenshot the examples page and compare against baselines:
+
+```bash
+npm test              # Run visual regression tests
+npm run test:update   # Update baseline snapshots after intentional changes
 ```
 
 ## License
