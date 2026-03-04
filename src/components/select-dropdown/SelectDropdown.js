@@ -109,7 +109,7 @@ if (!document.getElementById(SELECT_DROPDOWN_STYLES_ID)) {
 
         select-dropdown .inline-dropdown .group-header {
             padding: 0.375rem 0.5rem 0.2rem;
-            font-size: 0.75rem;
+            font-size: var(--hf-size-sm, 0.75rem);
             font-weight: 700;
             opacity: 0.5;
             letter-spacing: 0.05em;
@@ -119,7 +119,7 @@ if (!document.getElementById(SELECT_DROPDOWN_STYLES_ID)) {
             padding: 0.375rem 0.5rem;
             cursor: pointer;
             transition: background 0.1s ease;
-            font-size: 0.75rem;
+            font-size: var(--hf-size-sm, 0.75rem);
             color: var(--hf-text-normal, #d9deeb);
         }
 
@@ -221,7 +221,7 @@ if (!document.getElementById(SELECT_DROPDOWN_STYLES_ID)) {
             cursor: pointer;
             transition: background 0.1s ease;
             border-bottom: 1px solid color-mix(in srgb, var(--hf-accent, #a5b8ff) 8%, transparent 92%);
-            font-size: 0.875rem;
+            font-size: var(--hf-size-base, 0.875rem);
         }
 
         select-dropdown .dialog-options .option:last-child {
@@ -230,7 +230,7 @@ if (!document.getElementById(SELECT_DROPDOWN_STYLES_ID)) {
 
         select-dropdown .dialog-options .group-header {
             padding: 0.375rem 0.5rem 0.2rem;
-            font-size: 0.75rem;
+            font-size: var(--hf-size-sm, 0.75rem);
             font-weight: 700;
             opacity: 0.5;
             text-transform: uppercase;
@@ -248,7 +248,7 @@ if (!document.getElementById(SELECT_DROPDOWN_STYLES_ID)) {
 
         select-dropdown .empty-message {
             padding: 0.5rem;
-            font-size: 0.625rem;
+            font-size: var(--hf-size-xs, 0.625rem);
             font-style: italic;
             color: var(--hf-text-dim, #98a7c8);
             text-align: center;

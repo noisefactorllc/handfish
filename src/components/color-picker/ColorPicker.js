@@ -60,7 +60,7 @@ if (!document.getElementById(COLOR_PICKER_STYLES_ID)) {
         color-picker .hex-display {
             font-size: 0.62rem;
             color: var(--hf-text-normal, #d9deeb);
-            font-family: var(--hf-font-family-mono, ui-monospace, 'Cascadia Mono', 'Consolas', monospace);
+            font-family: var(--hf-font-family-mono, monospace);
         }
 
         color-picker .dropdown-arrow {

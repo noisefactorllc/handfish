@@ -14,7 +14,7 @@ if (!document.getElementById(STYLES_ID)) {
             display: flex;
             align-items: center;
             gap: 8px;
-            font-size: 0.875rem;
+            font-size: var(--hf-size-base, 0.875rem);
         }
 
         slider-control[disabled] {
@@ -25,7 +25,7 @@ if (!document.getElementById(STYLES_ID)) {
         slider-control .slider-label {
             min-width: 2em;
             color: var(--hf-text-dim);
-            font-size: 0.75rem;
+            font-size: var(--hf-size-sm, 0.75rem);
             text-transform: uppercase;
             letter-spacing: 0.05em;
             flex-shrink: 0;
@@ -86,7 +86,7 @@ if (!document.getElementById(STYLES_ID)) {
             text-align: right;
             color: var(--hf-text-normal);
             font-family: var(--hf-font-family-mono, monospace);
-            font-size: 0.75rem;
+            font-size: var(--hf-size-sm, 0.75rem);
             flex-shrink: 0;
         }
 

@@ -63,7 +63,7 @@ if (!document.getElementById(JUSTIFY_BUTTON_GROUP_STYLES_ID)) {
             font-family: 'Material Symbols Outlined';
             font-weight: normal;
             font-style: normal;
-            font-size: 0.875rem;
+            font-size: var(--hf-size-base, 0.875rem);
             line-height: 1;
             letter-spacing: normal;
             text-transform: none;

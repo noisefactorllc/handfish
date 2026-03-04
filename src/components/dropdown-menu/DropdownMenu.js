@@ -104,7 +104,7 @@ if (!document.getElementById(DROPDOWN_MENU_STYLES_ID)) {
             display: block;
             width: 100%;
             padding: 0.5rem 0.75rem;
-            font-size: 0.8125rem;
+            font-size: var(--hf-size-sm, 0.75rem);
             font-family: inherit;
             text-align: left;
             text-wrap: nowrap;
@@ -138,12 +138,12 @@ if (!document.getElementById(DROPDOWN_MENU_STYLES_ID)) {
         dropdown-menu[small] .dropdown-trigger {
             min-height: var(--hf-control-height-sm, 1.5rem);
             padding: var(--hf-space-1, 0.25rem) var(--hf-space-2, 0.5rem);
-            font-size: 0.75rem;
+            font-size: var(--hf-size-sm, 0.75rem);
             gap: 0.25rem;
         }
 
         dropdown-menu[small] .dropdown-trigger .material-symbols {
-            font-size: 0.875rem;
+            font-size: var(--hf-size-base, 0.875rem);
         }
 
         dropdown-menu[small] .dropdown-content {
@@ -153,7 +153,7 @@ if (!document.getElementById(DROPDOWN_MENU_STYLES_ID)) {
         dropdown-menu[small] dropdown-item,
         dropdown-menu[small] .dropdown-item {
             padding: 0.375rem 0.5rem;
-            font-size: 0.75rem;
+            font-size: var(--hf-size-sm, 0.75rem);
         }
 
         /* Selectable mode - dropdown arrow indicator */

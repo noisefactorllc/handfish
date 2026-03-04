@@ -73,7 +73,7 @@ if (!document.getElementById(STYLES_ID)) {
             border-radius: 4px;
             color: var(--hf-text-normal);
             font-family: var(--hf-font-family-mono, monospace);
-            font-size: 0.625rem;
+            font-size: var(--hf-size-xs, 0.625rem);
             white-space: nowrap;
             pointer-events: none;
             opacity: 0;

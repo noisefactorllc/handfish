@@ -74,8 +74,8 @@ if (!document.getElementById(SLIDER_VALUE_STYLES_ID)) {
         }
 
         slider-value .value-display {
-            font-size: 0.6875rem;
-            font-family: monospace;
+            font-size: var(--hf-size-sm, 0.75rem);
+            font-family: var(--hf-font-family-mono, monospace);
             color: var(--hf-text-dim, #8fa8ff);
             text-align: right;
             min-width: 2.5em;
