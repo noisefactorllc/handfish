@@ -78,7 +78,7 @@ if (!document.getElementById(STYLES_ID)) {
             height: 14px;
             background: var(--stop-color);
             border: 1px solid rgba(0, 0, 0, 0.3);
-            border-radius: 2px;
+            border-radius: var(--hf-radius-sm, 0.25rem);
             box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2);
         }
 
@@ -92,7 +92,7 @@ if (!document.getElementById(STYLES_ID)) {
             border: 1px solid var(--hf-border-subtle);
             border-radius: 50%;
             color: var(--hf-text-dim);
-            font-size: 10px;
+            font-size: var(--hf-size-xs, 0.625rem);
             line-height: 12px;
             text-align: center;
             cursor: pointer;

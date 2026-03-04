@@ -44,7 +44,7 @@ if (!document.getElementById(COLOR_WHEEL_STYLES_ID)) {
         color-wheel {
             display: inline-block;
             font-family: var(--hf-font-family, Nunito, system-ui, sans-serif);
-            font-size: 12px;
+            font-size: var(--hf-size-sm, 0.75rem);
             --cw-bg: var(--hf-bg-surface, #101522);
             --cw-border: color-mix(in srgb, var(--hf-accent, #a5b8ff) 25%, transparent 75%);
             --cw-text: var(--hf-text-normal, #d9deeb);
@@ -116,7 +116,7 @@ if (!document.getElementById(COLOR_WHEEL_STYLES_ID)) {
             width: ${SLIDER_WIDTH + 4}px;
             height: 4px;
             background: white;
-            border-radius: 2px;
+            border-radius: var(--hf-radius-sm, 0.25rem);
             box-shadow: 0 0 0 1px rgba(0,0,0,0.3), 0 2px 4px rgba(0,0,0,0.3);
             pointer-events: none;
             transform: translateY(-50%);
@@ -173,8 +173,8 @@ if (!document.getElementById(COLOR_WHEEL_STYLES_ID)) {
         color-wheel .hex-input {
             width: 100%;
             font-family: var(--hf-font-family-mono, monospace);
-            font-size: 12px;
-            font-weight: 500;
+            font-size: var(--hf-size-sm, 0.75rem);
+            font-weight: var(--hf-weight-medium, 500);
             color: var(--cw-text);
             background: var(--cw-input-bg);
             border: 1px solid var(--cw-border);
@@ -240,7 +240,7 @@ if (!document.getElementById(COLOR_WHEEL_STYLES_ID)) {
             width: 4px;
             height: 16px;
             background: white;
-            border-radius: 2px;
+            border-radius: var(--hf-radius-sm, 0.25rem);
             box-shadow: 0 0 0 1px rgba(0,0,0,0.3);
             pointer-events: none;
             transform: translate(-50%, -50%);
@@ -248,7 +248,7 @@ if (!document.getElementById(COLOR_WHEEL_STYLES_ID)) {
 
         color-wheel .alpha-value {
             font-family: var(--hf-font-family-mono, monospace);
-            font-size: 11px;
+            font-size: var(--hf-size-xs, 0.625rem);
             color: var(--cw-text-dim);
             width: 32px;
             text-align: right;
@@ -265,8 +265,8 @@ if (!document.getElementById(COLOR_WHEEL_STYLES_ID)) {
         color-wheel .mode-tab {
             flex: 1;
             padding: 4px 8px;
-            font-size: 10px;
-            font-weight: 600;
+            font-size: var(--hf-size-xs, 0.625rem);
+            font-weight: var(--hf-weight-semibold, 600);
             text-transform: uppercase;
             letter-spacing: 0.05em;
             color: var(--cw-text-dim);
@@ -304,7 +304,7 @@ if (!document.getElementById(COLOR_WHEEL_STYLES_ID)) {
 
         color-wheel .input-label {
             font-size: 9px;
-            font-weight: 600;
+            font-weight: var(--hf-weight-semibold, 600);
             text-transform: uppercase;
             letter-spacing: 0.05em;
             color: var(--cw-text-dim);
@@ -312,7 +312,7 @@ if (!document.getElementById(COLOR_WHEEL_STYLES_ID)) {
 
         color-wheel .input-field {
             font-family: var(--hf-font-family-mono, monospace);
-            font-size: 11px;
+            font-size: var(--hf-size-xs, 0.625rem);
             color: var(--cw-text);
             background: var(--cw-input-bg);
             border: 1px solid var(--cw-border);

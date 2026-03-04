@@ -37,7 +37,7 @@ if (!document.getElementById(STYLES_ID)) {
             appearance: none;
             height: 6px;
             background: var(--hf-bg-elevated);
-            border-radius: 3px;
+            border-radius: var(--hf-radius-sm, 0.25rem);
             outline: none;
             cursor: pointer;
         }

@@ -78,13 +78,13 @@ function injectStyles() {
             background: var(--hf-text-dim, #98a7c8);
             border-radius: 50%;
             transition: left 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+            box-shadow: var(--hf-shadow-sm, 0 1px 2px rgba(0, 0, 0, 0.1));
         }
 
         toggle-switch .ts-track.ts-checked .ts-thumb {
             left: calc(100% - 0.875rem);
             background: var(--hf-accent, #a5b8ff);
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+            box-shadow: var(--hf-shadow-sm, 0 1px 2px rgba(0, 0, 0, 0.1));
         }
 
         toggle-switch:active .ts-thumb {

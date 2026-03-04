@@ -34,7 +34,7 @@ input[type="checkbox"].hf-checkbox::after,
     content: "";
     width: 8px;
     height: 8px;
-    border-radius: 2px;
+    border-radius: var(--hf-radius-sm);
     background-color: var(--hf-bg-muted);
     transition: background-color 0.2s, transform 0.2s;
     transform: scale(0);

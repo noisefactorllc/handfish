@@ -70,7 +70,7 @@ if (!document.getElementById(STYLES_ID)) {
             padding: 4px 8px;
             background: var(--hf-bg-base);
             border: 1px solid var(--hf-bg-elevated);
-            border-radius: 4px;
+            border-radius: var(--hf-radius-sm, 0.25rem);
             color: var(--hf-text-normal);
             font-family: var(--hf-font-family-mono, monospace);
             font-size: var(--hf-size-xs, 0.625rem);

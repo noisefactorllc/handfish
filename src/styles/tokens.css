@@ -46,6 +46,7 @@
     --hf-red: oklch(69.3% 0.199 18);
     --hf-green: oklch(79.2% 0.198 145);
     --hf-yellow: oklch(89.1% 0.133 89);
+    --hf-blue: oklch(61.1% 0.153 260);
 
     /* Computed colors */
     --hf-border: color-mix(in srgb, var(--hf-accent-3) 25%, transparent 75%);
@@ -98,6 +99,7 @@
         --hf-red: oklch(45.5% 0.170 20);
         --hf-green: oklch(46.5% 0.116 151);
         --hf-yellow: oklch(76.4% 0.155 85);
+        --hf-blue: oklch(42.5% 0.150 260);
     }
 }
 
@@ -117,6 +119,7 @@
     --hf-red: oklch(69.3% 0.199 18);
     --hf-green: oklch(79.2% 0.198 145);
     --hf-yellow: oklch(89.1% 0.133 89);
+    --hf-blue: oklch(61.1% 0.153 260);
 }
 
 [data-theme="light"] {
@@ -134,6 +137,7 @@
     --hf-red: oklch(45.5% 0.170 20);
     --hf-green: oklch(46.5% 0.116 151);
     --hf-yellow: oklch(76.4% 0.155 85);
+    --hf-blue: oklch(42.5% 0.150 260);
 }
 
 /* ============================================================================
@@ -236,6 +240,9 @@
     --hf-glass-blur: blur(20px);
     --hf-glass-blur-sm: blur(8px);
     --hf-glass-blur-lg: blur(32px);
+
+    /* Backdrop overlay */
+    --hf-backdrop: rgba(0, 0, 0, 0.6);
 
     /* Chrome highlight/shadow for 3D effect */
     --hf-chrome-highlight-blend: 86%;

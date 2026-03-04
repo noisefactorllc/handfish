@@ -84,7 +84,7 @@ if (!document.getElementById(DROPDOWN_MENU_STYLES_ID)) {
             background: var(--hf-bg-surface);
             border: 1px solid var(--hf-border-subtle);
             border-radius: var(--hf-radius-sm, 0.25rem);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            box-shadow: var(--hf-shadow-md, 0 4px 8px rgba(0, 0, 0, 0.2));
             display: none;
             overflow: hidden;
         }
@@ -159,7 +159,7 @@ if (!document.getElementById(DROPDOWN_MENU_STYLES_ID)) {
         /* Selectable mode - dropdown arrow indicator */
         dropdown-menu[selectable] .dropdown-trigger::after {
             content: '▾';
-            font-size: 1rem;
+            font-size: var(--hf-size-md, 1rem);
             line-height: 0;
             color: var(--hf-text-dim);
             margin-left: 4px;

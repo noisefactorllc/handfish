@@ -8,7 +8,7 @@
    ============================================================================ */
 
 dialog::backdrop {
-    background: rgba(0, 0, 0, 0.6);
+    background: var(--hf-backdrop);
     backdrop-filter: blur(4px);
     -webkit-backdrop-filter: blur(4px);
 }
@@ -56,8 +56,8 @@ dialog::backdrop {
    ============================================================================ */
 
 .hf-dialog-title {
-    font-size: 1.125rem;
-    font-weight: 600;
+    font-size: var(--hf-size-lg);
+    font-weight: var(--hf-weight-semibold);
     color: var(--hf-text-bright);
     padding: 1.25rem 1.5rem 0;
     margin: 0;
@@ -97,7 +97,7 @@ dialog::backdrop {
     border: none;
     color: var(--hf-text-dim);
     cursor: pointer;
-    font-size: 1rem;
+    font-size: var(--hf-size-md);
     padding: 0.25em 0.5em;
     line-height: 1;
     opacity: 0.7;

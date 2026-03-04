@@ -83,7 +83,7 @@ if (!document.getElementById(SLIDER_VALUE_STYLES_ID)) {
             cursor: text;
             outline: none;
             padding: 0.125rem 0.25rem;
-            border-radius: 2px;
+            border-radius: var(--hf-radius-sm, 0.25rem);
             transition: background-color 0.15s ease;
             white-space: nowrap;
             overflow: hidden;

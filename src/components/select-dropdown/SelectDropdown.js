@@ -87,7 +87,7 @@ if (!document.getElementById(SELECT_DROPDOWN_STYLES_ID)) {
             backdrop-filter: var(--hf-blur, blur(12px));
             border: 1px solid color-mix(in srgb, var(--hf-accent, #4a5568) 30%, transparent 70%);
             border-radius: var(--hf-radius-sm, 0.25rem);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            box-shadow: var(--hf-shadow-md, 0 4px 8px rgba(0, 0, 0, 0.2));
             overflow: hidden;
             max-height: 200px;
             overflow-y: auto;
@@ -144,7 +144,7 @@ if (!document.getElementById(SELECT_DROPDOWN_STYLES_ID)) {
             border-radius: var(--hf-radius, 0.5rem);
             padding: 0;
             color: var(--hf-text-normal, #d9deeb);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            box-shadow: var(--hf-shadow-xl, 0 16px 32px rgba(0, 0, 0, 0.3));
             min-width: 200px;
             max-width: 400px;
             overflow: hidden;

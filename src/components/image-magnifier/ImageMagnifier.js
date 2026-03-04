@@ -121,10 +121,10 @@ if (!document.getElementById(IMAGE_MAGNIFIER_STYLES_ID)) {
             transform: translateX(-50%);
             background: var(--mag-bg);
             border: 1px solid var(--mag-border);
-            border-radius: 4px;
+            border-radius: var(--hf-radius-sm, 0.25rem);
             padding: 2px 8px;
             font-family: var(--hf-font-family-mono, monospace);
-            font-size: 11px;
+            font-size: var(--hf-size-xs, 0.625rem);
             color: var(--mag-text);
             white-space: nowrap;
             box-shadow: var(--mag-shadow);
@@ -136,7 +136,7 @@ if (!document.getElementById(IMAGE_MAGNIFIER_STYLES_ID)) {
         image-magnifier .magnifier-color-preview {
             width: 12px;
             height: 12px;
-            border-radius: 2px;
+            border-radius: var(--hf-radius-sm, 0.25rem);
             border: 1px solid rgba(255, 255, 255, 0.3);
             flex-shrink: 0;
         }

@@ -36,7 +36,7 @@ if (!document.getElementById(STYLES_ID)) {
             backdrop-filter: blur(12px);
             border: 1px solid var(--hf-bg-elevated);
             border-radius: var(--hf-radius-sm, 4px);
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+            box-shadow: var(--hf-shadow-md, 0 4px 8px rgba(0, 0, 0, 0.2));
             color: var(--hf-text-normal);
             font-size: 0.875rem;
             pointer-events: auto;
@@ -79,7 +79,7 @@ if (!document.getElementById(STYLES_ID)) {
             border: none;
             color: var(--hf-text-dim);
             cursor: pointer;
-            font-size: 1rem;
+            font-size: var(--hf-size-md, 1rem);
             line-height: 1;
             padding: 0;
             opacity: 0.6;

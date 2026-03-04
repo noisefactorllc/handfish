@@ -16,7 +16,9 @@
   ],
   "scripts": {
     "dev": "npx serve . -p 3000",
-    "build": "echo 'No build step required - ES modules'"
+    "build": "echo 'No build step required - ES modules'",
+    "test": "npx playwright test",
+    "test:update": "npx playwright test --update-snapshots"
   },
   "keywords": [
     "design-system",
@@ -32,6 +34,7 @@
     "url": "https://github.com/noisedeck/handfish.git"
   },
   "devDependencies": {
+    "@playwright/test": "^1.58.2",
     "serve": "^14.0.0"
   }
 }

@@ -87,12 +87,12 @@ if (!document.getElementById(COLOR_PICKER_STYLES_ID)) {
             border-radius: var(--hf-radius, 8px);
             padding: 0;
             color: var(--hf-text-normal, #d9deeb);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            box-shadow: var(--hf-shadow-xl, 0 16px 32px rgba(0, 0, 0, 0.3));
             overflow: hidden;
         }
 
         color-picker .color-dialog::backdrop {
-            background: rgba(0, 0, 0, 0.6);
+            background: var(--hf-backdrop, rgba(0, 0, 0, 0.6));
             backdrop-filter: blur(4px);
         }
 
