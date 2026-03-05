@@ -16,7 +16,7 @@
   ],
   "scripts": {
     "dev": "npx serve . -p 3000",
-    "build": "echo 'No build step required - ES modules'",
+    "build": "node scripts/bundle.js",
     "test": "npx playwright test",
     "test:update": "npx playwright test --update-snapshots"
   },
@@ -35,6 +35,7 @@
   },
   "devDependencies": {
     "@playwright/test": "^1.58.2",
+    "esbuild": "^0.27.3",
     "serve": "^14.0.0"
   }
 }

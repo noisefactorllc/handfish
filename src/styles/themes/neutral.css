@@ -1,0 +1,56 @@
+/**
+ * Handfish Theme: Neutral
+ *
+ * Pure neutral grays with zero chroma — no color tint whatsoever.
+ * Ideal for design tools and applications where background color
+ * accuracy matters. Apply with:
+ *
+ *   <html data-theme="neutral-dark">   (dark neutral)
+ *   <html data-theme="neutral-light">  (light neutral)
+ */
+
+[data-theme="neutral-dark"] {
+    /* Pure grays — same lightness scale as default, zero chroma */
+    --hf-color-1: oklch(13.9% 0 0);
+    --hf-color-2: oklch(19.8% 0 0);
+    --hf-color-3: oklch(26.5% 0 0);
+    --hf-color-4: oklch(31.8% 0 0);
+    --hf-color-5: oklch(72.8% 0 0);
+    --hf-color-6: oklch(87.0% 0 0);
+    --hf-color-7: oklch(98.0% 0 0);
+
+    /* Neutral accents — zero chroma */
+    --hf-accent-1: oklch(22.2% 0 0);
+    --hf-accent-2: oklch(28.2% 0 0);
+    --hf-accent-3: oklch(79.5% 0 0);
+    --hf-accent-4: oklch(92.5% 0 0);
+
+    /* Semantic colors unchanged */
+    --hf-red: oklch(69.3% 0.199 18);
+    --hf-green: oklch(79.2% 0.198 145);
+    --hf-yellow: oklch(89.1% 0.133 89);
+    --hf-blue: oklch(61.1% 0.153 260);
+}
+
+[data-theme="neutral-light"] {
+    /* Pure grays — same lightness scale as default light, zero chroma */
+    --hf-color-1: oklch(97.6% 0 0);
+    --hf-color-2: oklch(92.7% 0 0);
+    --hf-color-3: oklch(87.0% 0 0);
+    --hf-color-4: oklch(79.7% 0 0);
+    --hf-color-5: oklch(52.1% 0 0);
+    --hf-color-6: oklch(27.0% 0 0);
+    --hf-color-7: oklch(18.8% 0 0);
+
+    /* Neutral accents — zero chroma */
+    --hf-accent-1: oklch(94.4% 0 0);
+    --hf-accent-2: oklch(85.4% 0 0);
+    --hf-accent-3: oklch(40.6% 0 0);
+    --hf-accent-4: oklch(26.1% 0 0);
+
+    /* Semantic colors unchanged */
+    --hf-red: oklch(45.5% 0.170 20);
+    --hf-green: oklch(46.5% 0.116 151);
+    --hf-yellow: oklch(76.4% 0.155 85);
+    --hf-blue: oklch(42.5% 0.150 260);
+}
