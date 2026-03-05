@@ -1,0 +1,65 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'src/**'
+      - 'examples/**'
+      - 'scripts/**'
+      - 'package.json'
+      - '.github/workflows/deploy.yml'
+
+jobs:
+  build-and-deploy:
+    name: Build and deploy
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm install --include=dev
+
+    - name: Build bundles
+      run: npm run build
+
+    - name: Resolve version
+      id: version
+      run: |
+        VERSION=$(node -e "const pkg=require('./package.json'); console.log(pkg.version.replace(/-SNAPSHOT$/, ''))")
+        echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+        echo "Deploying version: $VERSION"
+
+    - name: Set up SSH
+      run: |
+        mkdir -p ~/.ssh
+        chmod 700 ~/.ssh
+        echo "${{ secrets.SCAFFOLD_SSH_KEY }}" | base64 -d > ~/.ssh/id_ed25519
+        chmod 600 ~/.ssh/id_ed25519
+        ssh-keyscan ${{ secrets.SCAFFOLD_SERVER_IP }} >> ~/.ssh/known_hosts 2>/dev/null
+
+    - name: Deploy versioned bundle
+      run: |
+        VERSION=${{ steps.version.outputs.version }}
+        ssh deploy@${{ secrets.SCAFFOLD_SERVER_IP }} "mkdir -p ~/sites/handfish.noisefactor.io/content/${VERSION}"
+        rsync -avz \
+          dist/handfish.esm.js \
+          dist/handfish.esm.min.js \
+          deploy@${{ secrets.SCAFFOLD_SERVER_IP }}:~/sites/handfish.noisefactor.io/content/${VERSION}/
+        rsync -avz \
+          dist/styles/ \
+          deploy@${{ secrets.SCAFFOLD_SERVER_IP }}:~/sites/handfish.noisefactor.io/content/${VERSION}/styles/
+
+    - name: Deploy site
+      run: |
+        rsync -avz \
+          dist/site/ \
+          deploy@${{ secrets.SCAFFOLD_SERVER_IP }}:~/sites/handfish.noisefactor.io/content/

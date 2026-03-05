@@ -1,6 +1,6 @@
 {
   "name": "@noisedeck/handfish",
-  "version": "0.3.0",
+  "version": "0.9.0",
   "description": "Handfish Design System - UI components and styles for Noisemaker-based applications",
   "type": "module",
   "main": "src/index.js",

@@ -80,6 +80,38 @@ async function buildBundle() {
         console.warn('Warning: tokens.css not found at', tokensCssPath)
     }
 
+    // Copy all styles (preserving directory structure)
+    const stylesDir = path.join(repoRoot, 'src', 'styles')
+    const distStylesDir = path.join(distDir, 'styles')
+
+    function copyDirSync(src, dest) {
+        fs.mkdirSync(dest, { recursive: true })
+        for (const entry of fs.readdirSync(src, { withFileTypes: true })) {
+            const srcPath = path.join(src, entry.name)
+            const destPath = path.join(dest, entry.name)
+            if (entry.isDirectory()) {
+                copyDirSync(srcPath, destPath)
+            } else {
+                fs.copyFileSync(srcPath, destPath)
+                console.log(`  - styles/${path.relative(distStylesDir, destPath)}`)
+            }
+        }
+    }
+
+    copyDirSync(stylesDir, distStylesDir)
+
+    // Copy site files (examples page)
+    const siteDir = path.join(distDir, 'site')
+    fs.mkdirSync(siteDir, { recursive: true })
+    const examplesDir = path.join(repoRoot, 'examples')
+    for (const file of ['index.html', 'favicon.svg']) {
+        const src = path.join(examplesDir, file)
+        if (fs.existsSync(src)) {
+            fs.copyFileSync(src, path.join(siteDir, file))
+            console.log(`  - site/${file}`)
+        }
+    }
+
     console.log('Bundles written to dist/')
     console.log('  - handfish.esm.js')
     console.log('  - handfish.esm.min.js')

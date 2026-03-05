@@ -17,23 +17,23 @@
 /* Nunito - Primary UI font */
 @font-face {
     font-family: Nunito;
-    src: url('../fonts/Nunito-VariableFont_wght.ttf') format('truetype');
+    src: url('https://fonts.noisefactor.io/fonts/nunito/Nunito[wght].woff2') format('woff2');
     font-weight: 100 900;
     font-style: normal;
 }
 
 @font-face {
-    font-family: 'Nunito Italic';
-    src: url('../fonts/Nunito-Italic-VariableFont_wght.ttf') format('truetype');
-    font-weight: normal;
+    font-family: Nunito;
+    src: url('https://fonts.noisefactor.io/fonts/nunito/Nunito-Italic[wght].woff2') format('woff2');
+    font-weight: 100 900;
     font-style: italic;
 }
 
 /* Noto Sans Mono - Monospace font */
 @font-face {
     font-family: 'Noto Sans Mono';
-    src: url('../fonts/NotoSansMono-Regular.ttf') format('truetype');
-    font-weight: normal;
+    src: url('https://fonts.noisefactor.io/fonts/noto-sans-mono/NotoSansMono[wdth,wght].woff2') format('woff2');
+    font-weight: 100 900;
     font-style: normal;
 }
 
@@ -41,7 +41,7 @@
 @font-face {
     font-family: 'Material Symbols Outlined';
     font-style: normal;
-    src: url('../fonts/material-symbols-outlined.woff2') format('woff2');
+    src: url('https://fonts.noisefactor.io/fonts/material-symbols-outlined/material-symbols-outlined.woff2') format('woff2');
 }
 
 /* ============================================================================
