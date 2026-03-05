@@ -2,7 +2,7 @@
 
 A modern, accessible component library for creative tools. Built with Web Components and CSS Custom Properties.
 
-Demo: [https://noisedeck.github.io/handfish/examples/](https://noisedeck.github.io/handfish/examples/)
+Demo: [https://handfish.noisefactor.io/](https://handfish.noisefactor.io/)
 
 ## Features
 
@@ -13,34 +13,46 @@ Demo: [https://noisedeck.github.io/handfish/examples/](https://noisedeck.github.
 - **Form Integration** - Components support `ElementInternals` for native form participation
 - **CSS Custom Properties** - Easily customize design tokens without modifying source
 
-## Installation
+## Usage
 
-```bash
-npm install @noisedeck/handfish
-```
-
-## Quick Start
+Handfish is served as a versioned ESM bundle from `handfish.noisefactor.io`. No npm install needed.
 
 ### Import Styles
 
 ```html
-<link rel="stylesheet" href="@noisedeck/handfish/styles/index.css">
+<link rel="stylesheet" href="https://handfish.noisefactor.io/0.9.0/styles/tokens.css">
+<link rel="stylesheet" href="https://handfish.noisefactor.io/0.9.0/styles/themes/neutral.css">
 ```
 
-Or in JavaScript:
+Or load all styles (tokens + forms + menus + tags):
 
-```js
-import '@noisedeck/handfish/styles/index.css'
+```html
+<link rel="stylesheet" href="https://handfish.noisefactor.io/0.9.0/styles/index.css">
 ```
 
 ### Import Components
 
-```js
-// Import all components
-import * as Handfish from '@noisedeck/handfish'
+Using an import map (recommended):
 
-// Or import specific components
-import { ToggleSwitch, SliderValue, ColorPicker } from '@noisedeck/handfish'
+```html
+<script type="importmap">
+{
+    "imports": {
+        "handfish": "https://handfish.noisefactor.io/0.9.0/handfish.esm.min.js"
+    }
+}
+</script>
+```
+
+```js
+// Then import by name
+import { ToggleSwitch, SliderValue, ColorPicker } from 'handfish'
+```
+
+Or import directly:
+
+```js
+import { ToggleSwitch, SliderValue, ColorPicker } from 'https://handfish.noisefactor.io/0.9.0/handfish.esm.min.js'
 ```
 
 ### Use Components
@@ -332,7 +344,7 @@ Events: `input` (detail: `{ value }`), `forcerecompile`
 
 ```js
 // Use with DSL tokenizer
-import { dslTokenizer } from '@noisedeck/handfish'
+import { dslTokenizer } from 'handfish'
 editor.setTokenizer(dslTokenizer)
 ```
 
@@ -359,7 +371,7 @@ Methods:
 Lightweight notification toasts with auto-dismiss. Exported as standalone functions (not a custom element).
 
 ```js
-import { showToast, showSuccess, showError, showWarning, showInfo } from '@noisedeck/handfish'
+import { showToast, showSuccess, showError, showWarning, showInfo } from 'handfish'
 
 showSuccess('Palette saved')
 showError('Failed to load', { duration: 6000 })
@@ -380,7 +392,7 @@ showInfo('Copied to clipboard')
 Stack-based escape key management for closing modals and dropdowns in the correct order.
 
 ```js
-import { registerEscapeable, unregisterEscapeable, initEscapeHandler } from '@noisedeck/handfish'
+import { registerEscapeable, unregisterEscapeable, initEscapeHandler } from 'handfish'
 
 initEscapeHandler()
 registerEscapeable(element, () => closeMyModal())
@@ -394,7 +406,7 @@ Exports: `registerEscapeable`, `unregisterEscapeable`, `closeTopmost`, `hasOpenE
 Hover tooltips for any element with a `data-title` attribute.
 
 ```js
-import { initializeTooltips } from '@noisedeck/handfish'
+import { initializeTooltips } from 'handfish'
 
 initializeTooltips()
 ```
@@ -408,7 +420,7 @@ initializeTooltips()
 Comprehensive color conversion utilities. All RGB objects use `{r, g, b}` with 0-255 values.
 
 ```js
-import { rgbToHex, parseHex, rgbToHsv, hsvToRgb, rgbToOklch, oklchToRgb } from '@noisedeck/handfish'
+import { rgbToHex, parseHex, rgbToHsv, hsvToRgb, rgbToOklch, oklchToRgb } from 'handfish'
 ```
 
 ## Design Tokens
