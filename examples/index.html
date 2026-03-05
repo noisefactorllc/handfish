@@ -50,6 +50,8 @@
             background: color-mix(in srgb, var(--hf-bg-surface) 80%, transparent 20%);
             border: 1px solid var(--hf-border);
             border-radius: var(--hf-radius);
+            min-width: 0;
+            overflow: hidden;
         }
         .demo-item h3 {
             font-size: var(--hf-size-sm);
@@ -105,16 +107,8 @@
             top: 1rem;
             right: 1rem;
             z-index: 1000;
-            display: grid;
-            grid-template-columns: min-content min-content min-content;
-            gap: 1.25rem;
+            display: flex;
             align-items: center;
-        }
-        #opaqueLabel {
-            color: var(--hf-text-dim); 
-            font-size: 0.75rem; 
-            cursor: pointer;
-            margin-left: -0.75rem;
         }
         .output {
             padding: 0.5rem;
@@ -139,6 +133,30 @@
         }
         .wide { grid-column: span 2; }
         .full-width { grid-column: 1 / -1; }
+
+        /* Responsive */
+        @media (max-width: 640px) {
+            body { padding: 1rem; padding-top: 3.5rem; }
+            .theme-toggle {
+                top: 0.5rem;
+                right: 0.5rem;
+            }
+            .demo-grid {
+                grid-template-columns: 1fr;
+            }
+            .wide, .full-width {
+                grid-column: 1 / -1;
+            }
+            .color-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+            .accent-grid, .semantic-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            textarea, code-editor {
+                max-width: 100%;
+            }
+        }
         .toast-buttons {
             display: flex;
             gap: 0.5rem;
@@ -148,7 +166,7 @@
 </head>
 <body>
     <div class="theme-toggle">
-        <dropdown-menu id="themeSwitcher" label="dark" icon="palette" small>
+        <dropdown-menu id="themeSwitcher" label="dark" icon="palette" small align="right">
             <dropdown-item value="dark">Dark</dropdown-item>
             <dropdown-item value="light">Light</dropdown-item>
             <dropdown-item value="cyberpunk">Cyberpunk</dropdown-item>
@@ -157,9 +175,6 @@
             <dropdown-item value="organic">Organic</dropdown-item>
             <dropdown-item value="terminal">Terminal</dropdown-item>
         </dropdown-menu>
-        <toggle-switch id="opaqueToggle"></toggle-switch>
-        <span id="opaqueLabel">opaque</span>
-        
     </div>
 
     <header class="demo-header">
@@ -983,19 +998,6 @@ render(o0)</pre>
         const editor1 = document.getElementById('editor1')
         const editor2 = document.getElementById('editor2')
         const editorThemeMenu = document.getElementById('editorThemeMenu')
-
-        const opaqueToggle = document.getElementById('opaqueToggle')
-        document.getElementById('opaqueLabel').addEventListener('click', () => {
-            opaqueToggle.checked = !opaqueToggle.checked
-            opaqueToggle.dispatchEvent(new Event('change', { bubbles: true }))
-        })
-        opaqueToggle.addEventListener('change', () => {
-            if (opaqueToggle.checked) {
-                document.documentElement.setAttribute('data-opaque', '')
-            } else {
-                document.documentElement.removeAttribute('data-opaque')
-            }
-        })
 
         document.getElementById('themeSwitcher').addEventListener('change', (e) => {
             const theme = e.detail.value
