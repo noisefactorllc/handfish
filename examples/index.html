@@ -105,6 +105,16 @@
             top: 1rem;
             right: 1rem;
             z-index: 1000;
+            display: grid;
+            grid-template-columns: min-content min-content min-content;
+            gap: 1.25rem;
+            align-items: center;
+        }
+        #opaqueLabel {
+            color: var(--hf-text-dim); 
+            font-size: 0.75rem; 
+            cursor: pointer;
+            margin-left: -0.75rem;
         }
         .output {
             padding: 0.5rem;
@@ -138,8 +148,6 @@
 </head>
 <body>
     <div class="theme-toggle">
-        <toggle-switch id="opaqueToggle"></toggle-switch>
-        <span id="opaqueLabel" style="color: var(--hf-text-dim); font-size: 0.75rem; cursor: pointer;">opaque</span>
         <dropdown-menu id="themeSwitcher" label="dark" icon="palette" small>
             <dropdown-item value="dark">Dark</dropdown-item>
             <dropdown-item value="light">Light</dropdown-item>
@@ -149,6 +157,9 @@
             <dropdown-item value="organic">Organic</dropdown-item>
             <dropdown-item value="terminal">Terminal</dropdown-item>
         </dropdown-menu>
+        <toggle-switch id="opaqueToggle"></toggle-switch>
+        <span id="opaqueLabel">opaque</span>
+        
     </div>
 
     <header class="demo-header">

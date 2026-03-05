@@ -162,6 +162,12 @@ class ImageMagnifier extends HTMLElement {
         /** @type {CanvasRenderingContext2D|null} */
         this._sourceCtx = null
 
+        /** @type {HTMLCanvasElement|null} 1x1 canvas for pixel readback */
+        this._pixelCanvas = null
+
+        /** @type {CanvasRenderingContext2D|null} */
+        this._pixelCtx = null
+
         /** @type {HTMLCanvasElement|null} Magnifier canvas */
         this._magnifierCanvas = null
 
@@ -222,7 +228,14 @@ class ImageMagnifier extends HTMLElement {
         }
 
         this._sourceCanvas = canvas
-        this._sourceCtx = canvas.getContext('2d', { willReadFrequently: true })
+        this._sourceCtx = canvas.getContext('2d')
+
+        // Dedicated 1x1 canvas for pixel color readback to avoid
+        // willReadFrequently warnings on the source canvas
+        this._pixelCanvas = document.createElement('canvas')
+        this._pixelCanvas.width = 1
+        this._pixelCanvas.height = 1
+        this._pixelCtx = this._pixelCanvas.getContext('2d', { willReadFrequently: true })
 
         // Set up event listeners on the canvas
         this._onMouseMove = this._handleMouseMove.bind(this)
@@ -246,6 +259,8 @@ class ImageMagnifier extends HTMLElement {
 
         this._sourceCanvas = null
         this._sourceCtx = null
+        this._pixelCanvas = null
+        this._pixelCtx = null
         this.hide()
     }
 
@@ -299,7 +314,7 @@ class ImageMagnifier extends HTMLElement {
         `
 
         this._magnifierCanvas = this.querySelector('.magnifier-canvas')
-        this._magnifierCtx = this._magnifierCanvas?.getContext('2d')
+        this._magnifierCtx = this._magnifierCanvas?.getContext('2d', { willReadFrequently: true })
     }
 
     // ========================================================================
@@ -390,7 +405,8 @@ class ImageMagnifier extends HTMLElement {
         // Get center pixel color
         if (centerX >= 0 && centerX < sourceCanvas.width &&
             centerY >= 0 && centerY < sourceCanvas.height) {
-            const pixel = sourceCtx.getImageData(centerX, centerY, 1, 1).data
+            this._pixelCtx.drawImage(sourceCanvas, centerX, centerY, 1, 1, 0, 0, 1, 1)
+            const pixel = this._pixelCtx.getImageData(0, 0, 1, 1).data
             this._centerColor = {
                 r: pixel[0],
                 g: pixel[1],
