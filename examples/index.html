@@ -139,7 +139,7 @@
 <body>
     <div class="theme-toggle">
         <toggle-switch id="opaqueToggle"></toggle-switch>
-        <label for="opaqueToggle" style="color: var(--hf-text-dim); font-size: 0.75rem; cursor: pointer;">opaque</label>
+        <span id="opaqueLabel" style="color: var(--hf-text-dim); font-size: 0.75rem; cursor: pointer;">opaque</span>
         <dropdown-menu id="themeSwitcher" label="dark" icon="palette" small>
             <dropdown-item value="dark">Dark</dropdown-item>
             <dropdown-item value="light">Light</dropdown-item>
@@ -289,15 +289,15 @@
             <div class="demo-item">
                 <h3>Text Input</h3>
                 <div class="demo-item-content">
-                    <label class="hf-label">Project Name</label>
-                    <input type="text" class="hf-input" placeholder="Enter name...">
+                    <label class="hf-label" for="demo-project-name">Project Name</label>
+                    <input type="text" class="hf-input" id="demo-project-name" placeholder="Enter name...">
                 </div>
             </div>
             <div class="demo-item">
                 <h3>States</h3>
                 <div class="demo-item-content">
-                    <input type="text" class="hf-input" value="Normal state">
-                    <input type="text" class="hf-input" placeholder="Disabled" disabled>
+                    <input type="text" class="hf-input" id="demo-state-normal" value="Normal state">
+                    <input type="text" class="hf-input" id="demo-state-disabled" placeholder="Disabled" disabled>
                 </div>
             </div>
         </div>
@@ -312,9 +312,9 @@
             <div class="demo-item">
                 <h3>Checkboxes</h3>
                 <div class="demo-item-content hf-form">
-                    <label><input type="checkbox" checked> Enable effect</label>
-                    <label><input type="checkbox"> Loop animation</label>
-                    <label><input type="checkbox" disabled> Locked</label>
+                    <label><input type="checkbox" id="demo-enable" checked> Enable effect</label>
+                    <label><input type="checkbox" id="demo-loop"> Loop animation</label>
+                    <label><input type="checkbox" id="demo-locked" disabled> Locked</label>
                 </div>
             </div>
             <div class="demo-item">
@@ -337,31 +337,31 @@
                 <div class="demo-item-content hf-form">
                     <div class="demo-row">
                         <span class="demo-label">Width</span>
-                        <input type="number" value="1920" min="1" max="7680" style="width: 80px;">
+                        <input type="number" id="demo-width" value="1920" min="1" max="7680" style="width: 80px;">
                     </div>
                     <div class="demo-row">
                         <span class="demo-label">Height</span>
-                        <input type="number" value="1080" min="1" max="4320" style="width: 80px;">
+                        <input type="number" id="demo-height" value="1080" min="1" max="4320" style="width: 80px;">
                     </div>
                     <div class="demo-row">
                         <span class="demo-label">FPS</span>
-                        <input type="number" value="60" min="1" max="240" step="1" style="width: 80px;" disabled>
+                        <input type="number" id="demo-fps" value="60" min="1" max="240" step="1" style="width: 80px;" disabled>
                     </div>
                 </div>
             </div>
             <div class="demo-item">
                 <h3>Text Inputs</h3>
                 <div class="demo-item-content hf-form">
-                    <input type="text" placeholder="Project name...">
-                    <input type="email" placeholder="Email address...">
-                    <input type="password" placeholder="Password..." value="secret">
+                    <input type="text" id="demo-project" placeholder="Project name...">
+                    <input type="email" id="demo-email" placeholder="Email address...">
+                    <input type="password" id="demo-password" placeholder="Password..." value="secret">
                 </div>
             </div>
             <div class="demo-item wide">
                 <h3>Textarea</h3>
                 <div class="demo-item-content hf-form">
-                    <textarea placeholder="Enter description..." rows="3"></textarea>
-                    <textarea class="hf-textarea-mono" placeholder="// code or config..." rows="3">uniform float time;
+                    <textarea id="demo-description" placeholder="Enter description..." rows="3"></textarea>
+                    <textarea id="demo-code" class="hf-textarea-mono" placeholder="// code or config..." rows="3">uniform float time;
 void main() {
     gl_FragColor = vec4(sin(time), 0.5, 1.0, 1.0);
 }</textarea>
@@ -370,7 +370,7 @@ void main() {
             <div class="demo-item">
                 <h3>File Input</h3>
                 <div class="demo-item-content hf-form">
-                    <input type="file" accept="image/*">
+                    <input type="file" id="demo-file" accept="image/*">
                 </div>
             </div>
             <div class="demo-item">
@@ -973,9 +973,13 @@ render(o0)</pre>
         const editor2 = document.getElementById('editor2')
         const editorThemeMenu = document.getElementById('editorThemeMenu')
 
-        document.getElementById('opaqueToggle').addEventListener('change', () => {
-            const el = document.getElementById('opaqueToggle')
-            if (el.checked) {
+        const opaqueToggle = document.getElementById('opaqueToggle')
+        document.getElementById('opaqueLabel').addEventListener('click', () => {
+            opaqueToggle.checked = !opaqueToggle.checked
+            opaqueToggle.dispatchEvent(new Event('change', { bubbles: true }))
+        })
+        opaqueToggle.addEventListener('change', () => {
+            if (opaqueToggle.checked) {
                 document.documentElement.setAttribute('data-opaque', '')
             } else {
                 document.documentElement.removeAttribute('data-opaque')
