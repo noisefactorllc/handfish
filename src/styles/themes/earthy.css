@@ -10,6 +10,14 @@
  * Or import after the base stylesheet to override defaults.
  */
 
+@font-face {
+  font-family: 'Roboto Slab';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('https://fonts.noisefactor.io/fonts/roboto-slab/RobotoSlab[wght].woff2') format('woff2');
+}
+
 [data-theme="earthy"] {
     /* Neutrals — warm grays/tans, amber-brown tint (hue 55°) */
     --hf-color-1: oklch(15.0% 0.010 55);
@@ -33,7 +41,7 @@
     --hf-blue: oklch(58.0% 0.100 230);
 
     /* Typography — serif stack for a warm, literary feel */
-    --hf-font-family: 'Georgia', 'Times New Roman', serif;
+    --hf-font-family: 'Roboto Slab', 'Georgia', 'Times New Roman', serif;
 
     /* Extra rounded corners */
     --hf-radius-sm: 6px;

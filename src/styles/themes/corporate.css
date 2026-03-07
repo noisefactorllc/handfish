@@ -10,6 +10,14 @@
  * Or import after the base stylesheet to override defaults.
  */
 
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('https://fonts.noisefactor.io/fonts/inter/Inter-Regular.woff2') format('woff2');
+}
+
 [data-theme="corporate"] {
     /* Neutrals — cool grays, very low chroma (hue 240°) */
     --hf-color-1: oklch(97.0% 0.003 240);
