@@ -33,7 +33,7 @@
     --hf-blue: oklch(70.0% 0.140 195);
 
     /* Typography — everything monospace */
-    --hf-font-family: 'Courier New', 'Noto Sans Mono', Courier, monospace;
+    --hf-font-family: 'Courier New', 'Noto Sans Mono', 'Noto Sans Mono Blank';
 
     /* Dense terminal sizing */
     --hf-size-base: 0.8125rem;

@@ -47,7 +47,7 @@ if (!document.getElementById(DROPDOWN_MENU_STYLES_ID)) {
             font-weight: 500;
             line-height: var(--hf-leading-normal, 1.5);
             text-wrap: nowrap;
-            font-family: var(--hf-font-family, 'Nunito', system-ui, sans-serif);
+            font-family: var(--hf-font-family);
             color: var(--hf-text-normal);
             background: var(--hf-bg-elevated);
             border: var(--hf-border-width) solid var(--hf-border-subtle);

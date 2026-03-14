@@ -19,7 +19,7 @@ if (!document.getElementById(SELECT_DROPDOWN_STYLES_ID)) {
         select-dropdown {
             display: inline-block;
             position: relative;
-            font-family: var(--hf-font-family, Nunito, system-ui, sans-serif);
+            font-family: var(--hf-font-family);
             min-width: 5em;
         }
 
@@ -45,7 +45,7 @@ if (!document.getElementById(SELECT_DROPDOWN_STYLES_ID)) {
             height: var(--hf-control-height, 1.875rem);
             box-sizing: border-box;
             font-size: var(--hf-size-sm, 0.75rem);
-            font-family: var(--hf-font-family, Nunito, system-ui, sans-serif);
+            font-family: var(--hf-font-family);
             color: var(--hf-text-normal, #d9deeb);
             background: var(--hf-bg-elevated, #1b2538);
             border: var(--hf-border-width) solid var(--hf-border-subtle);

@@ -41,7 +41,7 @@
     --hf-blue: oklch(58.0% 0.100 230);
 
     /* Typography — serif stack for a warm, literary feel */
-    --hf-font-family: 'Roboto Slab', 'Georgia', 'Times New Roman', serif;
+    --hf-font-family: 'Roboto Slab';
 
     /* Extra rounded corners */
     --hf-radius-sm: 6px;

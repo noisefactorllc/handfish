@@ -59,7 +59,7 @@ if (!document.getElementById(VECTOR3D_PICKER_STYLES_ID)) {
             display: flex;
             align-items: center;
             gap: 4px;
-            font-family: var(--hf-font-family-mono, monospace);
+            font-family: var(--hf-font-family-mono);
             font-size: 0.6875rem;
             color: var(--hf-text-normal);
         }
@@ -292,7 +292,7 @@ if (!document.getElementById(VECTOR3D_PICKER_STYLES_ID)) {
             position: absolute;
             font-size: 0.625rem;
             font-weight: 700;
-            font-family: var(--hf-font-family-mono, monospace);
+            font-family: var(--hf-font-family-mono);
         }
 
         vector3d-picker .axis-indicator.x-pos { right: -2px; top: 50%; transform: translateY(-50%); color: var(--hf-red); }
@@ -307,7 +307,7 @@ if (!document.getElementById(VECTOR3D_PICKER_STYLES_ID)) {
             left: 50%;
             transform: translateX(-50%);
             font-size: 0.625rem;
-            font-family: var(--hf-font-family-mono, monospace);
+            font-family: var(--hf-font-family-mono);
             color: var(--hf-blue);
             display: flex;
             align-items: center;
@@ -331,7 +331,7 @@ if (!document.getElementById(VECTOR3D_PICKER_STYLES_ID)) {
         vector3d-picker .slider-label {
             font-size: 0.75rem;
             font-weight: 600;
-            font-family: var(--hf-font-family-mono, monospace);
+            font-family: var(--hf-font-family-mono);
         }
 
         vector3d-picker .slider-label.x { color: var(--hf-red); }
@@ -381,7 +381,7 @@ if (!document.getElementById(VECTOR3D_PICKER_STYLES_ID)) {
             width: 100%;
             padding: 0.25rem 0.375rem;
             font-size: 0.6875rem;
-            font-family: var(--hf-font-family-mono, monospace);
+            font-family: var(--hf-font-family-mono);
             color: var(--hf-text-normal);
             background: var(--hf-bg-elevated);
             border: var(--hf-border-width) solid var(--hf-border-subtle);
@@ -423,7 +423,7 @@ if (!document.getElementById(VECTOR3D_PICKER_STYLES_ID)) {
 
         vector3d-picker .magnitude-display {
             font-size: 0.6875rem;
-            font-family: var(--hf-font-family-mono, monospace);
+            font-family: var(--hf-font-family-mono);
             color: var(--hf-text-dim);
         }
 

@@ -43,7 +43,7 @@ if (!document.getElementById(COLOR_WHEEL_STYLES_ID)) {
     styleEl.textContent = `
         color-wheel {
             display: inline-block;
-            font-family: var(--hf-font-family, Nunito, system-ui, sans-serif);
+            font-family: var(--hf-font-family);
             font-size: var(--hf-size-sm, 0.75rem);
             --cw-bg: var(--hf-bg-surface, #101522);
             --cw-border: color-mix(in srgb, var(--hf-accent, #a5b8ff) 25%, transparent 75%);
@@ -172,7 +172,7 @@ if (!document.getElementById(COLOR_WHEEL_STYLES_ID)) {
 
         color-wheel .hex-input {
             width: 100%;
-            font-family: var(--hf-font-family-mono, monospace);
+            font-family: var(--hf-font-family-mono);
             font-size: var(--hf-size-sm, 0.75rem);
             font-weight: var(--hf-weight-medium, 500);
             color: var(--cw-text);
@@ -247,7 +247,7 @@ if (!document.getElementById(COLOR_WHEEL_STYLES_ID)) {
         }
 
         color-wheel .alpha-value {
-            font-family: var(--hf-font-family-mono, monospace);
+            font-family: var(--hf-font-family-mono);
             font-size: var(--hf-size-xs, 0.625rem);
             color: var(--cw-text-dim);
             width: 32px;
@@ -311,7 +311,7 @@ if (!document.getElementById(COLOR_WHEEL_STYLES_ID)) {
         }
 
         color-wheel .input-field {
-            font-family: var(--hf-font-family-mono, monospace);
+            font-family: var(--hf-font-family-mono);
             font-size: var(--hf-size-xs, 0.625rem);
             color: var(--cw-text);
             background: var(--cw-input-bg);

@@ -147,8 +147,8 @@
 
 :root {
     /* Font families */
-    --hf-font-family: Nunito, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-    --hf-font-family-mono: 'Noto Sans Mono', 'SF Mono', Monaco, Consolas, monospace;
+    --hf-font-family: Nunito, 'Nunito Blank';
+    --hf-font-family-mono: 'Noto Sans Mono', 'Noto Sans Mono Blank';
     --hf-font-family-icon: 'Material Symbols Outlined';
 
     /* Font sizes */

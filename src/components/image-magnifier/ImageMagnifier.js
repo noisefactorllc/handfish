@@ -123,7 +123,7 @@ if (!document.getElementById(IMAGE_MAGNIFIER_STYLES_ID)) {
             border: var(--hf-border-width) solid var(--mag-border);
             border-radius: var(--hf-radius-sm, 0.25rem);
             padding: 2px 8px;
-            font-family: var(--hf-font-family-mono, monospace);
+            font-family: var(--hf-font-family-mono);
             font-size: var(--hf-size-xs, 0.625rem);
             color: var(--mag-text);
             white-space: nowrap;

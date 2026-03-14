@@ -18,7 +18,7 @@ if (typeof document !== 'undefined' && !document.getElementById(TOOLTIP_STYLES_I
             position: fixed;
             z-index: 100000;
             padding: 0.375rem 0.625rem;
-            font-family: var(--hf-font-family, Nunito, system-ui, sans-serif);
+            font-family: var(--hf-font-family);
             font-size: var(--hf-size-xs, 0.625rem);
             color: var(--hf-text-bright, #eef1f8);
             background: var(--hf-bg-surface, #1a1e2e);

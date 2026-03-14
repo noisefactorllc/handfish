@@ -32,7 +32,7 @@
     --hf-blue: oklch(70.0% 0.200 250);
 
     /* Typography — monospace as primary for terminal feel */
-    --hf-font-family: 'Noto Sans Mono', 'SF Mono', Monaco, Consolas, monospace;
+    --hf-font-family: 'Noto Sans Mono', 'Noto Sans Mono Blank';
 
     /* Sharp corners */
     --hf-radius-sm: 2px;

@@ -41,7 +41,7 @@
     --hf-blue: oklch(52.0% 0.140 245);
 
     /* Typography — clean sans-serif */
-    --hf-font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif;
+    --hf-font-family: 'Inter', 'Inter Blank';
 
     /* Medium radii — polished but not rounded */
     --hf-radius-sm: 4px;

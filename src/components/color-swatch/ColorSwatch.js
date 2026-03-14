@@ -77,7 +77,7 @@ if (!document.getElementById(STYLES_ID)) {
             border: var(--hf-border-width) solid var(--hf-bg-elevated);
             border-radius: var(--hf-radius-sm, 0.25rem);
             color: var(--hf-text-normal);
-            font-family: var(--hf-font-family-mono, monospace);
+            font-family: var(--hf-font-family-mono);
             font-size: var(--hf-size-xs, 0.625rem);
             white-space: nowrap;
             pointer-events: none;
