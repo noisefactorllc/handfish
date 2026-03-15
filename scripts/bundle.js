@@ -100,15 +100,26 @@ async function buildBundle() {
 
     copyDirSync(stylesDir, distStylesDir)
 
-    // Copy site files (examples page)
+    // Copy site files
     const siteDir = path.join(distDir, 'site')
     fs.mkdirSync(siteDir, { recursive: true })
+
+    // Root index.html → site root
+    const rootIndex = path.join(repoRoot, 'index.html')
+    if (fs.existsSync(rootIndex)) {
+        fs.copyFileSync(rootIndex, path.join(siteDir, 'index.html'))
+        console.log('  - site/index.html')
+    }
+
+    // Examples page → site/examples/
     const examplesDir = path.join(repoRoot, 'examples')
+    const siteExamplesDir = path.join(siteDir, 'examples')
+    fs.mkdirSync(siteExamplesDir, { recursive: true })
     for (const file of ['index.html', 'favicon.svg']) {
         const src = path.join(examplesDir, file)
         if (fs.existsSync(src)) {
-            fs.copyFileSync(src, path.join(siteDir, file))
-            console.log(`  - site/${file}`)
+            fs.copyFileSync(src, path.join(siteExamplesDir, file))
+            console.log(`  - site/examples/${file}`)
         }
     }
 

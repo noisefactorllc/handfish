@@ -1,0 +1,1201 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="corporate">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Handfish Design System</title>
+    <link rel="icon" type="image/svg+xml" href="examples/favicon.svg">
+    <link rel="preload" href="https://fonts.noisefactor.io/fonts/inter/Inter-Blank.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="https://fonts.noisefactor.io/fonts/nunito/Nunito-Blank.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="https://fonts.noisefactor.io/fonts/noto-sans-mono/NotoSansMono-Blank.woff2" as="font" type="font/woff2" crossorigin>
+    <style>
+        @font-face {
+            font-family: 'Inter Blank';
+            src: url('https://fonts.noisefactor.io/fonts/inter/Inter-Blank.woff2') format('woff2');
+            font-weight: 400;
+            font-style: normal;
+            font-display: block;
+        }
+        @font-face {
+            font-family: Inter;
+            src: url('https://fonts.noisefactor.io/fonts/inter/Inter-Regular.woff2') format('woff2');
+            font-weight: 400;
+            font-style: normal;
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'Nunito Blank';
+            src: url('https://fonts.noisefactor.io/fonts/nunito/Nunito-Blank.woff2') format('woff2');
+            font-weight: 100 900;
+            font-style: normal;
+            font-display: block;
+        }
+        @font-face {
+            font-family: Nunito;
+            src: url('https://fonts.noisefactor.io/fonts/nunito/Nunito[wght].woff2') format('woff2');
+            font-weight: 100 900;
+            font-style: normal;
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'Noto Sans Mono Blank';
+            src: url('https://fonts.noisefactor.io/fonts/noto-sans-mono/NotoSansMono-Blank.woff2') format('woff2');
+            font-weight: 100 900;
+            font-style: normal;
+            font-display: block;
+        }
+        @font-face {
+            font-family: 'Noto Sans Mono';
+            src: url('https://fonts.noisefactor.io/fonts/noto-sans-mono/NotoSansMono[wdth,wght].woff2') format('woff2');
+            font-weight: 100 900;
+            font-style: normal;
+            font-display: swap;
+        }
+        html { font-family: Inter, 'Inter Blank'; }
+    </style>
+    <link rel="stylesheet" href="dist/styles/index.css">
+    <link rel="stylesheet" href="dist/styles/themes/corporate.css">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background: var(--hf-bg-base);
+            color: var(--hf-text-normal);
+            font-size: var(--hf-size-base);
+            line-height: var(--hf-leading-normal);
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* ── Nav Sidebar ── */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 220px;
+            height: 100vh;
+            overflow-y: auto;
+            background: var(--hf-bg-surface);
+            border-right: var(--hf-border-width) solid var(--hf-border);
+            padding: var(--hf-space-4) 0;
+            z-index: var(--hf-z-sticky);
+        }
+
+        .sidebar-title {
+            font-size: var(--hf-size-sm);
+            font-weight: var(--hf-weight-semibold);
+            color: var(--hf-text-dim);
+            text-transform: var(--hf-text-transform-heading);
+            letter-spacing: var(--hf-tracking-wide);
+            padding: var(--hf-space-2) var(--hf-space-4);
+            margin-top: var(--hf-space-3);
+        }
+
+        .sidebar-title:first-child { margin-top: 0; }
+
+        .sidebar a {
+            display: block;
+            padding: var(--hf-space-1) var(--hf-space-4);
+            color: var(--hf-text-dim);
+            text-decoration: none;
+            font-size: var(--hf-size-sm);
+            transition: var(--hf-transition-color), var(--hf-transition-bg);
+            border-left: 2px solid transparent;
+        }
+
+        .sidebar a:hover {
+            color: var(--hf-text-bright);
+            background: var(--hf-bg-elevated);
+            border-left-color: var(--hf-accent);
+        }
+
+        /* ── Mobile nav toggle ── */
+        .nav-toggle {
+            display: none;
+            position: fixed;
+            top: var(--hf-space-2);
+            left: var(--hf-space-2);
+            z-index: calc(var(--hf-z-sticky) + 1);
+            background: var(--hf-bg-surface);
+            border: var(--hf-border-width) solid var(--hf-border);
+            border-radius: var(--hf-radius);
+            padding: var(--hf-space-2);
+            cursor: pointer;
+            color: var(--hf-text-normal);
+            font-size: var(--hf-size-lg);
+            line-height: 1;
+        }
+
+        /* ── Main Content ── */
+        .main {
+            margin-left: 220px;
+            flex: 1;
+            padding: var(--hf-space-8) var(--hf-space-8);
+            max-width: calc(900px + 220px + var(--hf-space-8) * 2);
+        }
+
+        .main > section {
+            margin-bottom: var(--hf-space-12);
+        }
+
+        /* ── Typography ── */
+        h1 {
+            font-size: var(--hf-size-2xl);
+            font-weight: var(--hf-weight-bold);
+            color: var(--hf-text-bright);
+            line-height: var(--hf-leading-tight);
+            margin-bottom: var(--hf-space-2);
+        }
+
+        h2 {
+            font-size: var(--hf-size-xl);
+            font-weight: var(--hf-weight-bold);
+            color: var(--hf-text-bright);
+            line-height: var(--hf-leading-tight);
+            margin-bottom: var(--hf-space-4);
+            padding-bottom: var(--hf-space-2);
+            border-bottom: var(--hf-border-width) solid var(--hf-border);
+        }
+
+        h3 {
+            font-size: var(--hf-size-lg);
+            font-weight: var(--hf-weight-semibold);
+            color: var(--hf-text-bright);
+            margin-top: var(--hf-space-6);
+            margin-bottom: var(--hf-space-3);
+        }
+
+        h4 {
+            font-size: var(--hf-size-md);
+            font-weight: var(--hf-weight-semibold);
+            color: var(--hf-text-bright);
+            margin-top: var(--hf-space-4);
+            margin-bottom: var(--hf-space-2);
+        }
+
+        p {
+            margin-bottom: var(--hf-space-3);
+            max-width: 70ch;
+        }
+
+        ul, ol {
+            margin-bottom: var(--hf-space-3);
+            padding-left: var(--hf-space-6);
+        }
+
+        li { margin-bottom: var(--hf-space-1); }
+
+        a { color: var(--hf-accent); }
+        a:hover { color: var(--hf-accent-hover); }
+
+        strong { font-weight: var(--hf-weight-semibold); }
+
+        code {
+            font-family: 'Noto Sans Mono', 'Noto Sans Mono Blank';
+            font-size: 0.9em;
+            background: var(--hf-bg-elevated);
+            padding: 0.1em 0.4em;
+            border-radius: var(--hf-radius-sm);
+        }
+
+        /* ── Code Blocks ── */
+        pre {
+            background: oklch(13.9% 0.010 264);
+            color: oklch(85% 0.01 264);
+            border-radius: var(--hf-radius);
+            padding: var(--hf-space-4);
+            overflow-x: auto;
+            margin-bottom: var(--hf-space-4);
+            font-size: var(--hf-size-sm);
+            line-height: var(--hf-leading-normal);
+            border: var(--hf-border-width) solid oklch(25% 0.01 264);
+        }
+
+        pre code {
+            background: none;
+            padding: 0;
+            font-size: inherit;
+            color: inherit;
+        }
+
+        /* ── Tables ── */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: var(--hf-space-4);
+            font-size: var(--hf-size-sm);
+        }
+
+        th {
+            text-align: left;
+            font-weight: var(--hf-weight-semibold);
+            color: var(--hf-text-bright);
+            padding: var(--hf-space-2) var(--hf-space-3);
+            border-bottom: 2px solid var(--hf-border);
+            white-space: nowrap;
+        }
+
+        td {
+            padding: var(--hf-space-2) var(--hf-space-3);
+            border-bottom: var(--hf-border-width) solid var(--hf-border);
+            vertical-align: top;
+        }
+
+        tr:nth-child(even) td {
+            background: var(--hf-bg-surface);
+        }
+
+        td code {
+            font-size: var(--hf-size-xs);
+            white-space: nowrap;
+        }
+
+        /* ── Header Section ── */
+        .hero {
+            display: flex;
+            align-items: center;
+            gap: var(--hf-space-6);
+            margin-bottom: var(--hf-space-8);
+            padding-bottom: var(--hf-space-8);
+            border-bottom: var(--hf-border-width) solid var(--hf-border);
+        }
+
+        .hero-logo {
+            width: 80px;
+            height: 80px;
+            flex-shrink: 0;
+        }
+
+        .hero-subtitle {
+            color: var(--hf-text-dim);
+            font-size: var(--hf-size-md);
+            margin-bottom: var(--hf-space-4);
+        }
+
+        .btn-demo {
+            display: inline-block;
+            background: var(--hf-accent);
+            color: var(--hf-bg-base);
+            padding: var(--hf-space-2) var(--hf-space-5);
+            border-radius: var(--hf-radius);
+            text-decoration: none;
+            font-weight: var(--hf-weight-semibold);
+            font-size: var(--hf-size-base);
+            transition: var(--hf-transition-bg);
+        }
+
+        .btn-demo:hover {
+            background: var(--hf-accent-hover);
+            color: var(--hf-bg-base);
+        }
+
+        /* ── Feature list ── */
+        .feature-list {
+            list-style: none;
+            padding-left: 0;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--hf-space-3);
+        }
+
+        .feature-list li {
+            background: var(--hf-bg-surface);
+            border: var(--hf-border-width) solid var(--hf-border);
+            border-radius: var(--hf-radius);
+            padding: var(--hf-space-3) var(--hf-space-4);
+        }
+
+        .feature-list li strong {
+            color: var(--hf-text-bright);
+        }
+
+        /* ── Component section ── */
+        .component-block {
+            padding: var(--hf-space-4) 0;
+            border-bottom: var(--hf-border-width) solid var(--hf-border-subtle);
+        }
+
+        .component-block:last-child {
+            border-bottom: none;
+        }
+
+        /* ── Responsive ── */
+        @media (max-width: 768px) {
+            .nav-toggle { display: block; }
+
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.2s ease;
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main {
+                margin-left: 0;
+                padding: var(--hf-space-4);
+                padding-top: calc(var(--hf-space-4) + 48px);
+            }
+
+            .hero {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .feature-list {
+                grid-template-columns: 1fr;
+            }
+
+            table {
+                display: block;
+                overflow-x: auto;
+            }
+        }
+
+        /* ── Scrollbar ── */
+        .sidebar::-webkit-scrollbar { width: 4px; }
+        .sidebar::-webkit-scrollbar-thumb { background: var(--hf-border); border-radius: var(--hf-radius-pill); }
+    </style>
+</head>
+<body>
+
+<!-- Mobile nav toggle -->
+<button class="nav-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')" aria-label="Toggle navigation">&#9776;</button>
+
+<!-- ── Sidebar Navigation ── -->
+<nav class="sidebar">
+    <div class="sidebar-title">Getting Started</div>
+    <a href="#features">Features</a>
+    <a href="#usage">Usage</a>
+    <a href="/examples/" style="font-weight: var(--hf-weight-semibold); color: var(--hf-accent);">Live Demo</a>
+
+    <div class="sidebar-title">Components</div>
+    <a href="#toggle-switch">Toggle Switch</a>
+    <a href="#slider-value">Slider Value</a>
+    <a href="#select-dropdown">Select Dropdown</a>
+    <a href="#dropdown-menu">Dropdown Menu</a>
+    <a href="#justify-button-group">Justify Button Group</a>
+    <a href="#color-picker">Color Picker</a>
+    <a href="#color-wheel">Color Wheel</a>
+    <a href="#color-swatch">Color Swatch</a>
+    <a href="#gradient-stops">Gradient Stops</a>
+    <a href="#vector3d-picker">Vector 3D Picker</a>
+    <a href="#code-editor">Code Editor</a>
+    <a href="#image-magnifier">Image Magnifier</a>
+    <a href="#toast-notifications">Toast Notifications</a>
+
+    <div class="sidebar-title">Utilities</div>
+    <a href="#escape-handler">Escape Handler</a>
+    <a href="#tooltips">Tooltips</a>
+    <a href="#color-conversions">Color Conversions</a>
+
+    <div class="sidebar-title">Customization</div>
+    <a href="#design-tokens">Design Tokens</a>
+    <a href="#theming">Theming</a>
+    <a href="#utility-classes">Utility Classes</a>
+
+    <div class="sidebar-title">Info</div>
+    <a href="#browser-support">Browser Support</a>
+</nav>
+
+<!-- ── Main Content ── -->
+<main class="main">
+
+    <!-- ════════════════════════════════════════════
+         Header
+         ════════════════════════════════════════════ -->
+    <div class="hero">
+        <svg class="hero-logo" version="1.0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 534 534" preserveAspectRatio="xMidYMid meet"><g transform="translate(0,534) scale(0.1,-0.1)" fill="var(--hf-accent)" stroke="none"><path d="M2399 5007 c-77 -29 -139 -95 -139 -148 0 -14 20 -84 45 -157 62 -186 79 -280 72 -422 -9 -195 -77 -359 -223 -533 -40 -47 -127 -225 -144 -292 -28 -110 -57 -135 -284 -249 -255 -129 -412 -243 -551 -402 -163 -187 -266 -395 -300 -608 -19 -115 -19 -191 0 -297 39 -225 146 -423 324 -599 75 -74 115 -105 179 -139 247 -127 529 -105 1042 84 220 81 328 107 445 108 116 0 203 -26 288 -85 l27 -20 -56 -61 c-127 -139 -216 -294 -255 -442 -13 -52 -23 -127 -26 -214 l-6 -134 41 5 c50 7 182 74 280 141 79 54 134 112 210 219 26 37 51 67 56 68 5 0 32 -17 60 -38 182 -135 334 -184 583 -186 103 -1 125 2 139 16 17 16 16 21 -11 90 -51 130 -147 273 -239 355 -83 73 -245 177 -380 242 -102 51 -126 66 -126 83 0 12 -18 58 -39 102 -69 142 -196 242 -388 305 -262 86 -442 81 -878 -21 -144 -33 -199 -33 -261 -1 -121 62 -105 214 28 276 63 29 358 107 407 107 18 0 94 -24 170 -54 129 -52 192 -67 341 -82 36 -4 102 2 190 16 235 39 277 48 471 100 85 23 197 50 249 60 52 11 148 36 213 57 174 55 227 108 227 230 0 83 -17 132 -60 175 l-37 37 41 20 c104 49 147 150 127 296 -16 110 -91 237 -152 257 -10 3 -4 18 18 52 70 105 52 274 -45 411 -33 47 -95 92 -140 101 -26 5 -27 7 -24 69 6 109 -34 217 -109 293 -62 64 -92 77 -174 76 -92 0 -115 -9 -365 -126 -47 -22 -103 -46 -124 -54 -21 -8 -53 -23 -71 -34 -40 -25 -71 -26 -83 -2 -5 9 -12 80 -15 157 -8 207 -39 339 -114 490 -68 137 -165 249 -251 291 -47 23 -155 29 -203 11z"/></g></svg>
+        <div>
+            <h1>Handfish Design System</h1>
+            <p class="hero-subtitle">A modern, accessible component library for creative tools</p>
+            <a href="/examples/" class="btn-demo">Live Demo</a>
+        </div>
+    </div>
+
+    <!-- ════════════════════════════════════════════
+         Features
+         ════════════════════════════════════════════ -->
+    <section id="features">
+        <h2>Features</h2>
+        <ul class="feature-list">
+            <li><strong>Web Components</strong> &mdash; Framework-agnostic custom elements that work anywhere</li>
+            <li><strong>Light/Dark Mode</strong> &mdash; Automatic theme support via <code>prefers-color-scheme</code> or manual <code>data-theme</code> attribute</li>
+            <li><strong>Accessible</strong> &mdash; ARIA-compliant components with keyboard navigation</li>
+            <li><strong>Glassmorphism</strong> &mdash; Modern UI effects with backdrop blur and semi-transparent surfaces</li>
+            <li><strong>Form Integration</strong> &mdash; Components support <code>ElementInternals</code> for native form participation</li>
+            <li><strong>CSS Custom Properties</strong> &mdash; Easily customize design tokens without modifying source</li>
+        </ul>
+    </section>
+
+    <!-- ════════════════════════════════════════════
+         Usage
+         ════════════════════════════════════════════ -->
+    <section id="usage">
+        <h2>Usage</h2>
+        <p>Handfish is served as a versioned ESM bundle from <code>handfish.noisefactor.io</code>. No npm install needed.</p>
+
+        <h3>Import Styles</h3>
+<pre><code>&lt;link rel="stylesheet" href="https://handfish.noisefactor.io/0.9.0/styles/tokens.css"&gt;
+&lt;link rel="stylesheet" href="https://handfish.noisefactor.io/0.9.0/styles/themes/neutral.css"&gt;</code></pre>
+        <p>Or load all styles (tokens + forms + menus + tags):</p>
+<pre><code>&lt;link rel="stylesheet" href="https://handfish.noisefactor.io/0.9.0/styles/index.css"&gt;</code></pre>
+
+        <h3>Import Components</h3>
+        <p>Using an import map (recommended):</p>
+<pre><code>&lt;script type="importmap"&gt;
+{
+    "imports": {
+        "handfish": "https://handfish.noisefactor.io/0.9.0/handfish.esm.min.js"
+    }
+}
+&lt;/script&gt;</code></pre>
+<pre><code>// Then import by name
+import { ToggleSwitch, SliderValue, ColorPicker } from 'handfish'</code></pre>
+        <p>Or import directly:</p>
+<pre><code>import { ToggleSwitch, SliderValue, ColorPicker } from 'https://handfish.noisefactor.io/0.9.0/handfish.esm.min.js'</code></pre>
+
+        <h3>Use Components</h3>
+<pre><code>&lt;toggle-switch label="Enable feature"&gt;&lt;/toggle-switch&gt;
+
+&lt;slider-value min="0" max="100" value="50" step="1" type="int"&gt;&lt;/slider-value&gt;
+
+&lt;select-dropdown value="option1"&gt;
+    &lt;option value="option1"&gt;Option 1&lt;/option&gt;
+    &lt;option value="option2"&gt;Option 2&lt;/option&gt;
+&lt;/select-dropdown&gt;
+
+&lt;color-picker value="#a5b8ff"&gt;&lt;/color-picker&gt;</code></pre>
+
+        <h3>Font Loading (Zero-CLS)</h3>
+        <p>Handfish uses <a href="https://fonts.noisefactor.io">Fontaine</a> placeholder fonts to eliminate Cumulative Layout Shift. For each web font, a metric-matched <strong>Blank</strong> variant (~3-15KB) reserves exact glyph widths with invisible shapes. The blank loads near-instantly with <code>font-display: block</code>, then the real font swaps in via <code>font-display: swap</code> with zero reflow.</p>
+        <p>Fontaine also provides <strong>Block</strong> placeholders (solid rectangles, useful during development) via <code>{FontName}-Block.woff2</code>.</p>
+        <p>Generic fallbacks like <code>sans-serif</code> are intentionally omitted &mdash; system fonts have different metrics and would cause layout shift.</p>
+        <p>Add this to your <code>&lt;head&gt;</code>, <strong>before</strong> any Handfish stylesheets:</p>
+<pre><code>&lt;!-- Preload blank fonts (tiny, loads in one packet) --&gt;
+&lt;link rel="preload" href="https://fonts.noisefactor.io/fonts/nunito/Nunito-Blank.woff2" as="font" type="font/woff2" crossorigin&gt;
+&lt;link rel="preload" href="https://fonts.noisefactor.io/fonts/noto-sans-mono/NotoSansMono-Blank.woff2" as="font" type="font/woff2" crossorigin&gt;
+
+&lt;style&gt;
+/* Blank placeholders: font-display: block */
+@font-face {
+    font-family: 'Nunito Blank';
+    src: url('https://fonts.noisefactor.io/fonts/nunito/Nunito-Blank.woff2') format('woff2');
+    font-weight: 100 900;
+    font-display: block;
+}
+@font-face {
+    font-family: 'Noto Sans Mono Blank';
+    src: url('https://fonts.noisefactor.io/fonts/noto-sans-mono/NotoSansMono-Blank.woff2') format('woff2');
+    font-weight: 100 900;
+    font-display: block;
+}
+
+/* Real fonts: font-display: swap */
+@font-face {
+    font-family: Nunito;
+    src: url('https://fonts.noisefactor.io/fonts/nunito/Nunito[wght].woff2') format('woff2');
+    font-weight: 100 900;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'Noto Sans Mono';
+    src: url('https://fonts.noisefactor.io/fonts/noto-sans-mono/NotoSansMono[wdth,wght].woff2') format('woff2');
+    font-weight: 100 900;
+    font-display: swap;
+}
+
+/* Fallback chain: real font &rarr; blank placeholder. No generics. */
+html { font-family: Nunito, 'Nunito Blank'; }
+&lt;/style&gt;</code></pre>
+    </section>
+
+    <!-- ════════════════════════════════════════════
+         Components
+         ════════════════════════════════════════════ -->
+    <section id="components">
+        <h2>Components</h2>
+
+        <!-- Toggle Switch -->
+        <div class="component-block" id="toggle-switch">
+            <h3>Toggle Switch</h3>
+            <p>A boolean toggle control that replaces <code>&lt;input type="checkbox"&gt;</code>.</p>
+<pre><code>&lt;toggle-switch
+    name="darkMode"
+    label="Dark Mode"
+    checked
+&gt;&lt;/toggle-switch&gt;</code></pre>
+            <table>
+                <thead><tr><th>Attribute</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
+                <tbody>
+                    <tr><td><code>checked</code></td><td>boolean</td><td><code>false</code></td><td>Current checked state</td></tr>
+                    <tr><td><code>label</code></td><td>string</td><td><code>''</code></td><td>Label text</td></tr>
+                    <tr><td><code>name</code></td><td>string</td><td><code>''</code></td><td>Form field name</td></tr>
+                    <tr><td><code>disabled</code></td><td>boolean</td><td><code>false</code></td><td>Disabled state</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Slider Value -->
+        <div class="component-block" id="slider-value">
+            <h3>Slider Value</h3>
+            <p>A range slider with editable numeric value display. Uses <code>display: contents</code> to participate in parent grid layouts. Click the value to type an exact number.</p>
+<pre><code>&lt;slider-value
+    name="volume"
+    min="0"
+    max="100"
+    value="50"
+    step="1"
+    type="int"
+&gt;&lt;/slider-value&gt;</code></pre>
+            <table>
+                <thead><tr><th>Attribute</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
+                <tbody>
+                    <tr><td><code>min</code></td><td>number</td><td><code>0</code></td><td>Minimum value</td></tr>
+                    <tr><td><code>max</code></td><td>number</td><td><code>100</code></td><td>Maximum value</td></tr>
+                    <tr><td><code>value</code></td><td>number</td><td><code>0</code></td><td>Current value</td></tr>
+                    <tr><td><code>step</code></td><td>number</td><td><code>0.01</code></td><td>Step increment</td></tr>
+                    <tr><td><code>type</code></td><td>string</td><td><code>'float'</code></td><td>Value type: <code>int</code> or <code>float</code></td></tr>
+                    <tr><td><code>name</code></td><td>string</td><td><code>''</code></td><td>Form field name</td></tr>
+                    <tr><td><code>disabled</code></td><td>boolean</td><td><code>false</code></td><td>Disabled state</td></tr>
+                </tbody>
+            </table>
+            <h4>Events</h4>
+            <ul>
+                <li><code>input</code></li>
+                <li><code>change</code></li>
+            </ul>
+        </div>
+
+        <!-- Select Dropdown -->
+        <div class="component-block" id="select-dropdown">
+            <h3>Select Dropdown</h3>
+            <p>A custom dropdown select with keyboard navigation and search.</p>
+<pre><code>&lt;select-dropdown name="effect" value="blur"&gt;
+    &lt;option value="none"&gt;None&lt;/option&gt;
+    &lt;option value="blur"&gt;Blur&lt;/option&gt;
+    &lt;option value="glow"&gt;Glow&lt;/option&gt;
+&lt;/select-dropdown&gt;</code></pre>
+            <table>
+                <thead><tr><th>Attribute</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
+                <tbody>
+                    <tr><td><code>value</code></td><td>string</td><td><code>''</code></td><td>Selected option value</td></tr>
+                    <tr><td><code>name</code></td><td>string</td><td><code>''</code></td><td>Form field name</td></tr>
+                    <tr><td><code>disabled</code></td><td>boolean</td><td><code>false</code></td><td>Disabled state</td></tr>
+                </tbody>
+            </table>
+            <p><strong>Features:</strong></p>
+            <ul>
+                <li>Type-ahead search when focused</li>
+                <li>Arrow key navigation</li>
+                <li>Auto-switches to dialog mode with 6+ options</li>
+                <li>Escape to close</li>
+            </ul>
+        </div>
+
+        <!-- Dropdown Menu -->
+        <div class="component-block" id="dropdown-menu">
+            <h3>Dropdown Menu</h3>
+            <p>A trigger button with a dropdown menu for actions.</p>
+<pre><code>&lt;dropdown-menu label="Options" icon="more_vert"&gt;
+    &lt;dropdown-item value="edit" icon="edit"&gt;Edit&lt;/dropdown-item&gt;
+    &lt;dropdown-item value="duplicate" icon="content_copy"&gt;Duplicate&lt;/dropdown-item&gt;
+    &lt;dropdown-item divider&gt;&lt;/dropdown-item&gt;
+    &lt;dropdown-item value="delete" destructive icon="delete"&gt;Delete&lt;/dropdown-item&gt;
+&lt;/dropdown-menu&gt;</code></pre>
+            <table>
+                <thead><tr><th>Attribute</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
+                <tbody>
+                    <tr><td><code>label</code></td><td>string</td><td><code>''</code></td><td>Trigger button text</td></tr>
+                    <tr><td><code>icon</code></td><td>string</td><td><code>''</code></td><td>Material Symbols icon name</td></tr>
+                    <tr><td><code>align</code></td><td>string</td><td><code>'left'</code></td><td>Menu alignment: <code>left</code> or <code>right</code></td></tr>
+                    <tr><td><code>value</code></td><td>string</td><td><code>''</code></td><td>Currently selected value (selectable mode)</td></tr>
+                    <tr><td><code>disabled</code></td><td>boolean</td><td><code>false</code></td><td>Disabled state</td></tr>
+                </tbody>
+            </table>
+            <p><code>&lt;dropdown-item&gt;</code> attributes: <code>value</code>, <code>icon</code>, <code>divider</code>, <code>destructive</code></p>
+            <h4>Events</h4>
+            <ul>
+                <li><code>change</code> (detail: <code>{ value }</code>)</li>
+            </ul>
+        </div>
+
+        <!-- Justify Button Group -->
+        <div class="component-block" id="justify-button-group">
+            <h3>Justify Button Group</h3>
+            <p>A segmented control for text alignment selection.</p>
+<pre><code>&lt;justify-button-group
+    name="alignment"
+    value="center"
+&gt;&lt;/justify-button-group&gt;</code></pre>
+            <table>
+                <thead><tr><th>Attribute</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
+                <tbody>
+                    <tr><td><code>value</code></td><td>string</td><td><code>'left'</code></td><td>Current value: <code>left</code>, <code>center</code>, <code>right</code></td></tr>
+                    <tr><td><code>name</code></td><td>string</td><td><code>''</code></td><td>Form field name</td></tr>
+                    <tr><td><code>disabled</code></td><td>boolean</td><td><code>false</code></td><td>Disabled state</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Color Picker -->
+        <div class="component-block" id="color-picker">
+            <h3>Color Picker</h3>
+            <p>A dropdown color picker with swatch trigger.</p>
+<pre><code>&lt;color-picker
+    name="fillColor"
+    value="#a5b8ff"
+    alpha="1"
+    mode="hsv"
+&gt;&lt;/color-picker&gt;</code></pre>
+            <table>
+                <thead><tr><th>Attribute</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
+                <tbody>
+                    <tr><td><code>value</code></td><td>string</td><td><code>'#000000'</code></td><td>Hex color value</td></tr>
+                    <tr><td><code>alpha</code></td><td>number</td><td><code>1</code></td><td>Alpha/opacity (0-1)</td></tr>
+                    <tr><td><code>mode</code></td><td>string</td><td><code>'hsv'</code></td><td>Color mode: <code>hsv</code>, <code>oklab</code>, or <code>oklch</code></td></tr>
+                    <tr><td><code>inline</code></td><td>boolean</td><td><code>false</code></td><td>Always show wheel (no dropdown)</td></tr>
+                    <tr><td><code>name</code></td><td>string</td><td><code>''</code></td><td>Form field name</td></tr>
+                    <tr><td><code>required</code></td><td>boolean</td><td><code>false</code></td><td>Required field</td></tr>
+                    <tr><td><code>disabled</code></td><td>boolean</td><td><code>false</code></td><td>Disabled state</td></tr>
+                </tbody>
+            </table>
+            <h4>Events</h4>
+            <ul>
+                <li><code>input</code></li>
+                <li><code>change</code></li>
+                <li><code>colorinput</code> (detail: <code>{ value, alpha, rgb, hsv, oklch }</code>)</li>
+                <li><code>open</code></li>
+                <li><code>close</code></li>
+            </ul>
+        </div>
+
+        <!-- Color Wheel -->
+        <div class="component-block" id="color-wheel">
+            <h3>Color Wheel</h3>
+            <p>The full color wheel interface (used inside Color Picker). Supports three color modes: HSV, OkLab, and OKLCH.</p>
+<pre><code>&lt;color-wheel
+    value="#6bffa5"
+    mode="hsv"
+&gt;&lt;/color-wheel&gt;</code></pre>
+            <table>
+                <thead><tr><th>Attribute</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
+                <tbody>
+                    <tr><td><code>value</code></td><td>string</td><td><code>'#000000'</code></td><td>Hex color value</td></tr>
+                    <tr><td><code>alpha</code></td><td>number</td><td><code>1</code></td><td>Alpha/opacity (0-1)</td></tr>
+                    <tr><td><code>mode</code></td><td>string</td><td><code>'hsv'</code></td><td>Color mode: <code>hsv</code>, <code>oklab</code>, or <code>oklch</code></td></tr>
+                    <tr><td><code>name</code></td><td>string</td><td><code>''</code></td><td>Form field name</td></tr>
+                    <tr><td><code>required</code></td><td>boolean</td><td><code>false</code></td><td>Required field</td></tr>
+                    <tr><td><code>disabled</code></td><td>boolean</td><td><code>false</code></td><td>Disabled state</td></tr>
+                </tbody>
+            </table>
+            <h4>Methods</h4>
+            <ul>
+                <li><code>getColor()</code> &mdash; Returns <code>{ value, alpha, rgb, hsv, oklch }</code></li>
+                <li><code>setColor({ value, alpha, mode })</code> &mdash; Set color programmatically</li>
+            </ul>
+            <h4>Events</h4>
+            <ul>
+                <li><code>input</code> &mdash; Fires during color selection</li>
+                <li><code>change</code> &mdash; Fires when selection is finalized</li>
+                <li><code>colorinput</code> &mdash; Fires with <code>detail: { value, alpha, rgb, hsv, oklch }</code></li>
+            </ul>
+        </div>
+
+        <!-- Color Swatch -->
+        <div class="component-block" id="color-swatch">
+            <h3>Color Swatch</h3>
+            <p>A single color display with selection and tooltip.</p>
+<pre><code>&lt;color-swatch
+    color="#a5b8ff"
+    size="32"
+    selected
+    show-tooltip
+&gt;&lt;/color-swatch&gt;</code></pre>
+            <table>
+                <thead><tr><th>Attribute</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
+                <tbody>
+                    <tr><td><code>color</code></td><td>string</td><td><code>'#000000'</code></td><td>Hex color value</td></tr>
+                    <tr><td><code>size</code></td><td>number</td><td><code>32</code></td><td>Swatch size in pixels</td></tr>
+                    <tr><td><code>selected</code></td><td>boolean</td><td><code>false</code></td><td>Selected state (shows outline ring)</td></tr>
+                    <tr><td><code>editable</code></td><td>boolean</td><td><code>false</code></td><td>Enable double-click to edit</td></tr>
+                    <tr><td><code>show-tooltip</code></td><td>boolean</td><td><code>false</code></td><td>Show hex tooltip on hover</td></tr>
+                    <tr><td><code>disabled</code></td><td>boolean</td><td><code>false</code></td><td>Disabled state</td></tr>
+                </tbody>
+            </table>
+            <h4>Events</h4>
+            <ul>
+                <li><code>select</code> (detail: <code>{ color }</code>)</li>
+                <li><code>edit</code> (detail: <code>{ color }</code>)</li>
+            </ul>
+        </div>
+
+        <!-- Gradient Stops -->
+        <div class="component-block" id="gradient-stops">
+            <h3>Gradient Stops</h3>
+            <p>Draggable color stop handles for positioning colors in a gradient.</p>
+<pre><code>&lt;gradient-stops&gt;&lt;/gradient-stops&gt;</code></pre>
+            <table>
+                <thead><tr><th>Attribute</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
+                <tbody>
+                    <tr><td><code>disabled</code></td><td>boolean</td><td><code>false</code></td><td>Disabled state</td></tr>
+                </tbody>
+            </table>
+            <h4>Methods</h4>
+            <ul>
+                <li><code>setStops(colors, positions)</code> &mdash; Set colors (RGB 0-1 arrays) and positions (0-1)</li>
+                <li><code>getPositions()</code> &mdash; Get current position array</li>
+                <li><code>getSelectedIndex()</code> &mdash; Get selected stop index</li>
+                <li><code>setSelectedIndex(index)</code> &mdash; Set selected stop</li>
+            </ul>
+            <h4>Events</h4>
+            <ul>
+                <li><code>select</code> (detail: <code>{ index }</code>)</li>
+                <li><code>input</code> (detail: <code>{ index, position, positions }</code>)</li>
+                <li><code>change</code> (detail: <code>{ index, positions }</code>)</li>
+                <li><code>delete</code> (detail: <code>{ index, positions, colors }</code>)</li>
+            </ul>
+        </div>
+
+        <!-- Vector 3D Picker -->
+        <div class="component-block" id="vector3d-picker">
+            <h3>Vector 3D Picker</h3>
+            <p>A 3D vector picker with interactive sphere gizmo and XYZ sliders in a dialog modal.</p>
+<pre><code>&lt;vector3d-picker
+    value="0,1,0"
+    min="-1"
+    max="1"
+    step="0.01"
+    normalized
+&gt;&lt;/vector3d-picker&gt;</code></pre>
+            <table>
+                <thead><tr><th>Attribute</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
+                <tbody>
+                    <tr><td><code>value</code></td><td>string</td><td><code>'0,0,1'</code></td><td>Comma-separated X,Y,Z values</td></tr>
+                    <tr><td><code>min</code></td><td>number</td><td><code>-1</code></td><td>Minimum axis value</td></tr>
+                    <tr><td><code>max</code></td><td>number</td><td><code>1</code></td><td>Maximum axis value</td></tr>
+                    <tr><td><code>step</code></td><td>number</td><td><code>0.01</code></td><td>Step increment</td></tr>
+                    <tr><td><code>normalized</code></td><td>boolean</td><td><code>false</code></td><td>Normalize to unit vector</td></tr>
+                    <tr><td><code>name</code></td><td>string</td><td><code>''</code></td><td>Form field name</td></tr>
+                    <tr><td><code>disabled</code></td><td>boolean</td><td><code>false</code></td><td>Disabled state</td></tr>
+                </tbody>
+            </table>
+            <h4>Events</h4>
+            <ul>
+                <li><code>input</code></li>
+                <li><code>change</code></li>
+            </ul>
+        </div>
+
+        <!-- Code Editor -->
+        <div class="component-block" id="code-editor">
+            <h3>Code Editor</h3>
+            <p>A code editor with line numbers and pluggable syntax highlighting.</p>
+<pre><code>&lt;code-editor
+    value="// Hello world"
+    placeholder="Enter code..."
+    line-numbers
+&gt;&lt;/code-editor&gt;</code></pre>
+            <table>
+                <thead><tr><th>Attribute</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
+                <tbody>
+                    <tr><td><code>value</code></td><td>string</td><td><code>''</code></td><td>Editor content</td></tr>
+                    <tr><td><code>placeholder</code></td><td>string</td><td><code>''</code></td><td>Placeholder text</td></tr>
+                    <tr><td><code>readonly</code></td><td>boolean</td><td><code>false</code></td><td>Read-only mode</td></tr>
+                    <tr><td><code>disabled</code></td><td>boolean</td><td><code>false</code></td><td>Disabled state</td></tr>
+                    <tr><td><code>spellcheck</code></td><td>boolean</td><td><code>false</code></td><td>Enable spell check</td></tr>
+                    <tr><td><code>line-numbers</code></td><td>boolean</td><td><code>true</code></td><td>Show line numbers</td></tr>
+                    <tr><td><code>font-family</code></td><td>string</td><td>&mdash;</td><td>Override font</td></tr>
+                    <tr><td><code>font-size</code></td><td>string</td><td>&mdash;</td><td>Override font size</td></tr>
+                    <tr><td><code>background-color</code></td><td>string</td><td>&mdash;</td><td>Override background</td></tr>
+                    <tr><td><code>background-opacity</code></td><td>string</td><td>&mdash;</td><td>Override background opacity</td></tr>
+                    <tr><td><code>text-color</code></td><td>string</td><td>&mdash;</td><td>Override text color</td></tr>
+                    <tr><td><code>caret-color</code></td><td>string</td><td>&mdash;</td><td>Override caret color</td></tr>
+                    <tr><td><code>selection-color</code></td><td>string</td><td>&mdash;</td><td>Override selection color</td></tr>
+                </tbody>
+            </table>
+            <h4>Methods</h4>
+            <ul>
+                <li><code>setTokenizer(fn)</code> &mdash; Set a syntax highlighting function: <code>(line: string) =&gt; Array&lt;{type, text}&gt;</code></li>
+                <li><code>get/set value</code> &mdash; Editor content</li>
+            </ul>
+            <h4>Events</h4>
+            <ul>
+                <li><code>input</code> (detail: <code>{ value }</code>)</li>
+                <li><code>forcerecompile</code></li>
+            </ul>
+<pre><code>// Use with DSL tokenizer
+import { dslTokenizer } from 'handfish'
+editor.setTokenizer(dslTokenizer)</code></pre>
+        </div>
+
+        <!-- Image Magnifier -->
+        <div class="component-block" id="image-magnifier">
+            <h3>Image Magnifier</h3>
+            <p>A zoomed-in view of a canvas under the cursor for precise color picking. Shows crosshairs and the hex value of the center pixel.</p>
+<pre><code>&lt;image-magnifier zoom="8" size="120"&gt;&lt;/image-magnifier&gt;</code></pre>
+            <table>
+                <thead><tr><th>Attribute</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
+                <tbody>
+                    <tr><td><code>active</code></td><td>boolean</td><td><code>false</code></td><td>Show/hide the magnifier</td></tr>
+                    <tr><td><code>zoom</code></td><td>number</td><td><code>8</code></td><td>Zoom level</td></tr>
+                    <tr><td><code>size</code></td><td>number</td><td><code>120</code></td><td>Magnifier diameter in pixels</td></tr>
+                </tbody>
+            </table>
+            <h4>Methods</h4>
+            <ul>
+                <li><code>attachToCanvas(canvas)</code> &mdash; Set the source canvas to magnify</li>
+                <li><code>update(x, y)</code> &mdash; Update magnifier position and render</li>
+            </ul>
+        </div>
+
+        <!-- Toast Notifications -->
+        <div class="component-block" id="toast-notifications">
+            <h3>Toast Notifications</h3>
+            <p>Lightweight notification toasts with auto-dismiss. Exported as standalone functions (not a custom element).</p>
+<pre><code>import { showToast, showSuccess, showError, showWarning, showInfo } from 'handfish'
+
+showSuccess('Palette saved')
+showError('Failed to load', { duration: 6000 })
+showWarning('Unsaved changes')
+showInfo('Copied to clipboard')</code></pre>
+            <ul>
+                <li><code>showToast(message, { type, duration })</code> &mdash; General toast (<code>type</code>: <code>info</code>, <code>success</code>, <code>error</code>, <code>warning</code>)</li>
+                <li><code>showSuccess(message, options)</code> &mdash; Success toast (default 2s)</li>
+                <li><code>showError(message, options)</code> &mdash; Error toast (default 6s)</li>
+                <li><code>showWarning(message, options)</code> &mdash; Warning toast (default 2s)</li>
+                <li><code>showInfo(message, options)</code> &mdash; Info toast (default 2s)</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- ════════════════════════════════════════════
+         Utilities
+         ════════════════════════════════════════════ -->
+    <section id="utilities">
+        <h2>Utilities</h2>
+
+        <div class="component-block" id="escape-handler">
+            <h3>Escape Handler</h3>
+            <p>Stack-based escape key management for closing modals and dropdowns in the correct order.</p>
+<pre><code>import { registerEscapeable, unregisterEscapeable, initEscapeHandler } from 'handfish'
+
+initEscapeHandler()
+registerEscapeable(element, () =&gt; closeMyModal())
+unregisterEscapeable(element)</code></pre>
+            <p>Exports: <code>registerEscapeable</code>, <code>unregisterEscapeable</code>, <code>closeTopmost</code>, <code>hasOpenEscapeables</code>, <code>initEscapeHandler</code></p>
+        </div>
+
+        <div class="component-block" id="tooltips">
+            <h3>Tooltips</h3>
+            <p>Hover tooltips for any element with a <code>data-title</code> attribute.</p>
+<pre><code>import { initializeTooltips } from 'handfish'
+
+initializeTooltips()</code></pre>
+<pre><code>&lt;button data-title="Save palette"&gt;Save&lt;/button&gt;</code></pre>
+        </div>
+
+        <div class="component-block" id="color-conversions">
+            <h3>Color Conversions</h3>
+            <p>Comprehensive color conversion utilities. All RGB objects use <code>{r, g, b}</code> with 0-255 values.</p>
+<pre><code>import { rgbToHex, parseHex, rgbToHsv, hsvToRgb, rgbToOklch, oklchToRgb } from 'handfish'</code></pre>
+        </div>
+    </section>
+
+    <!-- ════════════════════════════════════════════
+         Design Tokens
+         ════════════════════════════════════════════ -->
+    <section id="design-tokens">
+        <h2>Design Tokens</h2>
+        <p>All visual values are controlled via CSS custom properties with the <code>--hf-</code> prefix. Colors use <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/color_value/oklch">OKLCH</a> for perceptually uniform color manipulation. Override any token in your CSS:</p>
+<pre><code>:root {
+    /* Colors (OKLCH: lightness, chroma, hue) */
+    --hf-color-1: oklch(13.9% 0.010 264);
+    --hf-accent-3: oklch(79.5% 0.103 264);
+
+    /* Typography */
+    --hf-font-family: 'Your Font', sans-serif;
+
+    /* Spacing */
+    --hf-space-4: 1rem;
+}</code></pre>
+
+        <h3>Color Tokens</h3>
+        <p>Colors are defined in OKLCH format. Dark mode uses hue 264, light mode uses hue 90.</p>
+        <table>
+            <thead><tr><th>Token</th><th>Description</th></tr></thead>
+            <tbody>
+                <tr><td><code>--hf-color-1</code> through <code>--hf-color-7</code></td><td>Base palette (dark to light)</td></tr>
+                <tr><td><code>--hf-accent-1</code> through <code>--hf-accent-4</code></td><td>Accent colors (higher chroma)</td></tr>
+                <tr><td><code>--hf-red</code>, <code>--hf-green</code>, <code>--hf-yellow</code>, <code>--hf-blue</code></td><td>Semantic colors</td></tr>
+            </tbody>
+        </table>
+
+        <h4>Semantic Aliases</h4>
+        <p>These reference the base palette and auto-resolve when the theme changes:</p>
+        <table>
+            <thead><tr><th>Token</th><th>Maps to</th><th>Description</th></tr></thead>
+            <tbody>
+                <tr><td><code>--hf-bg-base</code></td><td><code>--hf-color-1</code></td><td>Page background</td></tr>
+                <tr><td><code>--hf-bg-surface</code></td><td><code>--hf-color-2</code></td><td>Card/panel background</td></tr>
+                <tr><td><code>--hf-bg-elevated</code></td><td><code>--hf-color-3</code></td><td>Elevated surface (inputs, buttons)</td></tr>
+                <tr><td><code>--hf-bg-muted</code></td><td><code>--hf-color-4</code></td><td>Muted/hover background</td></tr>
+                <tr><td><code>--hf-text-muted</code></td><td><code>--hf-color-4</code></td><td>Muted text</td></tr>
+                <tr><td><code>--hf-text-dim</code></td><td><code>--hf-color-5</code></td><td>Dim/secondary text</td></tr>
+                <tr><td><code>--hf-text-normal</code></td><td><code>--hf-color-6</code></td><td>Normal text</td></tr>
+                <tr><td><code>--hf-text-bright</code></td><td><code>--hf-color-7</code></td><td>Bright/emphasized text</td></tr>
+                <tr><td><code>--hf-border-subtle</code></td><td><code>--hf-color-4</code></td><td>Subtle borders</td></tr>
+                <tr><td><code>--hf-titlebar-bg</code></td><td><code>--hf-color-3</code></td><td>Title bar background</td></tr>
+                <tr><td><code>--hf-accent-bg</code></td><td><code>--hf-accent-1</code></td><td>Accent background</td></tr>
+                <tr><td><code>--hf-accent</code></td><td><code>--hf-accent-3</code></td><td>Primary accent</td></tr>
+                <tr><td><code>--hf-accent-hover</code></td><td><code>--hf-accent-4</code></td><td>Accent hover state</td></tr>
+                <tr><td><code>--hf-border</code></td><td>&mdash;</td><td>Semi-transparent accent border</td></tr>
+                <tr><td><code>--hf-border-hover</code></td><td>&mdash;</td><td>Border hover state</td></tr>
+                <tr><td><code>--hf-border-focus</code></td><td>&mdash;</td><td>Border focus state</td></tr>
+            </tbody>
+        </table>
+
+        <h3>Typography Tokens</h3>
+        <table>
+            <thead><tr><th>Token</th><th>Value</th></tr></thead>
+            <tbody>
+                <tr><td><code>--hf-font-family</code></td><td>Nunito, 'Nunito Blank'</td></tr>
+                <tr><td><code>--hf-font-family-mono</code></td><td>'Noto Sans Mono', 'Noto Sans Mono Blank'</td></tr>
+                <tr><td><code>--hf-font-family-icon</code></td><td>'Material Symbols Outlined'</td></tr>
+                <tr><td><code>--hf-size-xs</code></td><td>0.625rem (10px)</td></tr>
+                <tr><td><code>--hf-size-sm</code></td><td>0.75rem (12px)</td></tr>
+                <tr><td><code>--hf-size-base</code></td><td>0.875rem (14px)</td></tr>
+                <tr><td><code>--hf-size-md</code></td><td>1rem (16px)</td></tr>
+                <tr><td><code>--hf-size-lg</code></td><td>1.125rem (18px)</td></tr>
+                <tr><td><code>--hf-size-xl</code></td><td>1.25rem (20px)</td></tr>
+                <tr><td><code>--hf-size-2xl</code></td><td>1.5rem (24px)</td></tr>
+                <tr><td><code>--hf-weight-normal</code></td><td>400</td></tr>
+                <tr><td><code>--hf-weight-medium</code></td><td>500</td></tr>
+                <tr><td><code>--hf-weight-semibold</code></td><td>600</td></tr>
+                <tr><td><code>--hf-weight-bold</code></td><td>700</td></tr>
+                <tr><td><code>--hf-leading-tight</code></td><td>1.2</td></tr>
+                <tr><td><code>--hf-leading-normal</code></td><td>1.5</td></tr>
+                <tr><td><code>--hf-leading-relaxed</code></td><td>1.75</td></tr>
+                <tr><td><code>--hf-tracking-tight</code></td><td>-0.025em</td></tr>
+                <tr><td><code>--hf-tracking-normal</code></td><td>0</td></tr>
+                <tr><td><code>--hf-tracking-wide</code></td><td>0.05em</td></tr>
+            </tbody>
+        </table>
+
+        <h3>Spacing Tokens</h3>
+        <table>
+            <thead><tr><th>Token</th><th>Value</th></tr></thead>
+            <tbody>
+                <tr><td><code>--hf-space-0</code></td><td>0</td></tr>
+                <tr><td><code>--hf-space-1</code></td><td>0.25rem (4px)</td></tr>
+                <tr><td><code>--hf-space-2</code></td><td>0.5rem (8px)</td></tr>
+                <tr><td><code>--hf-space-3</code></td><td>0.75rem (12px)</td></tr>
+                <tr><td><code>--hf-space-4</code></td><td>1rem (16px)</td></tr>
+                <tr><td><code>--hf-space-5</code></td><td>1.25rem (20px)</td></tr>
+                <tr><td><code>--hf-space-6</code></td><td>1.5rem (24px)</td></tr>
+                <tr><td><code>--hf-space-8</code></td><td>2rem (32px)</td></tr>
+                <tr><td><code>--hf-space-10</code></td><td>2.5rem (40px)</td></tr>
+                <tr><td><code>--hf-space-12</code></td><td>3rem (48px)</td></tr>
+            </tbody>
+        </table>
+
+        <h3>Border Radius Tokens</h3>
+        <table>
+            <thead><tr><th>Token</th><th>Value</th></tr></thead>
+            <tbody>
+                <tr><td><code>--hf-radius-none</code></td><td>0</td></tr>
+                <tr><td><code>--hf-radius-sm</code></td><td>0.25rem (4px)</td></tr>
+                <tr><td><code>--hf-radius-md</code></td><td>0.375rem (6px)</td></tr>
+                <tr><td><code>--hf-radius</code></td><td>0.5rem (8px)</td></tr>
+                <tr><td><code>--hf-radius-lg</code></td><td>0.75rem (12px)</td></tr>
+                <tr><td><code>--hf-radius-xl</code></td><td>1rem (16px)</td></tr>
+                <tr><td><code>--hf-radius-pill</code></td><td>999px</td></tr>
+                <tr><td><code>--hf-radius-full</code></td><td>50%</td></tr>
+            </tbody>
+        </table>
+
+        <h3>Shadow Tokens</h3>
+        <table>
+            <thead><tr><th>Token</th><th>Value</th></tr></thead>
+            <tbody>
+                <tr><td><code>--hf-shadow-sm</code></td><td>0 1px 2px rgba(0, 0, 0, 0.1)</td></tr>
+                <tr><td><code>--hf-shadow</code></td><td>0 2px 4px rgba(0, 0, 0, 0.15)</td></tr>
+                <tr><td><code>--hf-shadow-md</code></td><td>0 4px 8px rgba(0, 0, 0, 0.2)</td></tr>
+                <tr><td><code>--hf-shadow-lg</code></td><td>0 8px 16px rgba(0, 0, 0, 0.25)</td></tr>
+                <tr><td><code>--hf-shadow-xl</code></td><td>0 16px 32px rgba(0, 0, 0, 0.3)</td></tr>
+                <tr><td><code>--hf-glow-accent</code></td><td>0 0 12px accent glow</td></tr>
+            </tbody>
+        </table>
+
+        <h3>Control Tokens</h3>
+        <table>
+            <thead><tr><th>Token</th><th>Value</th></tr></thead>
+            <tbody>
+                <tr><td><code>--hf-control-height-sm</code></td><td>1.5rem (24px)</td></tr>
+                <tr><td><code>--hf-control-height</code></td><td>1.875rem (30px)</td></tr>
+                <tr><td><code>--hf-control-height-lg</code></td><td>2.25rem (36px)</td></tr>
+                <tr><td><code>--hf-control-padding</code></td><td>0.25rem 0.5rem</td></tr>
+                <tr><td><code>--hf-titlebar-height</code></td><td>2.25rem (36px)</td></tr>
+            </tbody>
+        </table>
+
+        <h3>Transition Tokens</h3>
+        <table>
+            <thead><tr><th>Token</th><th>Value</th></tr></thead>
+            <tbody>
+                <tr><td><code>--hf-transition-fast</code></td><td>0.1s ease</td></tr>
+                <tr><td><code>--hf-transition</code></td><td>0.15s ease</td></tr>
+                <tr><td><code>--hf-transition-slow</code></td><td>0.3s ease</td></tr>
+                <tr><td><code>--hf-transition-color</code></td><td>color 0.15s ease</td></tr>
+                <tr><td><code>--hf-transition-bg</code></td><td>background-color 0.15s ease</td></tr>
+                <tr><td><code>--hf-transition-border</code></td><td>border-color 0.15s ease</td></tr>
+                <tr><td><code>--hf-transition-opacity</code></td><td>opacity 0.15s ease</td></tr>
+                <tr><td><code>--hf-transition-transform</code></td><td>transform 0.15s ease</td></tr>
+            </tbody>
+        </table>
+
+        <h3>Z-Index Scale</h3>
+        <table>
+            <thead><tr><th>Token</th><th>Value</th></tr></thead>
+            <tbody>
+                <tr><td><code>--hf-z-base</code></td><td>0</td></tr>
+                <tr><td><code>--hf-z-dropdown</code></td><td>100</td></tr>
+                <tr><td><code>--hf-z-sticky</code></td><td>200</td></tr>
+                <tr><td><code>--hf-z-fixed</code></td><td>300</td></tr>
+                <tr><td><code>--hf-z-modal-backdrop</code></td><td>400</td></tr>
+                <tr><td><code>--hf-z-modal</code></td><td>500</td></tr>
+                <tr><td><code>--hf-z-popover</code></td><td>600</td></tr>
+                <tr><td><code>--hf-z-tooltip</code></td><td>700</td></tr>
+            </tbody>
+        </table>
+
+        <h3>Glassmorphism Tokens</h3>
+        <table>
+            <thead><tr><th>Token</th><th>Value</th></tr></thead>
+            <tbody>
+                <tr><td><code>--hf-glass-blur</code></td><td>blur(20px)</td></tr>
+                <tr><td><code>--hf-glass-blur-sm</code></td><td>blur(8px)</td></tr>
+                <tr><td><code>--hf-glass-blur-lg</code></td><td>blur(32px)</td></tr>
+                <tr><td><code>--hf-backdrop</code></td><td>rgba(0, 0, 0, 0.6)</td></tr>
+                <tr><td><code>--hf-surface-opacity</code></td><td>92%</td></tr>
+                <tr><td><code>--hf-surface-transparency</code></td><td>8%</td></tr>
+                <tr><td><code>--hf-panel-opacity</code></td><td>85%</td></tr>
+                <tr><td><code>--hf-panel-transparency</code></td><td>15%</td></tr>
+                <tr><td><code>--hf-header-opacity</code></td><td>65%</td></tr>
+                <tr><td><code>--hf-header-transparency</code></td><td>35%</td></tr>
+                <tr><td><code>--hf-chrome-highlight-blend</code></td><td>86%</td></tr>
+                <tr><td><code>--hf-chrome-highlight-tint</code></td><td>14%</td></tr>
+                <tr><td><code>--hf-chrome-shadow-blend</code></td><td>72%</td></tr>
+                <tr><td><code>--hf-chrome-shadow-shade</code></td><td>28%</td></tr>
+            </tbody>
+        </table>
+
+        <h3>Border Tokens</h3>
+        <table>
+            <thead><tr><th>Token</th><th>Value</th></tr></thead>
+            <tbody>
+                <tr><td><code>--hf-border-width</code></td><td>1px</td></tr>
+            </tbody>
+        </table>
+
+        <h3>Focus Ring Tokens</h3>
+        <table>
+            <thead><tr><th>Token</th><th>Value</th></tr></thead>
+            <tbody>
+                <tr><td><code>--hf-focus-ring-width</code></td><td>1px</td></tr>
+                <tr><td><code>--hf-focus-ring-offset</code></td><td>2px</td></tr>
+                <tr><td><code>--hf-focus-ring-color</code></td><td>var(--hf-accent)</td></tr>
+            </tbody>
+        </table>
+
+        <h3>Text Transform Tokens</h3>
+        <table>
+            <thead><tr><th>Token</th><th>Value</th></tr></thead>
+            <tbody>
+                <tr><td><code>--hf-text-transform</code></td><td>lowercase</td></tr>
+                <tr><td><code>--hf-text-transform-heading</code></td><td>uppercase</td></tr>
+            </tbody>
+        </table>
+    </section>
+
+    <!-- ════════════════════════════════════════════
+         Theming
+         ════════════════════════════════════════════ -->
+    <section id="theming">
+        <h2>Theming</h2>
+
+        <h3>Automatic (System Preference)</h3>
+        <p>Colors automatically adapt to <code>prefers-color-scheme</code>.</p>
+
+        <h3>Manual Theme</h3>
+<pre><code>&lt;html data-theme="dark"&gt;
+&lt;!-- or --&gt;
+&lt;html data-theme="light"&gt;</code></pre>
+<pre><code>// Toggle theme
+document.documentElement.dataset.theme =
+    document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'</code></pre>
+    </section>
+
+    <!-- ════════════════════════════════════════════
+         Utility Classes
+         ════════════════════════════════════════════ -->
+    <section id="utility-classes">
+        <h2>Utility Classes</h2>
+
+        <h3>Typography</h3>
+<pre><code>&lt;p class="hf-text-sm"&gt;Small text&lt;/p&gt;
+&lt;p class="hf-font-bold"&gt;Bold text&lt;/p&gt;
+&lt;p class="hf-mono"&gt;Monospace text&lt;/p&gt;
+&lt;p class="hf-uppercase"&gt;Uppercase&lt;/p&gt;
+&lt;p class="hf-text-accent"&gt;Accent color&lt;/p&gt;</code></pre>
+
+        <h3>Layout</h3>
+<pre><code>&lt;div class="hf-flex hf-gap-2 hf-items-center"&gt;
+    &lt;!-- Flexbox with gap --&gt;
+&lt;/div&gt;</code></pre>
+
+        <h3>Surfaces</h3>
+<pre><code>&lt;div class="hf-panel"&gt;Glass panel with border&lt;/div&gt;
+&lt;div class="hf-card"&gt;Card with padding&lt;/div&gt;</code></pre>
+
+        <h3>Buttons</h3>
+<pre><code>&lt;button class="hf-btn"&gt;Default&lt;/button&gt;
+&lt;button class="hf-btn hf-btn-primary"&gt;Primary&lt;/button&gt;
+&lt;button class="hf-btn hf-btn-ghost"&gt;Ghost&lt;/button&gt;</code></pre>
+    </section>
+
+    <!-- ════════════════════════════════════════════
+         Browser Support
+         ════════════════════════════════════════════ -->
+    <section id="browser-support">
+        <h2>Browser Support</h2>
+        <ul>
+            <li>Chrome 90+</li>
+            <li>Firefox 90+</li>
+            <li>Safari 15.4+</li>
+            <li>Edge 90+</li>
+        </ul>
+        <p>Requires support for:</p>
+        <ul>
+            <li>Custom Elements v1</li>
+            <li>CSS Custom Properties</li>
+            <li><code>oklch()</code> color values</li>
+            <li><code>color-mix()</code> CSS function</li>
+            <li><code>backdrop-filter</code> (with fallback)</li>
+        </ul>
+    </section>
+
+</main>
+
+<script>
+// Close mobile nav when clicking a link
+document.querySelectorAll('.sidebar a').forEach(a => {
+    a.addEventListener('click', () => {
+        document.querySelector('.sidebar').classList.remove('open');
+    });
+});
+</script>
+
+</body>
+</html>

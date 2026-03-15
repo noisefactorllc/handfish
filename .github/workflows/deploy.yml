@@ -8,8 +8,7 @@ on:
       - 'examples/**'
       - 'scripts/**'
       - 'package.json'
-      - 'README.md'
-      - '_config.yml'
+      - 'index.html'
       - '.github/workflows/deploy.yml'
 
 jobs:
@@ -60,14 +59,8 @@ jobs:
           dist/styles/ \
           deploy@${{ secrets.SCAFFOLD_SERVER_IP }}:~/sites/handfish.noisefactor.io/content/${VERSION}/styles/
 
-    - name: Build Jekyll site
-      uses: actions/jekyll-build-pages@v1
-      with:
-        source: ./
-        destination: ./_site
-
     - name: Deploy site
       run: |
         rsync -avz \
-          _site/ \
+          dist/site/ \
           deploy@${{ secrets.SCAFFOLD_SERVER_IP }}:~/sites/handfish.noisefactor.io/content/
