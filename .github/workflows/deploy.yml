@@ -69,6 +69,5 @@ jobs:
     needs: build-and-deploy
     uses: noisedeck/scaffold/.github/workflows/cdn-purge.yml@main
     with:
-      repo: noisedeck/handfish
-      sha: ${{ github.sha }}
+      domain: handfish.noisefactor.io
     secrets: inherit
