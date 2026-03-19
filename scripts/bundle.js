@@ -104,11 +104,15 @@ async function buildBundle() {
     const siteDir = path.join(distDir, 'site')
     fs.mkdirSync(siteDir, { recursive: true })
 
-    // Root index.html → site root
+    // Root index.html → site root (rewrite dist/ paths to versioned CDN paths)
     const rootIndex = path.join(repoRoot, 'index.html')
     if (fs.existsSync(rootIndex)) {
-        fs.copyFileSync(rootIndex, path.join(siteDir, 'index.html'))
-        console.log('  - site/index.html')
+        const pkg = JSON.parse(fs.readFileSync(path.join(repoRoot, 'package.json'), 'utf8'))
+        const version = pkg.version.replace(/-SNAPSHOT$/, '')
+        let html = fs.readFileSync(rootIndex, 'utf8')
+        html = html.replaceAll('href="dist/styles/', `href="/${version}/styles/`)
+        fs.writeFileSync(path.join(siteDir, 'index.html'), html)
+        console.log(`  - site/index.html (dist/ paths rewritten to /${version}/)`)
     }
 
     // Examples page → site/examples/
