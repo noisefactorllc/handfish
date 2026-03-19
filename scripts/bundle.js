@@ -104,13 +104,17 @@ async function buildBundle() {
     const siteDir = path.join(distDir, 'site')
     fs.mkdirSync(siteDir, { recursive: true })
 
+    // Resolve version for CDN path rewriting
+    const pkg = JSON.parse(fs.readFileSync(path.join(repoRoot, 'package.json'), 'utf8'))
+    const version = pkg.version.replace(/-SNAPSHOT$/, '')
+
     // Root index.html → site root (rewrite dist/ paths to versioned CDN paths)
     const rootIndex = path.join(repoRoot, 'index.html')
     if (fs.existsSync(rootIndex)) {
-        const pkg = JSON.parse(fs.readFileSync(path.join(repoRoot, 'package.json'), 'utf8'))
-        const version = pkg.version.replace(/-SNAPSHOT$/, '')
         let html = fs.readFileSync(rootIndex, 'utf8')
-        html = html.replaceAll('href="dist/styles/', `href="/${version}/styles/`)
+        html = html.replaceAll('href="dist/', `href="/${version}/`)
+        html = html.replaceAll("from 'dist/", `from '/${version}/`)
+        html = html.replaceAll('from "dist/', `from "/${version}/`)
         fs.writeFileSync(path.join(siteDir, 'index.html'), html)
         console.log(`  - site/index.html (dist/ paths rewritten to /${version}/)`)
     }
@@ -119,12 +123,19 @@ async function buildBundle() {
     const examplesDir = path.join(repoRoot, 'examples')
     const siteExamplesDir = path.join(siteDir, 'examples')
     fs.mkdirSync(siteExamplesDir, { recursive: true })
-    for (const file of ['index.html', 'favicon.svg']) {
-        const src = path.join(examplesDir, file)
-        if (fs.existsSync(src)) {
-            fs.copyFileSync(src, path.join(siteExamplesDir, file))
-            console.log(`  - site/examples/${file}`)
-        }
+    const exampleIndex = path.join(examplesDir, 'index.html')
+    if (fs.existsSync(exampleIndex)) {
+        let html = fs.readFileSync(exampleIndex, 'utf8')
+        html = html.replaceAll('href="../dist/', `href="/${version}/`)
+        html = html.replaceAll("from '../dist/", `from '/${version}/`)
+        html = html.replaceAll('from "../dist/', `from "/${version}/`)
+        fs.writeFileSync(path.join(siteExamplesDir, 'index.html'), html)
+        console.log(`  - site/examples/index.html (dist/ paths rewritten to /${version}/)`)
+    }
+    const exampleFavicon = path.join(examplesDir, 'favicon.svg')
+    if (fs.existsSync(exampleFavicon)) {
+        fs.copyFileSync(exampleFavicon, path.join(siteExamplesDir, 'favicon.svg'))
+        console.log('  - site/examples/favicon.svg')
     }
 
     console.log('Bundles written to dist/')
