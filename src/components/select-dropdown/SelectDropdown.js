@@ -52,6 +52,10 @@ if (!document.getElementById(SELECT_DROPDOWN_STYLES_ID)) {
             border-radius: var(--hf-radius-sm, 0.25rem);
         }
 
+        select-dropdown .select-trigger:hover {
+            background: var(--hf-bg-muted);
+        }
+
         select-dropdown .select-trigger:focus-visible {
             outline: var(--hf-focus-ring-width) solid var(--hf-focus-ring-color);
             outline-offset: var(--hf-focus-ring-offset);

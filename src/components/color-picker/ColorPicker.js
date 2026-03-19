@@ -51,6 +51,10 @@ if (!document.getElementById(COLOR_PICKER_STYLES_ID)) {
             border: var(--hf-border-width) solid var(--hf-border-subtle);
         }
 
+        color-picker .swatch-button:hover {
+            background: var(--hf-bg-muted);
+        }
+
         color-picker .swatch-button:focus-visible {
             outline: var(--hf-focus-ring-width) solid var(--hf-focus-ring-color);
             outline-offset: var(--hf-focus-ring-offset);
