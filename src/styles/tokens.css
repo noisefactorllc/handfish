@@ -78,6 +78,10 @@
     --hf-accent-bg:    var(--hf-accent-1);
     --hf-accent:       var(--hf-accent-3);
     --hf-accent-hover: var(--hf-accent-4);
+
+    /* Links */
+    --hf-link-color: var(--hf-accent);
+    --hf-link-hover: var(--hf-accent-hover);
 }
 
 /* Light mode override

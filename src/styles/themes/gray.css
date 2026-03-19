@@ -31,6 +31,10 @@
     --hf-green: oklch(79.2% 0.198 145);
     --hf-yellow: oklch(89.1% 0.133 89);
     --hf-blue: oklch(61.1% 0.153 260);
+
+    /* Links need color to stand out in achromatic theme */
+    --hf-link-color: var(--hf-blue);
+    --hf-link-hover: oklch(71.0% 0.153 260);
 }
 
 [data-theme="gray-light"] {
@@ -55,4 +59,8 @@
     --hf-green: oklch(46.5% 0.116 151);
     --hf-yellow: oklch(76.4% 0.155 85);
     --hf-blue: oklch(42.5% 0.150 260);
+
+    /* Links need color to stand out in achromatic theme */
+    --hf-link-color: var(--hf-blue);
+    --hf-link-hover: oklch(32.5% 0.150 260);
 }
