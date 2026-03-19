@@ -163,8 +163,8 @@ if (!document.getElementById(DROPDOWN_MENU_STYLES_ID)) {
 
         /* Selectable mode - dropdown arrow indicator */
         dropdown-menu[selectable] .dropdown-trigger::after {
-            content: '▾';
-            font-size: var(--hf-size-md, 1rem);
+            content: '▼';
+            font-size: 0.5rem;
             line-height: 0;
             color: var(--hf-text-dim);
             margin-left: 4px;

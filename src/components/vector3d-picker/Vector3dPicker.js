@@ -81,7 +81,7 @@ if (!document.getElementById(VECTOR3D_PICKER_STYLES_ID)) {
         vector3d-picker .vector-preview .axis-label.z { color: var(--hf-blue); }
 
         vector3d-picker .dropdown-arrow {
-            font-size: 0.6rem;
+            font-size: 0.5rem;
             color: var(--hf-text-dim);
             flex-shrink: 0;
             margin-left: auto;

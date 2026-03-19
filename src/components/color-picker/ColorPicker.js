@@ -73,7 +73,7 @@ if (!document.getElementById(COLOR_PICKER_STYLES_ID)) {
         }
 
         color-picker .dropdown-arrow {
-            font-size: 0.6rem;
+            font-size: 0.5rem;
             color: var(--hf-text-dim, #98a7c8);
             flex-shrink: 0;
             margin-left: auto;
