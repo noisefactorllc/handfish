@@ -31,7 +31,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/noisedeck/handfish.git"
+    "url": "https://github.com/noisefactorllc/handfish.git"
   },
   "devDependencies": {
     "@playwright/test": "^1.58.2",
