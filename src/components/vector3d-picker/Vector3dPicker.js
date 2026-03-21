@@ -415,10 +415,42 @@ if (!document.getElementById(VECTOR3D_PICKER_STYLES_ID)) {
         }
 
         vector3d-picker .normalize-toggle input {
-            accent-color: var(--hf-accent);
+            -webkit-appearance: none;
+            appearance: none;
             width: 14px;
             height: 14px;
+            border: var(--hf-border-width) solid var(--hf-border-subtle);
+            border-radius: var(--hf-radius-sm);
+            background: transparent;
             cursor: pointer;
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: border-color 0.15s ease;
+        }
+
+        vector3d-picker .normalize-toggle input::after {
+            content: "";
+            width: 6px;
+            height: 6px;
+            border-radius: 1px;
+            background-color: var(--hf-accent);
+            transform: scale(0);
+            transition: transform 0.15s ease;
+        }
+
+        vector3d-picker .normalize-toggle input:checked {
+            border-color: var(--hf-accent);
+        }
+
+        vector3d-picker .normalize-toggle input:checked::after {
+            transform: scale(1);
+        }
+
+        vector3d-picker .normalize-toggle input:hover {
+            border-color: var(--hf-text-normal);
         }
 
         vector3d-picker .magnitude-display {
