@@ -606,8 +606,284 @@ class Vector2dPicker extends HTMLElement {
     // Event Listeners
     // ========================================================================
 
-    _setupEventListeners() {}
-    _closeDialog() {}
+    _setupEventListeners() {
+        const button = this.querySelector('.vector-button')
+        const dialog = this.querySelector('.vector-dialog')
+        const closeBtn = this.querySelector('.dialog-close')
+        const pad = this.querySelector('.pad-2d')
+        const normalizeCheckbox = this.querySelector('.normalize-checkbox')
+        const resetButton = this.querySelector('.reset-button')
+
+        button.addEventListener('click', (e) => {
+            e.stopPropagation()
+            if (this.disabled) return
+            this._toggleDialog()
+        })
+
+        button.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault()
+                this._toggleDialog()
+            }
+        })
+
+        closeBtn.addEventListener('click', () => {
+            this._closeDialog()
+        })
+
+        dialog.addEventListener('click', (e) => {
+            if (e.target === dialog) {
+                this._closeDialog()
+            }
+        })
+
+        dialog.addEventListener('cancel', (e) => {
+            e.preventDefault()
+            this._closeDialog()
+        })
+
+        dialog.addEventListener('close', () => {
+            this._onDialogClosed()
+        })
+
+        pad.addEventListener('mousedown', (e) => this._onPadMouseDown(e))
+        pad.addEventListener('touchstart', (e) => this._onPadTouchStart(e), { passive: false })
+
+        const sliders = this.querySelectorAll('.axis-slider')
+        sliders.forEach((slider) => {
+            slider.addEventListener('input', (e) => this._onSliderInput(e))
+            slider.addEventListener('change', (e) => this._onSliderChange(e))
+        })
+
+        const inputs = this.querySelectorAll('.axis-input')
+        inputs.forEach((input) => {
+            input.addEventListener('keydown', (e) => this._onInputKeyDown(e))
+            input.addEventListener('blur', (e) => this._onInputBlur(e))
+        })
+
+        normalizeCheckbox.addEventListener('change', () => {
+            this._normalized = normalizeCheckbox.checked
+            if (this._normalized) {
+                this._normalizeValue()
+            }
+            this._updateDisplay()
+            this._updatePad()
+            this._updateSliders()
+            this._emitInput()
+            this._emitChange()
+        })
+
+        resetButton.addEventListener('click', () => {
+            if (this._normalized) {
+                this._value = { x: 1, y: 0 }
+            } else {
+                this._value = { x: 0, y: 0 }
+            }
+            this._updateDisplay()
+            this._updatePad()
+            this._updateSliders()
+            this._updateFormValue()
+            this._emitInput()
+            this._emitChange()
+        })
+    }
+
+    // ========================================================================
+    // Pad Interaction
+    // ========================================================================
+
+    _onPadMouseDown(e) {
+        e.preventDefault()
+        this._isDragging = true
+        this._updateFromPadEvent(e)
+        this._boundMouseMove = (e) => this._onPadMouseMove(e)
+        this._boundMouseUp = () => this._onPadMouseUp()
+        document.addEventListener('mousemove', this._boundMouseMove)
+        document.addEventListener('mouseup', this._boundMouseUp)
+    }
+
+    _onPadMouseMove(e) {
+        if (!this._isDragging) return
+        this._updateFromPadEvent(e)
+    }
+
+    _onPadMouseUp() {
+        if (this._isDragging) {
+            this._isDragging = false
+            this._emitChange()
+        }
+        document.removeEventListener('mousemove', this._boundMouseMove)
+        document.removeEventListener('mouseup', this._boundMouseUp)
+    }
+
+    _onPadTouchStart(e) {
+        e.preventDefault()
+        this._isDragging = true
+        if (e.touches.length > 0) {
+            this._updateFromPadEvent(e.touches[0])
+        }
+        this._boundTouchMove = (e) => this._onPadTouchMove(e)
+        this._boundTouchEnd = () => this._onPadTouchEnd()
+        document.addEventListener('touchmove', this._boundTouchMove, { passive: false })
+        document.addEventListener('touchend', this._boundTouchEnd)
+    }
+
+    _onPadTouchMove(e) {
+        if (!this._isDragging) return
+        e.preventDefault()
+        if (e.touches.length > 0) {
+            this._updateFromPadEvent(e.touches[0])
+        }
+    }
+
+    _onPadTouchEnd() {
+        if (this._isDragging) {
+            this._isDragging = false
+            this._emitChange()
+        }
+        document.removeEventListener('touchmove', this._boundTouchMove)
+        document.removeEventListener('touchend', this._boundTouchEnd)
+    }
+
+    _updateFromPadEvent(e) {
+        const pad = this.querySelector('.pad-2d')
+        const rect = pad.getBoundingClientRect()
+
+        let nx = (e.clientX - rect.left) / rect.width
+        let ny = (e.clientY - rect.top) / rect.height
+
+        nx = Math.max(0, Math.min(1, nx))
+        ny = Math.max(0, Math.min(1, ny))
+
+        const range = this._max - this._min
+        let x = this._roundToStep(nx * range + this._min)
+        let y = this._roundToStep((1 - ny) * range + this._min)
+
+        this._value = { x, y }
+
+        if (this._normalized) {
+            this._normalizeValue()
+        }
+
+        this._updateDisplay()
+        this._updatePad()
+        this._updateSliders()
+        this._updateFormValue()
+        this._emitInput()
+    }
+
+    // ========================================================================
+    // Slider and Input Handlers
+    // ========================================================================
+
+    _onSliderInput(e) {
+        const slider = e.target
+        const val = parseFloat(slider.value)
+
+        if (slider.classList.contains('x')) {
+            this._value.x = val
+        } else if (slider.classList.contains('y')) {
+            this._value.y = val
+        }
+
+        if (this._normalized) {
+            this._normalizeValue()
+        }
+
+        this._updateDisplay()
+        this._updatePad()
+        this._updateSliders()
+        this._updateFormValue()
+        this._emitInput()
+    }
+
+    _onSliderChange() {
+        this._emitChange()
+    }
+
+    _onInputKeyDown(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault()
+            this._applyInputValue(e.target)
+            e.target.blur()
+        } else if (e.key === 'Escape') {
+            this._updateSliders()
+            e.target.blur()
+        }
+    }
+
+    _onInputBlur(e) {
+        this._applyInputValue(e.target)
+    }
+
+    _applyInputValue(input) {
+        const val = parseFloat(input.value)
+        if (isNaN(val)) {
+            this._updateSliders()
+            return
+        }
+
+        const clampedVal = Math.max(this._min, Math.min(this._max, this._roundToStep(val)))
+
+        if (input.classList.contains('x-input')) {
+            this._value.x = clampedVal
+        } else if (input.classList.contains('y-input')) {
+            this._value.y = clampedVal
+        }
+
+        if (this._normalized) {
+            this._normalizeValue()
+        }
+
+        this._updateDisplay()
+        this._updatePad()
+        this._updateSliders()
+        this._updateFormValue()
+        this._emitInput()
+        this._emitChange()
+    }
+
+    // ========================================================================
+    // Dialog Methods
+    // ========================================================================
+
+    _toggleDialog() {
+        if (this._isOpen) {
+            this._closeDialog()
+        } else {
+            this._openDialog()
+        }
+    }
+
+    _openDialog() {
+        const dialog = this.querySelector('.vector-dialog')
+        const button = this.querySelector('.vector-button')
+
+        this._updateSliders()
+        this._updatePad()
+        this._updateNormalizeCheckbox()
+
+        dialog.showModal()
+        button.setAttribute('aria-expanded', 'true')
+        this.classList.add('dialog-open')
+        this._isOpen = true
+    }
+
+    _closeDialog() {
+        const dialog = this.querySelector('.vector-dialog')
+        if (dialog?.open) {
+            dialog.close()
+        } else {
+            this._onDialogClosed()
+        }
+    }
+
+    _onDialogClosed() {
+        const button = this.querySelector('.vector-button')
+        if (button) button.setAttribute('aria-expanded', 'false')
+        this.classList.remove('dialog-open')
+        this._isOpen = false
+    }
 
     // ========================================================================
     // Update / Display
