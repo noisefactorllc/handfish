@@ -778,7 +778,30 @@ render(o0)</pre>
     </section>
 
     <!-- ================================================================
-         15. Code Editor
+         15. Vector2D Picker
+         ================================================================ -->
+    <section class="demo-section" id="vector2d-picker-section">
+        <h2>vector 2d picker</h2>
+        <div class="demo-grid">
+            <div class="demo-item">
+                <h3>Default</h3>
+                <div class="demo-item-content">
+                    <vector2d-picker id="v2p1" value="[0, 0]"></vector2d-picker>
+                    <div class="output" id="v2pOutput">[0, 0]</div>
+                </div>
+            </div>
+            <div class="demo-item">
+                <h3>Preset Values</h3>
+                <div class="demo-item-content">
+                    <vector2d-picker id="v2p2" value="[0.5, -0.3]"></vector2d-picker>
+                    <vector2d-picker value="[1, 0]" disabled></vector2d-picker>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================================================================
+         16. Code Editor
          ================================================================ -->
     <section class="demo-section">
         <h2>code editor</h2>
@@ -1036,6 +1059,7 @@ render(o0)</pre>
             GradientStops,
             ImageMagnifier,
             Vector3dPicker,
+            Vector2dPicker,
             CodeEditor,
             applyEditorTheme,
             dslTokenizer
@@ -1159,6 +1183,16 @@ render(o0)</pre>
             document.getElementById('vpOutput').textContent =
                 `[${v.x.toFixed(2)}, ${v.y.toFixed(2)}, ${v.z.toFixed(2)}]`
         })
+
+        // Vector2D picker output
+        const v2p1 = document.getElementById('v2p1')
+        const v2pOutput = document.getElementById('v2pOutput')
+        if (v2p1) {
+            v2p1.addEventListener('input', () => {
+                const v = v2p1.value
+                v2pOutput.textContent = `[${v.x.toFixed(2)}, ${v.y.toFixed(2)}]`
+            })
+        }
 
         // Code editor - set DSL tokenizer and sample code
         editor1.setTokenizer(dslTokenizer)
