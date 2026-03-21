@@ -543,12 +543,76 @@ class Vector2dPicker extends HTMLElement {
     }
 
     // ========================================================================
-    // Stub methods (implemented in subsequent tasks)
+    // Render
     // ========================================================================
 
-    _render() {}
+    _render() {
+        this.innerHTML = `
+            <button class="vector-button" type="button" aria-haspopup="dialog" aria-expanded="false">
+                <span class="vector-preview">
+                    <span class="axis"><span class="axis-label x">X</span><span class="x-value">0.00</span></span>
+                    <span class="axis"><span class="axis-label y">Y</span><span class="y-value">0.00</span></span>
+                </span>
+                <span class="dropdown-arrow">\u25BC</span>
+            </button>
+            <dialog class="vector-dialog" aria-label="2D Vector picker">
+                <div class="dialog-titlebar">
+                    <span class="dialog-title">vector2d</span>
+                    <button class="dialog-close" type="button" aria-label="close">\u2715</button>
+                </div>
+                <div class="dialog-body">
+                    <div class="pad-container">
+                        <div class="pad-2d">
+                            <div class="pad-grid"></div>
+                            <div class="axis-labels">
+                                <span class="axis-indicator x-pos">+X</span>
+                                <span class="axis-indicator x-neg">-X</span>
+                                <span class="axis-indicator y-pos">+Y</span>
+                                <span class="axis-indicator y-neg">-Y</span>
+                            </div>
+                            <div class="pad-circle-guide"></div>
+                            <div class="pad-direction-line"></div>
+                            <div class="pad-indicator"></div>
+                        </div>
+                    </div>
+
+                    <div class="sliders-section">
+                        <div class="slider-row">
+                            <span class="slider-label x">X</span>
+                            <input type="range" class="axis-slider x" name="x-range" min="-1" max="1" step="0.01" value="0">
+                            <input type="text" class="axis-input x-input" name="x-input" value="0.00">
+                        </div>
+                        <div class="slider-row">
+                            <span class="slider-label y">Y</span>
+                            <input type="range" class="axis-slider y" name="y-range" min="-1" max="1" step="0.01" value="0">
+                            <input type="text" class="axis-input y-input" name="y-input" value="0.00">
+                        </div>
+                    </div>
+
+                    <div class="options-row">
+                        <label class="normalize-toggle">
+                            <input type="checkbox" class="normalize-checkbox" name="normalize">
+                            <span>Normalize</span>
+                        </label>
+                        <span class="magnitude-display">|v| = 0.00</span>
+                        <button class="reset-button" type="button">Reset</button>
+                    </div>
+                </div>
+            </dialog>
+        `
+    }
+
+    // ========================================================================
+    // Event Listeners
+    // ========================================================================
+
     _setupEventListeners() {}
     _closeDialog() {}
+
+    // ========================================================================
+    // Update / Display
+    // ========================================================================
+
     _updateDisplay() {}
     _updatePad() {}
     _updateSliders() {}
@@ -556,8 +620,18 @@ class Vector2dPicker extends HTMLElement {
     _updateNormalizeCheckbox() {}
     _updateDisabledState() {}
     _updateFormValue() {}
+
+    // ========================================================================
+    // Value Parsing
+    // ========================================================================
+
     _setValueFromAttribute() {}
     _normalizeValue() {}
+
+    // ========================================================================
+    // Utility
+    // ========================================================================
+
     _clampValue() {
         this._value.x = Math.max(this._min, Math.min(this._max, this._roundToStep(this._value.x)))
         this._value.y = Math.max(this._min, Math.min(this._max, this._roundToStep(this._value.y)))
