@@ -505,6 +505,7 @@ class Vector3dPicker extends HTMLElement {
 
         // Default vector value
         this._value = { x: 0, y: 1, z: 0 }
+        this._defaultValue = null
         this._min = -1
         this._max = 1
         this._step = 0.01
@@ -528,8 +529,13 @@ class Vector3dPicker extends HTMLElement {
             this._setupEventListeners()
             this._listenersAttached = true
         }
+        this._updateSliderRanges()
+        this._updateNormalizeCheckbox()
         this._updateDisplay()
         this._updateFormValue()
+        if (!this._defaultValue) {
+            this._defaultValue = { ...this._value }
+        }
     }
 
     disconnectedCallback() {
@@ -549,10 +555,12 @@ class Vector3dPicker extends HTMLElement {
             case 'min':
                 this._min = parseFloat(newValue) || -1
                 this._updateSliderRanges()
+                this._updateNormalizeCheckbox()
                 break
             case 'max':
                 this._max = parseFloat(newValue) || 1
                 this._updateSliderRanges()
+                this._updateNormalizeCheckbox()
                 break
             case 'step':
                 this._step = parseFloat(newValue) || 0.01
@@ -748,12 +756,20 @@ class Vector3dPicker extends HTMLElement {
 
         const sliders = this.querySelectorAll('.axis-slider')
         sliders.forEach((slider) => {
-            slider.addEventListener('input', (e) => this._onSliderInput(e))
-            slider.addEventListener('change', (e) => this._onSliderChange(e))
+            slider.addEventListener('input', (e) => {
+                e.stopPropagation()
+                this._onSliderInput(e)
+            })
+            slider.addEventListener('change', (e) => {
+                e.stopPropagation()
+                this._onSliderChange(e)
+            })
         })
 
         const inputs = this.querySelectorAll('.axis-input')
         inputs.forEach((input) => {
+            input.addEventListener('input', (e) => e.stopPropagation())
+            input.addEventListener('change', (e) => e.stopPropagation())
             input.addEventListener('keydown', (e) => this._onInputKeyDown(e))
             input.addEventListener('blur', (e) => this._onInputBlur(e))
         })
@@ -771,7 +787,10 @@ class Vector3dPicker extends HTMLElement {
         })
 
         resetButton.addEventListener('click', () => {
-            this._value = { x: 0, y: 1, z: 0 }
+            this._value = { ...this._defaultValue }
+            if (this._normalized) {
+                this._normalizeValue()
+            }
             this._updateDisplay()
             this._updateGizmo()
             this._updateSliders()
@@ -1075,11 +1094,21 @@ class Vector3dPicker extends HTMLElement {
         })
     }
 
+    _canNormalize() {
+        return this._min <= -1 && this._max >= 1
+    }
+
     _updateNormalizeCheckbox() {
         const checkbox = this.querySelector('.normalize-checkbox')
-        if (checkbox) {
-            checkbox.checked = this._normalized
+        if (!checkbox) return
+
+        const canNormalize = this._canNormalize()
+        checkbox.disabled = !canNormalize
+        if (!canNormalize && this._normalized) {
+            this._normalized = false
+            this._updateGizmo()
         }
+        checkbox.checked = this._normalized
     }
 
     _updateDisabledState() {

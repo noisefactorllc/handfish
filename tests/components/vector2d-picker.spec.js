@@ -87,17 +87,22 @@ test.describe('Vector2dPicker', () => {
         expect(fired).toBe(true)
     })
 
-    test('reset button restores default value', async ({ page }) => {
+    test('reset button restores initial value', async ({ page }) => {
         const picker = page.locator('vector2d-picker#v2p2')
         const button = picker.locator('.vector-button')
         await button.click()
 
+        // Change value away from initial
+        const xSlider = picker.locator('.axis-slider.x')
+        await xSlider.fill('0')
+
         const resetBtn = picker.locator('.reset-button')
         await resetBtn.click()
 
+        // Should reset to the initial attribute value [0.5, -0.3]
         const value = await picker.evaluate(el => el.value)
-        expect(value.x).toBe(0)
-        expect(value.y).toBe(0)
+        expect(value.x).toBeCloseTo(0.5, 1)
+        expect(value.y).toBeCloseTo(-0.3, 1)
     })
 
     test('normalize constrains vector to unit length', async ({ page }) => {
