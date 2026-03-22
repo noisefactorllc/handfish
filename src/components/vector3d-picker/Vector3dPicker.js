@@ -449,8 +449,17 @@ if (!document.getElementById(VECTOR3D_PICKER_STYLES_ID)) {
             transform: scale(1);
         }
 
-        vector3d-picker .normalize-toggle input:hover {
+        vector3d-picker .normalize-toggle input:hover:not(:disabled) {
             border-color: var(--hf-text-normal);
+        }
+
+        vector3d-picker .normalize-toggle:has(input:disabled) {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        vector3d-picker .normalize-toggle input:disabled {
+            cursor: not-allowed;
         }
 
         vector3d-picker .magnitude-display {
