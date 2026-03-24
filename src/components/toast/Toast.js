@@ -58,8 +58,11 @@ if (!document.getElementById(STYLES_ID)) {
 
         .hf-toast-icon {
             flex-shrink: 0;
-            font-size: 1.125rem;
-            line-height: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 1.125rem;
+            height: 1.125rem;
         }
 
         .hf-toast-content {
@@ -157,12 +160,12 @@ if (!document.getElementById(STYLES_ID)) {
     document.head.appendChild(style)
 }
 
-// Icon mapping for toast types
+// SVG icon mapping for toast types
 const ICONS = {
-    success: '✓',
-    error: '✕',
-    warning: '⚠',
-    info: 'ℹ'
+    success: '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5l3.5 3.5 6.5-8"/></svg>',
+    error: '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg>',
+    warning: '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2L1.5 13.5h13L8 2z"/><path d="M8 6v3"/><circle cx="8" cy="11.5" r="0.75" fill="currentColor" stroke="none"/></svg>',
+    info: '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="8" cy="8" r="6.5"/><path d="M8 7.5v3.5"/><circle cx="8" cy="5" r="0.75" fill="currentColor" stroke="none"/></svg>'
 }
 
 /**
@@ -212,7 +215,7 @@ function showToast(message, options = {}) {
         <div class="hf-toast-content">
             <p class="hf-toast-message">${message}</p>
         </div>
-        ${dismissible ? '<button class="hf-toast-close" aria-label="Dismiss">✕</button>' : ''}
+        ${dismissible ? '<button class="hf-toast-close" aria-label="Dismiss"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 2l8 8M10 2l-8 8"/></svg></button>' : ''}
         ${duration > 0 && showProgress ? `
             <div class="hf-toast-progress">
                 <div class="hf-toast-progress-bar" style="width: 100%"></div>
