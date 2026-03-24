@@ -28,6 +28,11 @@ if (!document.getElementById(DROPDOWN_MENU_STYLES_ID)) {
             position: relative;
         }
 
+        /* Hide raw dropdown-items before component renders */
+        dropdown-menu > dropdown-item {
+            display: none;
+        }
+
         dropdown-menu[disabled] {
             opacity: 0.5;
             pointer-events: none;
