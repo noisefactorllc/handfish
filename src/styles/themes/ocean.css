@@ -1,0 +1,68 @@
+/**
+ * Handfish Theme: Ocean
+ *
+ * Deep navy backgrounds with bright teal/aquamarine accents — like
+ * moonlight on water. Apply with:
+ *
+ *   <html data-theme="ocean">
+ *
+ * Or import after the base stylesheet to override defaults.
+ */
+
+@font-face {
+    font-family: 'Source Sans 3';
+    src: url('https://fonts.noisefactor.io/fonts/source-sans-3/SourceSans3-Regular.woff2') format('woff2');
+    font-weight: 400;
+    font-display: swap;
+}
+
+[data-theme="ocean"] {
+    /* Neutrals — deep navy, hue 220° */
+    --hf-color-1: oklch(10.0% 0.020 220);
+    --hf-color-2: oklch(14.5% 0.025 220);
+    --hf-color-3: oklch(20.0% 0.028 220);
+    --hf-color-4: oklch(27.0% 0.030 220);
+    --hf-color-5: oklch(53.0% 0.020 220);
+    --hf-color-6: oklch(73.0% 0.015 220);
+    --hf-color-7: oklch(91.0% 0.010 220);
+
+    /* Accents — bright teal/aquamarine, hue ~185° */
+    --hf-accent-1: oklch(18.0% 0.050 185);
+    --hf-accent-2: oklch(28.0% 0.080 185);
+    --hf-accent-3: oklch(72.0% 0.140 185);
+    --hf-accent-4: oklch(86.0% 0.100 185);
+
+    /* Semantic colors — default dark-mode values */
+    --hf-red: oklch(69.3% 0.199 18);
+    --hf-green: oklch(79.2% 0.198 145);
+    --hf-yellow: oklch(89.1% 0.133 89);
+    --hf-blue: oklch(61.1% 0.153 260);
+
+    /* Typography */
+    --hf-font-family: 'Source Sans 3';
+
+    /* Deep blue-tinted shadows (navy hue in shadow colors) */
+    --hf-shadow-sm: 0 1px 3px oklch(5% 0.030 220 / 0.4);
+    --hf-shadow: 0 2px 6px oklch(5% 0.030 220 / 0.5);
+    --hf-shadow-md: 0 4px 12px oklch(5% 0.030 220 / 0.5), 0 0 8px oklch(72% 0.140 185 / 0.10);
+    --hf-shadow-lg: 0 8px 24px oklch(5% 0.030 220 / 0.6), 0 0 16px oklch(72% 0.140 185 / 0.15);
+    --hf-shadow-xl: 0 16px 48px oklch(5% 0.030 220 / 0.7), 0 0 32px oklch(72% 0.140 185 / 0.20);
+    --hf-glow-accent: 0 0 20px oklch(72% 0.140 185 / 0.45);
+
+    /* Glassmorphism — moderate transparency, standard blur */
+    --hf-surface-opacity: 85%;
+    --hf-surface-transparency: 15%;
+    --hf-panel-opacity: 80%;
+    --hf-panel-transparency: 20%;
+    --hf-header-opacity: 62%;
+    --hf-header-transparency: 38%;
+    --hf-glass-blur: blur(20px);
+    --hf-glass-blur-sm: blur(8px);
+    --hf-glass-blur-lg: blur(32px);
+    --hf-backdrop: oklch(0% 0 0 / 0.65);
+
+    /* Computed borders — 25%/40% accent mix */
+    --hf-border: color-mix(in srgb, var(--hf-accent-3) 25%, transparent 75%);
+    --hf-border-hover: color-mix(in srgb, var(--hf-accent-3) 40%, transparent 60%);
+    --hf-border-focus: var(--hf-accent-3);
+}
