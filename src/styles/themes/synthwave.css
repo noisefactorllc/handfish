@@ -1,0 +1,81 @@
+/**
+ * Handfish Theme: Synthwave
+ *
+ * Hot magenta/pink neon aesthetic with violet-tinted dark backgrounds,
+ * sharp corners, and glowing accents. Apply with:
+ *
+ *   <html data-theme="synthwave">
+ *
+ * Or import after the base stylesheet to override defaults.
+ */
+
+@font-face {
+    font-family: 'Exo 2';
+    src: url('https://fonts.noisefactor.io/fonts/exo-2/Exo2[wght].woff2') format('woff2');
+    font-weight: 100 900;
+    font-display: swap;
+}
+
+[data-theme="synthwave"] {
+    /* Neutrals — near-black, violet tint (hue 280°) */
+    --hf-color-1: oklch(8.5% 0.008 280);
+    --hf-color-2: oklch(13.2% 0.010 280);
+    --hf-color-3: oklch(18.5% 0.012 280);
+    --hf-color-4: oklch(25.0% 0.015 280);
+    --hf-color-5: oklch(55.0% 0.015 280);
+    --hf-color-6: oklch(75.0% 0.010 280);
+    --hf-color-7: oklch(92.0% 0.008 280);
+
+    /* Accents — hot magenta/pink, high chroma */
+    --hf-accent-1: oklch(18.0% 0.060 340);
+    --hf-accent-2: oklch(28.0% 0.090 340);
+    --hf-accent-3: oklch(75.0% 0.170 340);
+    --hf-accent-4: oklch(88.0% 0.120 340);
+
+    /* Semantic colors — neon hot */
+    --hf-red: oklch(65.0% 0.270 10);
+    --hf-green: oklch(82.0% 0.250 145);
+    --hf-yellow: oklch(90.0% 0.180 95);
+    --hf-blue: oklch(70.0% 0.200 250);
+
+    /* Typography — Exo 2 variable font */
+    --hf-font-family: 'Exo 2';
+    --hf-text-transform-heading: uppercase;
+    --hf-tracking-wide: 0.08em;
+
+    /* Sharp corners */
+    --hf-radius-sm: 2px;
+    --hf-radius-md: 3px;
+    --hf-radius: 3px;
+    --hf-radius-lg: 4px;
+    --hf-radius-xl: 6px;
+    --hf-radius-pill: 999px;
+
+    /* Neon glow shadows — magenta-tinted */
+    --hf-shadow-sm: 0 1px 3px oklch(0% 0 0 / 0.4);
+    --hf-shadow: 0 2px 6px oklch(0% 0 0 / 0.5);
+    --hf-shadow-md: 0 4px 12px oklch(0% 0 0 / 0.5), 0 0 8px oklch(75% 0.170 340 / 0.15);
+    --hf-shadow-lg: 0 8px 24px oklch(0% 0 0 / 0.6), 0 0 16px oklch(75% 0.170 340 / 0.2);
+    --hf-shadow-xl: 0 16px 48px oklch(0% 0 0 / 0.7), 0 0 32px oklch(75% 0.170 340 / 0.25);
+    --hf-glow-accent: 0 0 20px oklch(75% 0.170 340 / 0.5);
+
+    /* Glassmorphism — high transparency, strong blur */
+    --hf-surface-opacity: 82%;
+    --hf-surface-transparency: 18%;
+    --hf-panel-opacity: 72%;
+    --hf-panel-transparency: 28%;
+    --hf-header-opacity: 50%;
+    --hf-header-transparency: 50%;
+    --hf-glass-blur: blur(28px);
+    --hf-glass-blur-sm: blur(12px);
+    --hf-glass-blur-lg: blur(40px);
+    --hf-backdrop: oklch(0% 0 0 / 0.75);
+
+    /* Computed borders — magenta glow tint */
+    --hf-border: color-mix(in srgb, var(--hf-accent-3) 30%, transparent 70%);
+    --hf-border-hover: color-mix(in srgb, var(--hf-accent-3) 50%, transparent 50%);
+    --hf-border-focus: var(--hf-accent-3);
+
+    /* Slightly smaller base font to feel more dense/technical */
+    --hf-size-base: 0.8125rem;
+}
