@@ -4,3 +4,4 @@ playwright-report/
 dist/
 docs/
 .superpowers/
+.worktrees/
