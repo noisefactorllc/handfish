@@ -46,6 +46,14 @@
     <link rel="stylesheet" href="../dist/styles/themes/organic.css">
     <link rel="stylesheet" href="../dist/styles/themes/terminal.css">
     <link rel="stylesheet" href="../dist/styles/themes/gray.css">
+    <link rel="stylesheet" href="../dist/styles/themes/synthwave.css">
+    <link rel="stylesheet" href="../dist/styles/themes/rosepine.css">
+    <link rel="stylesheet" href="../dist/styles/themes/ocean.css">
+    <link rel="stylesheet" href="../dist/styles/themes/sunset.css">
+    <link rel="stylesheet" href="../dist/styles/themes/newspaper.css">
+    <link rel="stylesheet" href="../dist/styles/themes/solarpunk.css">
+    <link rel="stylesheet" href="../dist/styles/themes/nord.css">
+    <link rel="stylesheet" href="../dist/styles/themes/high-contrast.css">
     <style>
         body {
             padding: 2rem;
@@ -214,6 +222,16 @@
             <dropdown-item value="terminal">Terminal</dropdown-item>
             <dropdown-item value="gray-dark">Gray Dark</dropdown-item>
             <dropdown-item value="gray-light">Gray Light</dropdown-item>
+            <dropdown-item value="synthwave">Synthwave</dropdown-item>
+            <dropdown-item value="rosepine">Rosepine</dropdown-item>
+            <dropdown-item value="ocean">Ocean</dropdown-item>
+            <dropdown-item value="sunset">Sunset</dropdown-item>
+            <dropdown-item value="newspaper">Newspaper</dropdown-item>
+            <dropdown-item value="solarpunk">Solarpunk</dropdown-item>
+            <dropdown-item value="nord-dark">Nord Dark</dropdown-item>
+            <dropdown-item value="nord-light">Nord Light</dropdown-item>
+            <dropdown-item value="high-contrast-dark">High Contrast Dark</dropdown-item>
+            <dropdown-item value="high-contrast-light">High Contrast Light</dropdown-item>
         </dropdown-menu>
     </div>
 
@@ -1082,7 +1100,9 @@ render(o0)</pre>
             e.target.setAttribute('label', theme)
 
             // Sync code editor themes
-            const editorTheme = (theme === 'light' || theme === 'corporate' || theme === 'organic') ? 'githubLight' : 'default'
+            const lightThemes = ['light', 'corporate', 'organic', 'neutral-light', 'gray-light',
+                'newspaper', 'solarpunk', 'nord-light', 'high-contrast-light']
+            const editorTheme = lightThemes.includes(theme) ? 'githubLight' : 'default'
             applyEditorTheme(editor1, editorTheme)
             applyEditorTheme(editor2, editorTheme)
             editorThemeMenu.value = editorTheme
