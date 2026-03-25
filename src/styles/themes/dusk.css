@@ -1,11 +1,11 @@
 /**
- * Handfish Theme: Rosé Pine
+ * Handfish Theme: Dusk
  *
  * A cozy, muted aesthetic built on dusty purple-blue neutrals and
  * soft rose accents. Low chroma throughout keeps things gentle and
  * inviting — perfect for late-night sessions. Apply with:
  *
- *   <html data-theme="rosepine">
+ *   <html data-theme="dusk">
  *
  * Or import after the base stylesheet to override defaults.
  */
@@ -18,7 +18,7 @@
     src: url('https://fonts.noisefactor.io/fonts/cabin/Cabin[wdth,wght].woff2') format('woff2');
 }
 
-[data-theme="rosepine"] {
+[data-theme="dusk"] {
     /* Neutrals — dusty purple-blue, very low chroma (hue 250°) */
     --hf-color-1: oklch(15.0% 0.008 250);
     --hf-color-2: oklch(22.0% 0.012 250);

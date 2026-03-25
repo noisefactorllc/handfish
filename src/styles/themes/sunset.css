@@ -1,9 +1,9 @@
 /**
  * Handfish Theme: Sunset
  *
- * A warm golden-hour aesthetic with vivid orange and magenta accents,
- * evoking the gradient of a setting sun. Amber-tinted shadows and
- * moderate glass give a rich, glowing feel. Apply with:
+ * Dark indigo sky with pink and orange accents, evoking the
+ * gradient of a setting sun. Warm-tinted shadows and moderate
+ * glass give a rich, atmospheric feel. Apply with:
  *
  *   <html data-theme="sunset">
  *
@@ -19,20 +19,20 @@
 }
 
 [data-theme="sunset"] {
-    /* Neutrals — warm dark brown-orange tint (hue 30°), low chroma */
-    --hf-color-1: oklch(14.0% 0.008 30);
-    --hf-color-2: oklch(21.0% 0.012 30);
-    --hf-color-3: oklch(29.0% 0.016 30);
-    --hf-color-4: oklch(39.0% 0.020 30);
-    --hf-color-5: oklch(56.0% 0.025 30);
-    --hf-color-6: oklch(76.0% 0.018 30);
-    --hf-color-7: oklch(93.0% 0.010 30);
+    /* Neutrals — dark indigo sky (hue 270°), low chroma */
+    --hf-color-1: oklch(12.0% 0.012 270);
+    --hf-color-2: oklch(18.0% 0.016 270);
+    --hf-color-3: oklch(25.0% 0.020 270);
+    --hf-color-4: oklch(34.0% 0.022 270);
+    --hf-color-5: oklch(55.0% 0.020 270);
+    --hf-color-6: oklch(76.0% 0.015 270);
+    --hf-color-7: oklch(93.0% 0.008 270);
 
-    /* Accents — vivid orange (hue ~45°) for 1/2/3, magenta (hue ~350°) for 4 */
-    --hf-accent-1: oklch(24.0% 0.045 45);
-    --hf-accent-2: oklch(38.0% 0.080 45);
-    --hf-accent-3: oklch(72.0% 0.150 45);
-    --hf-accent-4: oklch(75.0% 0.130 350);
+    /* Accents — warm pink primary (hue ~350°), orange secondary (hue ~35°) */
+    --hf-accent-1: oklch(22.0% 0.045 350);
+    --hf-accent-2: oklch(35.0% 0.080 350);
+    --hf-accent-3: oklch(72.0% 0.140 350);
+    --hf-accent-4: oklch(78.0% 0.150 35);
 
     /* Semantic colors — warm-tinted variations */
     --hf-red: oklch(65.0% 0.200 20);
@@ -51,13 +51,13 @@
     --hf-radius-xl: 14px;
     --hf-radius-pill: 999px;
 
-    /* Warm amber-tinted shadows (hue 30-45°) */
-    --hf-shadow-sm: 0 1px 3px oklch(18% 0.025 35 / 0.25);
-    --hf-shadow: 0 2px 6px oklch(16% 0.020 35 / 0.30);
-    --hf-shadow-md: 0 4px 12px oklch(14% 0.018 40 / 0.30), 0 0 6px oklch(72% 0.150 45 / 0.08);
-    --hf-shadow-lg: 0 8px 24px oklch(12% 0.015 40 / 0.35), 0 0 12px oklch(72% 0.150 45 / 0.10);
-    --hf-shadow-xl: 0 16px 48px oklch(10% 0.012 40 / 0.40), 0 0 24px oklch(72% 0.150 45 / 0.12);
-    --hf-glow-accent: 0 0 16px oklch(72% 0.150 45 / 0.35);
+    /* Warm sunset-tinted shadows — pink/indigo glow */
+    --hf-shadow-sm: 0 1px 3px oklch(10% 0.020 270 / 0.30);
+    --hf-shadow: 0 2px 6px oklch(8% 0.018 270 / 0.35);
+    --hf-shadow-md: 0 4px 12px oklch(8% 0.018 270 / 0.35), 0 0 6px oklch(72% 0.140 350 / 0.08);
+    --hf-shadow-lg: 0 8px 24px oklch(6% 0.015 270 / 0.40), 0 0 12px oklch(72% 0.140 350 / 0.10);
+    --hf-shadow-xl: 0 16px 48px oklch(5% 0.012 270 / 0.45), 0 0 24px oklch(72% 0.140 350 / 0.12);
+    --hf-glow-accent: 0 0 16px oklch(72% 0.140 350 / 0.35);
 
     /* Glassmorphism — moderate opacity */
     --hf-surface-opacity: 88%;
@@ -69,7 +69,7 @@
     --hf-glass-blur: blur(20px);
     --hf-glass-blur-sm: blur(8px);
     --hf-glass-blur-lg: blur(32px);
-    --hf-backdrop: oklch(10% 0.010 30 / 0.70);
+    --hf-backdrop: oklch(8% 0.012 270 / 0.70);
 
     /* Computed borders — 25%/40% accent mix (default) */
     --hf-border: color-mix(in srgb, var(--hf-accent-3) 25%, transparent 75%);

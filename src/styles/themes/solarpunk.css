@@ -2,8 +2,8 @@
  * Handfish Theme: Solarpunk
  *
  * Bright, optimistic nature-meets-technology aesthetic with vivid greens
- * and warm gold accents. Medium-rounded corners and soft shadows create
- * an energetic, modern feel. Apply with:
+ * and warm gold accents. Geometric precision with a smaller base font
+ * and crisp corners set it apart from softer organic themes. Apply with:
  *
  *   <html data-theme="solarpunk">
  *
@@ -39,15 +39,17 @@
     --hf-yellow: oklch(76.4% 0.155 85);
     --hf-blue: oklch(42.5% 0.150 260);
 
-    /* Typography — geometric modern sans-serif */
+    /* Typography — geometric modern sans-serif, slightly dense */
     --hf-font-family: 'Outfit';
+    --hf-size-base: 0.8125rem;
+    --hf-tracking-wide: 0.06em;
 
-    /* Medium-rounded corners */
-    --hf-radius-sm: 8px;
-    --hf-radius-md: 10px;
-    --hf-radius: 10px;
-    --hf-radius-lg: 12px;
-    --hf-radius-xl: 16px;
+    /* Crisp geometric corners — tighter than organic */
+    --hf-radius-sm: 4px;
+    --hf-radius-md: 6px;
+    --hf-radius: 6px;
+    --hf-radius-lg: 8px;
+    --hf-radius-xl: 12px;
     --hf-radius-pill: 999px;
 
     /* Green-tinted soft shadows */

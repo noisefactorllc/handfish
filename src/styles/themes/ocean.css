@@ -1,8 +1,8 @@
 /**
  * Handfish Theme: Ocean
  *
- * Deep navy backgrounds with bright teal/aquamarine accents — like
- * moonlight on water. Apply with:
+ * Deep navy backgrounds with bright blue accents — like
+ * moonlight on deep water. Apply with:
  *
  *   <html data-theme="ocean">
  *
@@ -26,11 +26,11 @@
     --hf-color-6: oklch(73.0% 0.015 220);
     --hf-color-7: oklch(91.0% 0.010 220);
 
-    /* Accents — bright teal/aquamarine, hue ~185° */
-    --hf-accent-1: oklch(18.0% 0.050 185);
-    --hf-accent-2: oklch(28.0% 0.080 185);
-    --hf-accent-3: oklch(72.0% 0.140 185);
-    --hf-accent-4: oklch(86.0% 0.100 185);
+    /* Accents — bright ocean blue, hue ~240° */
+    --hf-accent-1: oklch(18.0% 0.050 240);
+    --hf-accent-2: oklch(28.0% 0.080 240);
+    --hf-accent-3: oklch(68.0% 0.150 240);
+    --hf-accent-4: oklch(82.0% 0.100 240);
 
     /* Semantic colors — default dark-mode values */
     --hf-red: oklch(69.3% 0.199 18);
@@ -44,10 +44,10 @@
     /* Deep blue-tinted shadows (navy hue in shadow colors) */
     --hf-shadow-sm: 0 1px 3px oklch(5% 0.030 220 / 0.4);
     --hf-shadow: 0 2px 6px oklch(5% 0.030 220 / 0.5);
-    --hf-shadow-md: 0 4px 12px oklch(5% 0.030 220 / 0.5), 0 0 8px oklch(72% 0.140 185 / 0.10);
-    --hf-shadow-lg: 0 8px 24px oklch(5% 0.030 220 / 0.6), 0 0 16px oklch(72% 0.140 185 / 0.15);
-    --hf-shadow-xl: 0 16px 48px oklch(5% 0.030 220 / 0.7), 0 0 32px oklch(72% 0.140 185 / 0.20);
-    --hf-glow-accent: 0 0 20px oklch(72% 0.140 185 / 0.45);
+    --hf-shadow-md: 0 4px 12px oklch(5% 0.030 220 / 0.5), 0 0 8px oklch(68% 0.150 240 / 0.10);
+    --hf-shadow-lg: 0 8px 24px oklch(5% 0.030 220 / 0.6), 0 0 16px oklch(68% 0.150 240 / 0.15);
+    --hf-shadow-xl: 0 16px 48px oklch(5% 0.030 220 / 0.7), 0 0 32px oklch(68% 0.150 240 / 0.20);
+    --hf-glow-accent: 0 0 20px oklch(68% 0.150 240 / 0.45);
 
     /* Glassmorphism — moderate transparency, standard blur */
     --hf-surface-opacity: 85%;
