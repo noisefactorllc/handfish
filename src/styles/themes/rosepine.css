@@ -1,0 +1,69 @@
+/**
+ * Handfish Theme: Rosé Pine
+ *
+ * A cozy, muted aesthetic built on dusty purple-blue neutrals and
+ * soft rose accents. Low chroma throughout keeps things gentle and
+ * inviting — perfect for late-night sessions. Apply with:
+ *
+ *   <html data-theme="rosepine">
+ *
+ * Or import after the base stylesheet to override defaults.
+ */
+
+@font-face {
+    font-family: 'Cabin';
+    font-style: normal;
+    font-weight: 100 900;
+    font-display: swap;
+    src: url('https://fonts.noisefactor.io/fonts/cabin/Cabin[wdth,wght].woff2') format('woff2');
+}
+
+[data-theme="rosepine"] {
+    /* Neutrals — dusty purple-blue, very low chroma (hue 250°) */
+    --hf-color-1: oklch(15.0% 0.008 250);
+    --hf-color-2: oklch(22.0% 0.012 250);
+    --hf-color-3: oklch(30.0% 0.015 250);
+    --hf-color-4: oklch(40.0% 0.018 250);
+    --hf-color-5: oklch(58.0% 0.020 250);
+    --hf-color-6: oklch(78.0% 0.012 250);
+    --hf-color-7: oklch(94.0% 0.007 250);
+
+    /* Accents — muted rose, moderate chroma (hue ~350°) */
+    --hf-accent-1: oklch(22.0% 0.030 350);
+    --hf-accent-2: oklch(35.0% 0.060 350);
+    --hf-accent-3: oklch(65.0% 0.100 350);
+    --hf-accent-4: oklch(80.0% 0.070 350);
+
+    /* Semantic colors — default dark-mode values with slight warm tint */
+    --hf-red: oklch(55.0% 0.180 25);
+    --hf-green: oklch(58.0% 0.140 155);
+    --hf-yellow: oklch(80.0% 0.150 80);
+    --hf-blue: oklch(58.0% 0.100 240);
+
+    --hf-font-family: 'Cabin';
+
+    /* Rose-tinted subtle shadows — low opacity, warm hue in shadow color */
+    --hf-shadow-sm: 0 1px 3px oklch(18% 0.020 350 / 0.20);
+    --hf-shadow: 0 2px 6px oklch(16% 0.018 350 / 0.25);
+    --hf-shadow-md: 0 4px 12px oklch(14% 0.015 350 / 0.25), 0 0 6px oklch(65% 0.100 350 / 0.06);
+    --hf-shadow-lg: 0 8px 24px oklch(12% 0.015 350 / 0.30), 0 0 12px oklch(65% 0.100 350 / 0.08);
+    --hf-shadow-xl: 0 16px 48px oklch(10% 0.012 350 / 0.35), 0 0 24px oklch(65% 0.100 350 / 0.10);
+    --hf-glow-accent: 0 0 16px oklch(65% 0.100 350 / 0.30);
+
+    /* Glass — moderate transparency */
+    --hf-surface-opacity: 88%;
+    --hf-surface-transparency: 12%;
+    --hf-panel-opacity: 82%;
+    --hf-panel-transparency: 18%;
+    --hf-header-opacity: 68%;
+    --hf-header-transparency: 32%;
+    --hf-glass-blur: blur(20px);
+    --hf-glass-blur-sm: blur(8px);
+    --hf-glass-blur-lg: blur(32px);
+    --hf-backdrop: oklch(0% 0 0 / 0.65);
+
+    /* Borders — soft, 18%/35% accent mix */
+    --hf-border: color-mix(in srgb, var(--hf-accent-3) 18%, transparent 82%);
+    --hf-border-hover: color-mix(in srgb, var(--hf-accent-3) 35%, transparent 65%);
+    --hf-border-focus: var(--hf-accent-3);
+}
