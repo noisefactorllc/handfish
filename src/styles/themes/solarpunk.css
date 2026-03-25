@@ -1,3 +1,15 @@
+/**
+ * Handfish Theme: Solarpunk
+ *
+ * Bright, optimistic nature-meets-technology aesthetic with vivid greens
+ * and warm gold accents. Medium-rounded corners and soft shadows create
+ * an energetic, modern feel. Apply with:
+ *
+ *   <html data-theme="solarpunk">
+ *
+ * Or import after the base stylesheet to override defaults.
+ */
+
 @font-face {
     font-family: 'Outfit';
     src: url('https://fonts.noisefactor.io/fonts/outfit/Outfit[wght].woff2') format('woff2');
@@ -6,6 +18,7 @@
 }
 
 [data-theme="solarpunk"] {
+    /* Neutrals — bright warm white-green (hue 90°) */
     --hf-color-1: oklch(97.0% 0.005 90);
     --hf-color-2: oklch(94.0% 0.008 90);
     --hf-color-3: oklch(89.0% 0.010 90);
@@ -14,18 +27,22 @@
     --hf-color-6: oklch(38.0% 0.012 90);
     --hf-color-7: oklch(20.0% 0.008 90);
 
+    /* Accents — vivid green primary, warm gold secondary */
     --hf-accent-1: oklch(92.0% 0.040 145);
     --hf-accent-2: oklch(82.0% 0.080 145);
     --hf-accent-3: oklch(52.0% 0.120 145);
     --hf-accent-4: oklch(72.0% 0.120 85);
 
+    /* Semantic colors — default light-mode values */
     --hf-red: oklch(45.5% 0.170 20);
     --hf-green: oklch(46.5% 0.116 151);
     --hf-yellow: oklch(76.4% 0.155 85);
     --hf-blue: oklch(42.5% 0.150 260);
 
-    --hf-font-family: 'Outfit', sans-serif;
+    /* Typography — geometric modern sans-serif */
+    --hf-font-family: 'Outfit';
 
+    /* Medium-rounded corners */
     --hf-radius-sm: 8px;
     --hf-radius-md: 10px;
     --hf-radius: 10px;
@@ -33,6 +50,7 @@
     --hf-radius-xl: 16px;
     --hf-radius-pill: 999px;
 
+    /* Green-tinted soft shadows */
     --hf-shadow-sm: 0 1px 4px oklch(40% 0.010 90 / 0.08);
     --hf-shadow: 0 2px 8px oklch(40% 0.010 90 / 0.10);
     --hf-shadow-md: 0 4px 16px oklch(40% 0.010 90 / 0.10);
@@ -40,6 +58,7 @@
     --hf-shadow-xl: 0 16px 56px oklch(40% 0.010 90 / 0.14);
     --hf-glow-accent: 0 0 24px oklch(52% 0.120 145 / 0.15);
 
+    /* Glassmorphism — moderate opacity */
     --hf-surface-opacity: 92%;
     --hf-surface-transparency: 8%;
     --hf-panel-opacity: 88%;
@@ -51,6 +70,7 @@
     --hf-glass-blur-lg: blur(24px);
     --hf-backdrop: oklch(96% 0.005 90 / 0.55);
 
+    /* Computed borders — soft organic feel */
     --hf-border: color-mix(in srgb, var(--hf-accent-3) 18%, transparent 82%);
     --hf-border-hover: color-mix(in srgb, var(--hf-accent-3) 35%, transparent 65%);
     --hf-border-focus: var(--hf-accent-3);

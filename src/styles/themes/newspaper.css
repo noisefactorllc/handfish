@@ -1,3 +1,14 @@
+/**
+ * Handfish Theme: Newspaper
+ *
+ * Editorial print aesthetic with warm cream backgrounds, classic serif
+ * typography, and near-flat shadows for a solid, printed feel. Apply with:
+ *
+ *   <html data-theme="newspaper">
+ *
+ * Or import after the base stylesheet to override defaults.
+ */
+
 @font-face {
     font-family: 'Crimson Pro';
     font-style: normal;
@@ -39,8 +50,12 @@
     --hf-link-hover: oklch(35.0% 0.120 245);
 
     /* Radii — minimal, print-like */
-    --hf-radius-sm: 1px; --hf-radius-md: 2px; --hf-radius: 2px;
-    --hf-radius-lg: 3px; --hf-radius-xl: 4px; --hf-radius-pill: 999px;
+    --hf-radius-sm: 1px;
+    --hf-radius-md: 2px;
+    --hf-radius: 2px;
+    --hf-radius-lg: 3px;
+    --hf-radius-xl: 4px;
+    --hf-radius-pill: 999px;
 
     /* Shadows — near-flat, print feel */
     --hf-shadow-sm: 0 1px 1px oklch(0% 0 0 / 0.03);
@@ -51,10 +66,15 @@
     --hf-glow-accent: 0 0 8px oklch(30% 0.030 55 / 0.10);
 
     /* Glass — near-opaque, solid/printed feel */
-    --hf-surface-opacity: 97%; --hf-surface-transparency: 3%;
-    --hf-panel-opacity: 95%; --hf-panel-transparency: 5%;
-    --hf-header-opacity: 92%; --hf-header-transparency: 8%;
-    --hf-glass-blur: blur(6px); --hf-glass-blur-sm: blur(3px); --hf-glass-blur-lg: blur(10px);
+    --hf-surface-opacity: 97%;
+    --hf-surface-transparency: 3%;
+    --hf-panel-opacity: 95%;
+    --hf-panel-transparency: 5%;
+    --hf-header-opacity: 92%;
+    --hf-header-transparency: 8%;
+    --hf-glass-blur: blur(6px);
+    --hf-glass-blur-sm: blur(3px);
+    --hf-glass-blur-lg: blur(10px);
     --hf-backdrop: oklch(0% 0 0 / 0.35);
 
     /* Borders — subtle print-like */
