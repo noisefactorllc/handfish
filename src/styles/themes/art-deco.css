@@ -11,8 +11,8 @@
  */
 
 @font-face {
-    font-family: 'Playfair Display';
-    src: url('https://fonts.noisefactor.io/fonts/playfair-display/PlayfairDisplay[wght].woff2') format('woff2');
+    font-family: 'Raleway';
+    src: url('https://fonts.noisefactor.io/fonts/raleway/Raleway[wght].woff2') format('woff2');
     font-weight: 100 900;
     font-display: swap;
 }
@@ -39,8 +39,8 @@
     --hf-yellow: oklch(85.0% 0.150 80);
     --hf-blue: oklch(55.0% 0.120 250);
 
-    /* Typography — elegant display serif */
-    --hf-font-family: 'Playfair Display';
+    /* Typography — elegant thin-weight sans */
+    --hf-font-family: 'Raleway';
     --hf-text-transform-heading: uppercase;
     --hf-tracking-wide: 0.10em;
 
