@@ -31,7 +31,7 @@
     --hf-accent-1: oklch(15.0% 0.060 125);
     --hf-accent-2: oklch(28.0% 0.100 125);
     --hf-accent-3: oklch(88.0% 0.240 125);
-    --hf-accent-4: oklch(70.334% 0.26054 322.192);
+    --hf-accent-4: oklch(100.0% 0.240 125);
 
     /* Semantic colors — neon everything */
     --hf-red: oklch(65.0% 0.280 15);
