@@ -19,9 +19,9 @@
 
 [data-theme="rave"] {
     /* Neutrals — pure black, zero chroma */
-    --hf-color-1: oklch(5.0% 0 0);
-    --hf-color-2: oklch(9.0% 0.005 125);
-    --hf-color-3: oklch(14.0% 0.008 125);
+    --hf-color-1: oklch(4.0% 0 0);
+    --hf-color-2: oklch(11.0% 0.005 125);
+    --hf-color-3: oklch(18.0% 0.008 125);
     --hf-color-4: oklch(20.0% 0.012 125);
     --hf-color-5: oklch(48.0% 0.015 125);
     --hf-color-6: oklch(70.0% 0.010 125);
