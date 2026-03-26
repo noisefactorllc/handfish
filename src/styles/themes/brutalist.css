@@ -34,8 +34,8 @@
 
     /* Typography — monospace, raw */
     --hf-font-family: 'Noto Sans Mono', 'Noto Sans Mono Blank';
-    --hf-text-transform: uppercase;
-    --hf-text-transform-heading: uppercase;
+    --hf-text-transform: lowercase;
+    --hf-text-transform-heading: lowercase;
     --hf-tracking-wide: 0.08em;
 
     /* No rounded corners — ever */
