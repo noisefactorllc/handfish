@@ -10,11 +10,11 @@
  */
 
 @font-face {
-    font-family: 'Crimson Pro';
+    font-family: 'Literata';
     font-style: normal;
     font-weight: 100 900;
     font-display: swap;
-    src: url('https://fonts.noisefactor.io/fonts/crimson-pro/CrimsonPro[wght].woff2') format('woff2');
+    src: url('https://fonts.noisefactor.io/fonts/literata/Literata[opsz,wght].woff2') format('woff2');
 }
 
 [data-theme="newspaper"] {
@@ -40,7 +40,7 @@
     --hf-blue: oklch(48.0% 0.100 245);
 
     /* Typography */
-    --hf-font-family: 'Crimson Pro';
+    --hf-font-family: 'Literata';
     --hf-leading-normal: 1.6;
     --hf-text-transform: none;
     --hf-text-transform-heading: none;

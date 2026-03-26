@@ -10,8 +10,8 @@
  */
 
 @font-face {
-    font-family: 'Source Sans 3';
-    src: url('https://fonts.noisefactor.io/fonts/source-sans-3/SourceSans3-Regular.woff2') format('woff2');
+    font-family: 'Poppins';
+      src: url('https://fonts.noisefactor.io/fonts/poppins/Poppins-Regular.woff2') format('woff2');
     font-weight: 400;
     font-display: swap;
 }
@@ -39,7 +39,7 @@
     --hf-blue: oklch(61.1% 0.153 260);
 
     /* Typography */
-    --hf-font-family: 'Source Sans 3';
+    --hf-font-family: 'Poppins';
 
     /* Deep blue-tinted shadows (navy hue in shadow colors) */
     --hf-shadow-sm: 0 1px 3px oklch(5% 0.030 220 / 0.4);

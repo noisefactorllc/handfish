@@ -11,11 +11,11 @@
  */
 
 @font-face {
-    font-family: 'Karla';
+    font-family: 'Quicksand';
     font-style: normal;
     font-weight: 100 900;
     font-display: swap;
-    src: url('https://fonts.noisefactor.io/fonts/karla/Karla[wght].woff2') format('woff2');
+    src: url('https://fonts.noisefactor.io/fonts/quicksand/Quicksand[wght].woff2') format('woff2');
 }
 
 [data-theme="sunset"] {
@@ -41,7 +41,7 @@
     --hf-blue: oklch(60.0% 0.140 255);
 
     /* Typography — clean variable sans-serif */
-    --hf-font-family: 'Karla';
+    --hf-font-family: 'Quicksand';
 
     /* Slightly rounded radii */
     --hf-radius-sm: 6px;
