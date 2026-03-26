@@ -1,0 +1,78 @@
+/**
+ * Handfish Theme: Kawaii
+ *
+ * Soft, playful pastel aesthetic with pink and lavender tones,
+ * extra-rounded corners, and gentle diffused shadows. Apply with:
+ *
+ *   <html data-theme="kawaii">
+ *
+ * Or import after the base stylesheet to override defaults.
+ */
+
+@font-face {
+    font-family: 'Karla';
+    font-style: normal;
+    font-weight: 100 900;
+    font-display: swap;
+    src: url('https://fonts.noisefactor.io/fonts/karla/Karla[wght].woff2') format('woff2');
+}
+
+[data-theme="kawaii"] {
+    /* Neutrals — soft pastel pink-white (hue 330°) */
+    --hf-color-1: oklch(96.5% 0.012 330);
+    --hf-color-2: oklch(93.0% 0.016 330);
+    --hf-color-3: oklch(88.0% 0.020 330);
+    --hf-color-4: oklch(78.0% 0.022 330);
+    --hf-color-5: oklch(55.0% 0.020 330);
+    --hf-color-6: oklch(38.0% 0.015 330);
+    --hf-color-7: oklch(22.0% 0.010 330);
+
+    /* Accents — pink primary (hue ~340°), lavender secondary (hue ~290°) */
+    --hf-accent-1: oklch(92.0% 0.040 340);
+    --hf-accent-2: oklch(82.0% 0.080 340);
+    --hf-accent-3: oklch(62.0% 0.130 340);
+    --hf-accent-4: oklch(65.0% 0.110 290);
+
+    /* Semantic colors — soft pastel versions */
+    --hf-red: oklch(58.0% 0.160 10);
+    --hf-green: oklch(58.0% 0.120 155);
+    --hf-yellow: oklch(78.0% 0.130 85);
+    --hf-blue: oklch(58.0% 0.120 260);
+
+    /* Typography — friendly rounded sans */
+    --hf-font-family: 'Karla';
+
+    /* Extra-rounded, bubbly corners */
+    --hf-radius-sm: 10px;
+    --hf-radius-md: 14px;
+    --hf-radius: 14px;
+    --hf-radius-lg: 18px;
+    --hf-radius-xl: 26px;
+    --hf-radius-pill: 999px;
+
+    /* Soft, diffused pink-tinted shadows */
+    --hf-shadow-sm: 0 2px 6px oklch(70% 0.030 330 / 0.10);
+    --hf-shadow: 0 3px 10px oklch(65% 0.030 330 / 0.12);
+    --hf-shadow-md: 0 6px 20px oklch(60% 0.025 330 / 0.12);
+    --hf-shadow-lg: 0 10px 36px oklch(55% 0.025 330 / 0.14);
+    --hf-shadow-xl: 0 18px 60px oklch(50% 0.020 330 / 0.16);
+    --hf-glow-accent: 0 0 28px oklch(62% 0.130 340 / 0.18);
+
+    /* Glassmorphism — soft and dreamy */
+    --hf-surface-opacity: 90%;
+    --hf-surface-transparency: 10%;
+    --hf-panel-opacity: 84%;
+    --hf-panel-transparency: 16%;
+    --hf-header-opacity: 75%;
+    --hf-header-transparency: 25%;
+    --hf-glass-blur: blur(20px);
+    --hf-glass-blur-sm: blur(10px);
+    --hf-glass-blur-lg: blur(30px);
+    --hf-backdrop: oklch(96% 0.012 330 / 0.60);
+
+    /* Borders — soft, low contrast */
+    --hf-border-width: 1px;
+    --hf-border: color-mix(in srgb, var(--hf-accent-3) 20%, transparent 80%);
+    --hf-border-hover: color-mix(in srgb, var(--hf-accent-3) 38%, transparent 62%);
+    --hf-border-focus: var(--hf-accent-3);
+}

@@ -1,0 +1,79 @@
+/**
+ * Handfish Theme: Art Deco
+ *
+ * Gold and black geometric luxury inspired by 1920s design.
+ * Rich dark backgrounds with bold gold accents, sharp angular
+ * details, and elegant serif typography. Apply with:
+ *
+ *   <html data-theme="art-deco">
+ *
+ * Or import after the base stylesheet to override defaults.
+ */
+
+@font-face {
+    font-family: 'Playfair Display';
+    src: url('https://fonts.noisefactor.io/fonts/playfair-display/PlayfairDisplay[wght].woff2') format('woff2');
+    font-weight: 100 900;
+    font-display: swap;
+}
+
+[data-theme="art-deco"] {
+    /* Neutrals — rich near-black with warm undertone (hue 50°) */
+    --hf-color-1: oklch(8.0% 0.006 50);
+    --hf-color-2: oklch(13.0% 0.008 50);
+    --hf-color-3: oklch(18.5% 0.010 50);
+    --hf-color-4: oklch(26.0% 0.012 50);
+    --hf-color-5: oklch(52.0% 0.012 50);
+    --hf-color-6: oklch(75.0% 0.010 50);
+    --hf-color-7: oklch(93.0% 0.008 50);
+
+    /* Accents — rich gold (hue ~70°), high chroma */
+    --hf-accent-1: oklch(18.0% 0.040 70);
+    --hf-accent-2: oklch(30.0% 0.070 70);
+    --hf-accent-3: oklch(78.0% 0.150 70);
+    --hf-accent-4: oklch(88.0% 0.110 70);
+
+    /* Semantic colors — warm, rich */
+    --hf-red: oklch(58.0% 0.190 20);
+    --hf-green: oklch(65.0% 0.140 160);
+    --hf-yellow: oklch(85.0% 0.150 80);
+    --hf-blue: oklch(55.0% 0.120 250);
+
+    /* Typography — elegant display serif */
+    --hf-font-family: 'Playfair Display';
+    --hf-text-transform-heading: uppercase;
+    --hf-tracking-wide: 0.10em;
+
+    /* Sharp geometric corners */
+    --hf-radius-sm: 0;
+    --hf-radius-md: 0;
+    --hf-radius: 0;
+    --hf-radius-lg: 2px;
+    --hf-radius-xl: 2px;
+    --hf-radius-pill: 999px;
+
+    /* Gold-tinted shadows with subtle glow */
+    --hf-shadow-sm: 0 1px 3px oklch(0% 0 0 / 0.5);
+    --hf-shadow: 0 2px 6px oklch(0% 0 0 / 0.55);
+    --hf-shadow-md: 0 4px 12px oklch(0% 0 0 / 0.55), 0 0 6px oklch(78% 0.150 70 / 0.06);
+    --hf-shadow-lg: 0 8px 24px oklch(0% 0 0 / 0.6), 0 0 14px oklch(78% 0.150 70 / 0.10);
+    --hf-shadow-xl: 0 16px 48px oklch(0% 0 0 / 0.7), 0 0 28px oklch(78% 0.150 70 / 0.12);
+    --hf-glow-accent: 0 0 22px oklch(78% 0.150 70 / 0.35);
+
+    /* Glassmorphism — dark and rich */
+    --hf-surface-opacity: 90%;
+    --hf-surface-transparency: 10%;
+    --hf-panel-opacity: 84%;
+    --hf-panel-transparency: 16%;
+    --hf-header-opacity: 65%;
+    --hf-header-transparency: 35%;
+    --hf-glass-blur: blur(22px);
+    --hf-glass-blur-sm: blur(10px);
+    --hf-glass-blur-lg: blur(34px);
+    --hf-backdrop: oklch(0% 0 0 / 0.78);
+
+    /* Borders — gold-tinted, elegant */
+    --hf-border: color-mix(in srgb, var(--hf-accent-3) 28%, transparent 72%);
+    --hf-border-hover: color-mix(in srgb, var(--hf-accent-3) 48%, transparent 52%);
+    --hf-border-focus: var(--hf-accent-3);
+}

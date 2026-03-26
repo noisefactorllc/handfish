@@ -1,0 +1,82 @@
+/**
+ * Handfish Theme: Rave
+ *
+ * High-energy neon yellow-green on black with chaotic glow effects.
+ * Acid house vibes — loud, unapologetic, and impossible to ignore.
+ * Apply with:
+ *
+ *   <html data-theme="rave">
+ *
+ * Or import after the base stylesheet to override defaults.
+ */
+
+@font-face {
+    font-family: 'Exo 2';
+    src: url('https://fonts.noisefactor.io/fonts/exo-2/Exo2[wght].woff2') format('woff2');
+    font-weight: 100 900;
+    font-display: swap;
+}
+
+[data-theme="rave"] {
+    /* Neutrals — pure black, zero chroma */
+    --hf-color-1: oklch(5.0% 0 0);
+    --hf-color-2: oklch(9.0% 0.005 110);
+    --hf-color-3: oklch(14.0% 0.008 110);
+    --hf-color-4: oklch(20.0% 0.012 110);
+    --hf-color-5: oklch(48.0% 0.015 110);
+    --hf-color-6: oklch(70.0% 0.010 110);
+    --hf-color-7: oklch(90.0% 0.005 110);
+
+    /* Accents — acid yellow-green (hue ~110°), maximum chroma */
+    --hf-accent-1: oklch(15.0% 0.060 110);
+    --hf-accent-2: oklch(28.0% 0.100 110);
+    --hf-accent-3: oklch(88.0% 0.240 110);
+    --hf-accent-4: oklch(78.0% 0.200 320);
+
+    /* Semantic colors — neon everything */
+    --hf-red: oklch(65.0% 0.280 15);
+    --hf-green: oklch(88.0% 0.240 110);
+    --hf-yellow: oklch(92.0% 0.200 100);
+    --hf-blue: oklch(65.0% 0.220 260);
+
+    /* Typography — futuristic, dense */
+    --hf-font-family: 'Exo 2';
+    --hf-size-base: 0.8125rem;
+    --hf-text-transform: uppercase;
+    --hf-text-transform-heading: uppercase;
+    --hf-tracking-wide: 0.10em;
+
+    /* Sharp corners */
+    --hf-radius-sm: 2px;
+    --hf-radius-md: 3px;
+    --hf-radius: 3px;
+    --hf-radius-lg: 4px;
+    --hf-radius-xl: 6px;
+    --hf-radius-pill: 999px;
+
+    /* Intense neon glow shadows */
+    --hf-shadow-sm: 0 0 4px oklch(88% 0.240 110 / 0.15);
+    --hf-shadow: 0 0 8px oklch(88% 0.240 110 / 0.20);
+    --hf-shadow-md: 0 0 14px oklch(88% 0.240 110 / 0.25), 0 0 6px oklch(78% 0.200 320 / 0.10);
+    --hf-shadow-lg: 0 0 24px oklch(88% 0.240 110 / 0.30), 0 0 12px oklch(78% 0.200 320 / 0.15);
+    --hf-shadow-xl: 0 0 40px oklch(88% 0.240 110 / 0.35), 0 0 20px oklch(78% 0.200 320 / 0.20);
+    --hf-glow-accent: 0 0 30px oklch(88% 0.240 110 / 0.55);
+
+    /* Glassmorphism — very transparent, heavy glow-through */
+    --hf-surface-opacity: 78%;
+    --hf-surface-transparency: 22%;
+    --hf-panel-opacity: 68%;
+    --hf-panel-transparency: 32%;
+    --hf-header-opacity: 45%;
+    --hf-header-transparency: 55%;
+    --hf-glass-blur: blur(32px);
+    --hf-glass-blur-sm: blur(14px);
+    --hf-glass-blur-lg: blur(48px);
+    --hf-backdrop: oklch(0% 0 0 / 0.80);
+
+    /* Borders — neon glow, no border width for cleaner glow */
+    --hf-border-width: 0;
+    --hf-border: color-mix(in srgb, var(--hf-accent-3) 35%, transparent 65%);
+    --hf-border-hover: color-mix(in srgb, var(--hf-accent-3) 55%, transparent 45%);
+    --hf-border-focus: var(--hf-accent-3);
+}
