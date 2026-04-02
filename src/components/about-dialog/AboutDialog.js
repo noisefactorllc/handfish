@@ -28,7 +28,7 @@ function injectStyles() {
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 2.5rem 2rem;
+            padding: 2.75rem 2.5rem;
             background: linear-gradient(
                 180deg,
                 color-mix(in srgb, var(--hf-accent-3, var(--hf-accent)) 12%, transparent 88%) 0%,
@@ -49,8 +49,8 @@ function injectStyles() {
             display: flex;
             flex-direction: column;
             justify-content: center;
-            gap: 0.25rem;
-            padding: 2.5rem 2rem;
+            gap: 0.5rem;
+            padding: 2.75rem 2rem;
             color: var(--hf-color-6, var(--hf-text-normal));
         }
 
