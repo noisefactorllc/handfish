@@ -19,6 +19,9 @@ dialog::backdrop {
 
 .hf-dialog {
     position: fixed;
+    top: 50%;
+    left: 50%;
+    translate: -50% -50%;
     padding: 0;
     border: none;
     border-radius: var(--hf-radius-lg, 12px);
