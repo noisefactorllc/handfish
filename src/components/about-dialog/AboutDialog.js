@@ -145,13 +145,13 @@ function injectStyles() {
         }
 
         .hf-about a {
-            color: var(--hf-color-5, var(--hf-accent));
+            color: var(--hf-accent-3, var(--hf-accent));
             text-decoration: none;
         }
 
         .hf-about a:hover {
-            color: var(--hf-accent-3, var(--hf-accent));
-            text-decoration: underline;
+            color: var(--hf-accent-4, var(--hf-accent));
+            text-decoration: none;
         }
 
         @media (max-width: 720px) {
