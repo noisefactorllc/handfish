@@ -29,6 +29,7 @@ function injectStyles() {
             width: min(720px, 100vw);
             max-width: 720px;
             min-width: 320px;
+            font-family: var(--hf-font-family);
         }
 
         .hf-about-content {
@@ -94,7 +95,7 @@ function injectStyles() {
         .hf-about-build-hash,
         .hf-about-build-date {
             font-size: 0.8rem;
-            font-family: var(--hf-font-family-mono, monospace);
+            font-family: var(--hf-font-family-mono);
             letter-spacing: 0.06em;
             color: var(--hf-color-5, var(--hf-text-dim));
         }
@@ -115,7 +116,7 @@ function injectStyles() {
 
         .hf-about-noisemaker-hash,
         .hf-about-noisemaker-date {
-            font-family: var(--hf-font-family-mono, monospace);
+            font-family: var(--hf-font-family-mono);
             letter-spacing: 0.06em;
         }
 
