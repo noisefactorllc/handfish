@@ -4,6 +4,6 @@ playwright-report/
 dist/
 docs/*
 !docs/component-api.json
-!docs/superpowers/
 .superpowers/
+docs/superpowers/
 .worktrees/
