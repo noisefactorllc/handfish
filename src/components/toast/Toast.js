@@ -189,6 +189,7 @@ function getContainer() {
  * @param {'success'|'error'|'warning'|'info'} [options.type='info'] - Toast type
  * @param {number} [options.duration=2000] - Duration in ms (0 = no auto-dismiss)
  * @param {boolean} [options.dismissible=true] - Show close button
+ * @param {string} [options.dismissLabel='Dismiss'] - Accessible label for close button
  * @param {boolean} [options.showProgress=false] - Show progress bar for auto-dismiss
  * @returns {Object} Toast controller with dismiss() method
  */
@@ -197,6 +198,7 @@ function showToast(message, options = {}) {
         type = 'info',
         duration = 2000,
         dismissible = true,
+        dismissLabel = 'Dismiss',
         showProgress = false
     } = options
 
@@ -215,7 +217,7 @@ function showToast(message, options = {}) {
         <div class="hf-toast-content">
             <p class="hf-toast-message">${message}</p>
         </div>
-        ${dismissible ? '<button class="hf-toast-close" aria-label="Dismiss"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 2l8 8M10 2l-8 8"/></svg></button>' : ''}
+        ${dismissible ? '<button class="hf-toast-close"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 2l8 8M10 2l-8 8"/></svg></button>' : ''}
         ${duration > 0 && showProgress ? `
             <div class="hf-toast-progress">
                 <div class="hf-toast-progress-bar" style="width: 100%"></div>
@@ -258,6 +260,7 @@ function showToast(message, options = {}) {
     // Close button handler
     if (dismissible) {
         const closeBtn = toast.querySelector('.hf-toast-close')
+        closeBtn.setAttribute('aria-label', dismissLabel)
         closeBtn.addEventListener('click', dismiss)
     }
 

@@ -103,9 +103,28 @@ if (!document.getElementById(DROPDOWN_MENU_STYLES_ID)) {
             display: block;
         }
 
+        dropdown-menu .dropdown-content.align-left {
+            left: 0;
+            right: auto;
+        }
+
         dropdown-menu .dropdown-content.align-right {
             left: auto;
             right: 0;
+        }
+
+        dropdown-menu .dropdown-content.align-start {
+            left: auto;
+            right: auto;
+            inset-inline-start: 0;
+            inset-inline-end: auto;
+        }
+
+        dropdown-menu .dropdown-content.align-end {
+            left: auto;
+            right: auto;
+            inset-inline-start: auto;
+            inset-inline-end: 0;
         }
 
         /* Items */
@@ -216,7 +235,7 @@ if (!window._hfDropdownMenuGlobalHandler) {
  * @attribute {string} icon - Material Symbols icon name
  * @attribute {boolean} disabled - Disables the dropdown
  * @attribute {boolean} compact-mobile - Hides text on mobile
- * @attribute {string} align - 'left' (default) or 'right'
+ * @attribute {string} align - 'left' (default) or 'right'. Use 'start' or 'end' for logical alignment.
  * @attribute {boolean} small - Use compact sizing
  * @attribute {boolean} selectable - Enable selection mode (tracks value, shows selected item)
  * @attribute {string} value - Currently selected value (only used with selectable)
@@ -266,10 +285,7 @@ class DropdownMenu extends HTMLElement {
         } else if (name === 'disabled') {
             // Handled via CSS attribute selector
         } else if (name === 'align') {
-            const content = this.querySelector('.dropdown-content')
-            if (content) {
-                content.classList.toggle('align-right', newValue === 'right')
-            }
+            this._updateAlignment()
         } else if (name === 'value') {
             if (this.hasAttribute('selectable')) {
                 this._value = newValue || ''
@@ -323,6 +339,7 @@ class DropdownMenu extends HTMLElement {
         const label = this.getAttribute('label') || ''
         const icon = this.getAttribute('icon') || ''
         const align = this.getAttribute('align')
+        const alignClass = this._alignmentClass(align)
 
         // Move existing children to the dropdown content
         const existingItems = Array.from(this.children)
@@ -332,7 +349,7 @@ class DropdownMenu extends HTMLElement {
                 <span class="material-symbols trigger-icon" style="${icon ? '' : 'display:none'}">${icon}</span>
                 <span class="trigger-text">${label}</span>
             </button>
-            <div class="dropdown-content${align === 'right' ? ' align-right' : ''}"></div>
+            <div class="dropdown-content ${alignClass}"></div>
         `
 
         // Put items back
@@ -418,6 +435,28 @@ class DropdownMenu extends HTMLElement {
                 break
             }
         })
+    }
+
+    _updateAlignment() {
+        const content = this.querySelector('.dropdown-content')
+        if (!content) return
+        const align = this.getAttribute('align')
+        content.classList.remove('align-left', 'align-right', 'align-start', 'align-end')
+        content.classList.add(this._alignmentClass(align))
+    }
+
+    _alignmentClass(align) {
+        switch (align) {
+            case 'right':
+                return 'align-right'
+            case 'start':
+                return 'align-start'
+            case 'end':
+                return 'align-end'
+            case 'left':
+            default:
+                return 'align-left'
+        }
     }
 
     _getItems() {

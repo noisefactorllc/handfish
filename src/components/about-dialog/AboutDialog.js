@@ -26,6 +26,58 @@ function formatLocalDateTime(input) {
     return tz ? `${date} ${time} ${tz}` : `${date} ${time}`
 }
 
+const DEFAULT_LABELS = {
+    version: 'Version',
+    build: 'Build',
+    deployed: 'Deployed',
+    noisemakerEngine: 'Noisemaker Engine',
+    local: 'local',
+    unavailable: 'n/a',
+}
+
+function escapeHtml(value) {
+    return String(value)
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#39;')
+}
+
+function isolatedValue(value) {
+    return `<bdi dir="auto">${escapeHtml(value)}</bdi>`
+}
+
+function labelSpan(label) {
+    return `<span class="hf-about-label">${escapeHtml(label)}</span>`
+}
+
+function githubTreeHref(repo, ref) {
+    const repoPath = String(repo || '')
+    const refText = String(ref || '')
+    if (!/^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/.test(repoPath)) return null
+    if (!refText || refText === '@') return null
+    if (/[\u0000-\u0020\u007F"'<>`\\]/.test(refText)) return null
+    if (/[~^:?*\[]/.test(refText)) return null
+    if (refText.startsWith('/') || refText.endsWith('/') || refText.endsWith('.')) return null
+    if (refText.includes('//') || refText.includes('..') || refText.includes('@{')) return null
+
+    const segments = refText.split('/')
+    if (segments.some(segment => !segment || segment.endsWith('.lock'))) return null
+
+    const encodedRef = segments
+        .map(segment => encodeURIComponent(segment))
+        .join('/')
+    return `https://github.com/${repoPath}/tree/${encodedRef}`
+}
+
+function linkedIsolatedValue(value, href) {
+    const safeValue = isolatedValue(value)
+    return href
+        ? `<a href="${escapeHtml(href)}" target="_blank" rel="noopener">${safeValue}</a>`
+        : safeValue
+}
+
 function injectStyles() {
     if (document.getElementById(STYLES_ID)) return
     const style = document.createElement('style')
@@ -104,6 +156,10 @@ function injectStyles() {
             font-family: var(--hf-font-family-mono);
             letter-spacing: 0.06em;
             color: var(--hf-color-5, var(--hf-text-dim));
+        }
+
+        .hf-about-label {
+            unicode-bidi: isolate;
         }
 
         .hf-about-noisemaker-section {
@@ -202,6 +258,7 @@ export class AboutDialog {
             repo: config.repo || null,
             ecosystem: config.ecosystem || null,
             titleFont: config.titleFont || null,
+            labels: { ...DEFAULT_LABELS, ...(config.labels || {}) },
         }
 
         this._dialog = null
@@ -271,7 +328,7 @@ export class AboutDialog {
             const data = await response.json()
             this.setNoisemaker({
                 version: data.version || null,
-                hash: data.git_hash ? data.git_hash.slice(0, 8) : null,
+                hash: data.git_hash ? String(data.git_hash).slice(0, 8) : null,
                 deployed: data.date ? new Date(data.date * 1000) : null,
             })
         } catch {
@@ -286,6 +343,7 @@ export class AboutDialog {
 
     _createDialog() {
         const c = this._config
+        const labels = c.labels
 
         this._dialog = document.createElement('dialog')
         this._dialog.className = 'hf-dialog hf-about'
@@ -300,7 +358,7 @@ export class AboutDialog {
             ? (c.version.match(/^(\d+\.\d+)/)?.[1] || c.version)
             : null
         const versionHtml = productVersion
-            ? `<div class="hf-about-version">Version ${productVersion}</div>`
+            ? `<div class="hf-about-version">${labelSpan(labels.version)} ${isolatedValue(productVersion)}</div>`
             : ''
 
         this._dialog.innerHTML = `
@@ -335,15 +393,18 @@ export class AboutDialog {
         const dateEl = this._dialog.querySelector('.hf-about-build-date')
         if (!hashEl || !dateEl) return
 
-        const hash = this._build?.hash || 'local'
-        const deployed = this._build?.deployed || 'n/a'
+        const labels = this._config.labels
+        const rawHash = this._build?.hash ? String(this._build.hash) : null
+        const hash = rawHash || labels.local
+        const deployed = this._build?.deployed || labels.unavailable
         const repo = this._config.repo
-        const hashDisplay = hash !== 'local' && hash !== 'LOCAL' && repo
-            ? `<a href="https://github.com/${repo}/tree/${hash}" target="_blank" rel="noopener">${hash}</a>`
-            : hash
+        const hashHref = rawHash && rawHash.toLowerCase() !== 'local'
+            ? githubTreeHref(repo, rawHash)
+            : null
+        const hashValue = linkedIsolatedValue(hash, hashHref)
 
-        hashEl.innerHTML = `Build: ${hashDisplay}`
-        dateEl.textContent = `Deployed: ${deployed}`
+        hashEl.innerHTML = `${labelSpan(labels.build)}: ${hashValue}`
+        dateEl.innerHTML = `${labelSpan(labels.deployed)}: ${isolatedValue(deployed)}`
     }
 
     _renderNoisemaker() {
@@ -357,19 +418,22 @@ export class AboutDialog {
             return
         }
 
+        const labels = this._config.labels
         const parts = []
-        const versionText = nm.version ? nm.version.replace(/-.*$/, '') : '—'
-        parts.push(`<div class="hf-about-noisemaker-heading">Noisemaker Engine: ${versionText}</div>`)
+        const versionText = nm.version ? nm.version.replace(/-.*$/, '') : labels.unavailable
+        parts.push(`<div class="hf-about-noisemaker-heading">${labelSpan(labels.noisemakerEngine)}: ${isolatedValue(versionText)}</div>`)
 
         if (nm.hash) {
-            const hashDisplay = nm.hash !== 'local' && nm.hash !== 'LOCAL'
-                ? `<a href="https://github.com/noisefactorllc/noisemaker/tree/${nm.hash}" target="_blank" rel="noopener">${nm.hash}</a>`
-                : nm.hash
-            parts.push(`<div class="hf-about-noisemaker-hash">Build: ${hashDisplay}</div>`)
+            const hash = String(nm.hash)
+            const hashHref = hash.toLowerCase() !== 'local'
+                ? githubTreeHref('noisefactorllc/noisemaker', hash)
+                : null
+            const hashDisplay = linkedIsolatedValue(hash, hashHref)
+            parts.push(`<div class="hf-about-noisemaker-hash">${labelSpan(labels.build)}: ${hashDisplay}</div>`)
         }
 
         if (nm.deployed) {
-            parts.push(`<div class="hf-about-noisemaker-date">Deployed: ${nm.deployed}</div>`)
+            parts.push(`<div class="hf-about-noisemaker-date">${labelSpan(labels.deployed)}: ${isolatedValue(nm.deployed)}</div>`)
         }
 
         let section = existing

@@ -96,7 +96,7 @@ class JustifyButtonGroup extends HTMLElement {
     static formAssociated = true
 
     static get observedAttributes() {
-        return ['value', 'disabled', 'name']
+        return ['value', 'disabled', 'name', 'left-label', 'center-label', 'right-label']
     }
 
     constructor() {
@@ -145,6 +145,11 @@ class JustifyButtonGroup extends HTMLElement {
                 break
             case 'disabled':
                 this._updateDisabledState()
+                break
+            case 'left-label':
+            case 'center-label':
+            case 'right-label':
+                this._updateLabels()
                 break
         }
     }
@@ -198,17 +203,18 @@ class JustifyButtonGroup extends HTMLElement {
     _render() {
         this.innerHTML = `
             <div class="button-group">
-                <button type="button" class="justify-btn" data-value="left" title="Align left">
+                <button type="button" class="justify-btn" data-value="left">
                     <span class="material-symbols">format_align_left</span>
                 </button>
-                <button type="button" class="justify-btn" data-value="center" title="Align center">
+                <button type="button" class="justify-btn" data-value="center">
                     <span class="material-symbols">format_align_center</span>
                 </button>
-                <button type="button" class="justify-btn" data-value="right" title="Align right">
+                <button type="button" class="justify-btn" data-value="right">
                     <span class="material-symbols">format_align_right</span>
                 </button>
             </div>
         `
+        this._updateLabels()
     }
 
     _setupEventListeners() {
@@ -235,6 +241,17 @@ class JustifyButtonGroup extends HTMLElement {
         const buttons = this.querySelectorAll('.justify-btn')
         buttons.forEach(btn => {
             btn.classList.toggle('selected', btn.dataset.value === this._value)
+        })
+    }
+
+    _updateLabels() {
+        const labels = {
+            left: this.getAttribute('left-label') || 'Align left',
+            center: this.getAttribute('center-label') || 'Align center',
+            right: this.getAttribute('right-label') || 'Align right',
+        }
+        this.querySelectorAll('.justify-btn').forEach(btn => {
+            btn.setAttribute('title', labels[btn.dataset.value])
         })
     }
 

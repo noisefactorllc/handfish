@@ -298,7 +298,7 @@ class SelectDropdown extends HTMLElement {
     static formAssociated = true
 
     static get observedAttributes() {
-        return ['value', 'disabled', 'name']
+        return ['value', 'disabled', 'name', 'placeholder', 'empty-text', 'dialog-title', 'dialog-label', 'close-label']
     }
 
     constructor() {
@@ -351,9 +351,7 @@ class SelectDropdown extends HTMLElement {
             this._setupEventListeners()
             this._listenersAttached = true
         }
-        if (this._options.length > 0) {
-            this._renderDropdown()
-        }
+        this._renderDropdown()
         this._updateDisplay()
         this._updateFormValue()
     }
@@ -379,6 +377,15 @@ class SelectDropdown extends HTMLElement {
                 break
             case 'disabled':
                 this._updateDisabledState()
+                break
+            case 'placeholder':
+            case 'empty-text':
+            case 'dialog-title':
+            case 'dialog-label':
+            case 'close-label':
+                this._updateLabels()
+                this._renderDropdown()
+                this._updateDisplay()
                 break
         }
     }
@@ -459,6 +466,10 @@ class SelectDropdown extends HTMLElement {
         return this._options.slice()
     }
 
+    _label(name, fallback) {
+        return this.getAttribute(name) || fallback
+    }
+
     // ========================================================================
     // Private Methods
     // ========================================================================
@@ -488,20 +499,21 @@ class SelectDropdown extends HTMLElement {
     _render() {
         this.innerHTML = `
             <button class="select-trigger" type="button" aria-haspopup="listbox" aria-expanded="false">
-                <span class="trigger-text">Select...</span>
+                <span class="trigger-text"></span>
                 <span class="trigger-arrow">▼</span>
             </button>
             <div class="inline-dropdown" role="listbox" tabindex="-1"></div>
-            <dialog class="select-dialog" aria-label="select option">
+            <dialog class="select-dialog">
                 <div class="dialog-titlebar">
-                    <span class="dialog-title">select</span>
-                    <button class="dialog-close" type="button" aria-label="close">✕</button>
+                    <span class="dialog-title"></span>
+                    <button class="dialog-close" type="button">✕</button>
                 </div>
                 <div class="dialog-body">
                     <div class="dialog-options" role="listbox" tabindex="-1"></div>
                 </div>
             </dialog>
         `
+        this._updateLabels()
     }
 
     _setupEventListeners() {
@@ -588,7 +600,7 @@ class SelectDropdown extends HTMLElement {
             if (this._options.length === 0) {
                 const emptyMsg = document.createElement('div')
                 emptyMsg.className = 'empty-message'
-                emptyMsg.textContent = 'no options available'
+                emptyMsg.textContent = this._label('empty-text', 'no options available')
                 container.appendChild(emptyMsg)
                 return
             }
@@ -619,7 +631,7 @@ class SelectDropdown extends HTMLElement {
         if (!triggerText) return
 
         const selected = this._options.find(o => o.value === this._value)
-        triggerText.textContent = selected ? selected.text : (this._value || 'Select...')
+        triggerText.textContent = selected ? selected.text : (this._value || this._label('placeholder', 'Select...'))
 
         this._updateSelectedOption()
     }
@@ -835,6 +847,11 @@ class SelectDropdown extends HTMLElement {
         const titleEl = this.querySelector('.dialog-title')
         if (!titleEl) return
 
+        if (this.hasAttribute('dialog-title')) {
+            titleEl.textContent = this._label('dialog-title', 'select')
+            return
+        }
+
         const controlGroup = this.closest('.control-group')
         const labelEl = controlGroup?.querySelector('.control-label')
         const paramName = labelEl?.textContent?.trim() || ''
@@ -852,6 +869,15 @@ class SelectDropdown extends HTMLElement {
         }
 
         titleEl.textContent = title
+    }
+
+    _updateLabels() {
+        const dialog = this.querySelector('.select-dialog')
+        const closeBtn = this.querySelector('.dialog-close')
+
+        dialog?.setAttribute('aria-label', this._label('dialog-label', 'select option'))
+        closeBtn?.setAttribute('aria-label', this._label('close-label', 'close'))
+        this._updateDialogTitle()
     }
 
     _selectOption(value) {

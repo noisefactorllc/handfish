@@ -205,6 +205,8 @@ body {
 .hf-border-bottom { border-bottom: var(--hf-border-width) solid var(--hf-border); }
 .hf-border-left { border-left: var(--hf-border-width) solid var(--hf-border); }
 .hf-border-right { border-right: var(--hf-border-width) solid var(--hf-border); }
+.hf-border-inline-start { border-inline-start: var(--hf-border-width) solid var(--hf-border); }
+.hf-border-inline-end { border-inline-end: var(--hf-border-width) solid var(--hf-border); }
 
 .hf-rounded { border-radius: var(--hf-radius); }
 .hf-rounded-sm { border-radius: var(--hf-radius-sm); }
