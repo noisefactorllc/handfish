@@ -258,7 +258,7 @@ export class AboutDialog {
      * Typical usage from a platform product:
      *
      *   aboutDialog.setNoisemakerFromUrl(
-     *       'https://shaders.noisedeck.app/0/deployment-meta.json'
+     *       'https://shaders.noisedeck.app/1/deployment-meta.json'
      *   )
      *
      * @param {string} metaUrl - URL to a deployment-meta.json file.
