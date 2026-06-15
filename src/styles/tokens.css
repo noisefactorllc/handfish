@@ -70,6 +70,49 @@
     font-display: swap;
 }
 
+/* Material Symbols - Icon font.
+ * Declared here with the other font-faces so EVERY consumer of tokens.css gets
+ * working icons. Components emit <span class="hf-icon">name</span>; without this
+ * the ligature falls back to the body font and renders as literal text
+ * (e.g. "touch_app"). Apps that pull only component CSS (not the full index.css)
+ * still get icons because they always load tokens.css. */
+@font-face {
+    font-family: 'Material Symbols Outlined';
+    font-style: normal;
+    font-display: block;
+    src: url('https://fonts.noisefactor.io/fonts/material-symbols-outlined/material-symbols-outlined.woff2') format('woff2');
+}
+
+/* Base icon glyph styling — any .hf-icon / .material-symbols element renders its
+ * text content as a Material Symbols ligature. Uses the --hf-font-family-icon
+ * token defined below in :root. */
+.material-symbols,
+.hf-icon {
+    font-family: var(--hf-font-family-icon);
+    font-weight: normal;
+    font-style: normal;
+    font-size: 1em;
+    width: 1em;
+    height: 1em;
+    display: inline-block;
+    line-height: 1;
+    text-transform: none;
+    letter-spacing: normal;
+    word-wrap: normal;
+    white-space: nowrap;
+    direction: ltr;
+    font-variation-settings: 'FILL' 0;
+    color: var(--hf-accent);
+}
+
+.hf-icon-lg { font-size: 1.3em; height: 1.3em; line-height: 1.3em; }
+.hf-icon-md { font-size: 0.875em; }
+.hf-icon-sm { font-size: 0.75em; }
+.hf-icon-xs { font-size: 0.625em; }
+
+/* Filled icon variant */
+.hf-icon-filled { font-variation-settings: 'FILL' 1; }
+
 /* ============================================================================
  * Light/Dark Mode Colors
  * ============================================================================ */

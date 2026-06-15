@@ -18,21 +18,9 @@
 dropdown-menu > dropdown-item { display: none; }
 
 /* ============================================================================
- * Font Faces
- * Nunito + Noto Sans Mono are declared in tokens.css (loaded by all consumers).
- * Material Symbols is declared here for apps that pull the full index.css.
- * ============================================================================ */
-
-/* Material Symbols - Icons */
-@font-face {
-    font-family: 'Material Symbols Outlined';
-    font-style: normal;
-    font-display: block;
-    src: url('https://fonts.noisefactor.io/fonts/material-symbols-outlined/material-symbols-outlined.woff2') format('woff2');
-}
-
-/* ============================================================================
  * Base Styles
+ * (Material Symbols @font-face + .hf-icon base styling now live in tokens.css,
+ *  so every consumer — full index.css or à-la-carte component CSS — gets icons.)
  * ============================================================================ */
 
 *,
@@ -54,52 +42,6 @@ html {
 body {
     margin: 0;
     padding: 0;
-}
-
-/* ============================================================================
- * Material Symbols Icon Styles
- * ============================================================================ */
-
-.material-symbols,
-.hf-icon {
-    font-family: 'Material Symbols Outlined';
-    font-weight: normal;
-    font-style: normal;
-    font-size: 1em;
-    width: 1em;
-    height: 1em;
-    display: inline-block;
-    line-height: 1;
-    text-transform: none;
-    letter-spacing: normal;
-    word-wrap: normal;
-    white-space: nowrap;
-    direction: ltr;
-    font-variation-settings: 'FILL' 0;
-    color: var(--hf-accent);
-}
-
-.hf-icon-lg {
-    font-size: 1.3em;
-    height: 1.3em;
-    line-height: 1.3em;
-}
-
-.hf-icon-md {
-    font-size: 0.875em;
-}
-
-.hf-icon-sm {
-    font-size: 0.75em;
-}
-
-.hf-icon-xs {
-    font-size: 0.625em;
-}
-
-/* Filled icon variant */
-.hf-icon-filled {
-    font-variation-settings: 'FILL' 1;
 }
 
 /* ============================================================================
