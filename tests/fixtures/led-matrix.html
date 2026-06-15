@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="neutral-dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>led-matrix — test fixture</title>
+    <link rel="stylesheet" href="../../dist/styles/index.css">
+    <link rel="stylesheet" href="../../dist/styles/themes/neutral.css">
+    <style>
+        body { margin: 0; background: #000; }
+        #led { display: block; width: 256px; height: 64px; }
+    </style>
+    <script type="module">
+        import '../../dist/handfish.esm.js'
+
+        // Count clearly-lit (non-background) canvas pixels — used by the spec.
+        window.countLit = () => {
+            const c = document.getElementById('led').querySelector('canvas')
+            if (!c) return 0
+            const d = c.getContext('2d').getImageData(0, 0, c.width, c.height).data
+            let lit = 0
+            for (let i = 0; i < d.length; i += 4) {
+                if (d[i] + d[i + 1] + d[i + 2] > 80) lit++
+            }
+            return lit
+        }
+
+        customElements.whenDefined('led-matrix').then(() => {
+            document.getElementById('led').show({ label: 'TEST', value: '123', mode: 'value' })
+            window.__ledReady = true
+        })
+    </script>
+</head>
+<body>
+    <led-matrix id="led"></led-matrix>
+</body>
+</html>

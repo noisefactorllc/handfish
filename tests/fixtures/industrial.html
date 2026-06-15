@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="neutral-dark" data-language="industrial">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>industrial language — test fixture</title>
+    <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="https://fonts.noisefactor.io/fonts/atkinson-hyperlegible/AtkinsonHyperlegible-Blank.woff2">
+    <link rel="stylesheet" href="../../dist/styles/index.css">
+    <link rel="stylesheet" href="../../dist/styles/themes/neutral.css">
+    <link rel="stylesheet" href="../../dist/styles/industrial.css">
+    <style>
+        body { margin: 0; background: var(--hf-bg-base); color: var(--hf-text-normal); }
+        .stage { padding: var(--hf-space-6); display: flex; flex-direction: column; gap: var(--hf-space-6); }
+        .frame { border: 1px solid var(--hf-border); border-radius: var(--hf-radius); }
+        .hf-logotype.is-color {
+            --hf-logotype-fill: transparent;
+            background: linear-gradient(90deg, var(--hf-blue), var(--hf-yellow), var(--hf-red));
+            -webkit-background-clip: text;
+            background-clip: text;
+        }
+    </style>
+</head>
+<body>
+    <div class="stage">
+        <div class="hf-topbar frame hf-surface" id="topbar">
+            <div class="hf-logotype" id="logotype">HANDFISH</div>
+            <div class="hf-topbar-cluster" id="cluster">
+                <button class="hf-icon-btn tooltip" id="settings-btn" data-title="Settings" aria-label="Settings">
+                    <span class="hf-icon">settings</span>
+                </button>
+                <button class="hf-icon-btn tooltip" id="info-btn" data-title="About" aria-label="About">
+                    <span class="hf-icon">info</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="hf-topbar frame">
+            <div class="hf-logotype">EXAMPLE</div>
+        </div>
+
+        <div class="hf-topbar frame">
+            <div class="hf-logotype is-color" id="logotype-color">SAMPLE</div>
+        </div>
+    </div>
+</body>
+</html>

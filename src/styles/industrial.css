@@ -1,0 +1,142 @@
+/**
+ * Handfish — Industrial Design Language
+ *
+ * An alternative typeface language built on Atkinson Hyperlegible, for
+ * utilitarian / instrument-style tools, as opposed to the default "friendly"
+ * Nunito language. It is a typeface layer, orthogonal to the colour palette
+ * theme, opted into at the document root:
+ *
+ *   <html data-theme="neutral-dark" data-language="industrial">
+ *
+ * Consumers MUST also preload the Blank placeholder in <head> to avoid a flash
+ * of fallback text (FOUT):
+ *
+ *   <link rel="preload" as="font" type="font/woff2" crossorigin
+ *     href="https://fonts.noisefactor.io/fonts/atkinson-hyperlegible/AtkinsonHyperlegible-Blank.woff2">
+ *
+ * Provides: the typeface token override, the .hf-logotype wordmark, and the
+ * .hf-topbar / .hf-topbar-cluster chrome. The .hf-icon-btn primitive used in
+ * the cluster lives in menus-and-toolbars.css.
+ */
+
+/* ============================================================================
+ * Atkinson Hyperlegible (fontaine-hosted) — zero-CLS via metric-matched Blank.
+ * URLs verified against fonts.noisefactor.io.
+ * ============================================================================ */
+
+@font-face {
+    font-family: 'Atkinson Hyperlegible Blank';
+    src: url('https://fonts.noisefactor.io/fonts/atkinson-hyperlegible/AtkinsonHyperlegible-Blank.woff2') format('woff2');
+    font-weight: 400 700;
+    font-style: normal;
+    font-display: block;
+}
+
+@font-face {
+    font-family: 'Atkinson Hyperlegible';
+    src: url('https://fonts.noisefactor.io/fonts/atkinson-hyperlegible/AtkinsonHyperlegible-Regular.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Atkinson Hyperlegible';
+    src: url('https://fonts.noisefactor.io/fonts/atkinson-hyperlegible/AtkinsonHyperlegible-Italic.woff2') format('woff2');
+    font-weight: 400;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Atkinson Hyperlegible';
+    src: url('https://fonts.noisefactor.io/fonts/atkinson-hyperlegible/AtkinsonHyperlegible-Bold.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Atkinson Hyperlegible';
+    src: url('https://fonts.noisefactor.io/fonts/atkinson-hyperlegible/AtkinsonHyperlegible-BoldItalic.woff2') format('woff2');
+    font-weight: 700;
+    font-style: italic;
+    font-display: swap;
+}
+
+/* ============================================================================
+ * Typeface token — Atkinson across every palette theme.
+ *
+ * `:root[data-language="industrial"]` has specificity (0,2,0) and outranks
+ * tokens.css's `:root` (0,1,0) regardless of stylesheet order, so no
+ * !important is needed. Palette-orthogonal: the colour theme is still chosen
+ * with data-theme. No generic (system-ui / sans-serif) fallback — the Blank
+ * face is the only placeholder, per the platform no-fallback-fonts rule.
+ * ============================================================================ */
+
+:root[data-language="industrial"] {
+    --hf-font-family: 'Atkinson Hyperlegible', 'Atkinson Hyperlegible Blank';
+}
+
+/* ============================================================================
+ * Logotype — name only, ALL CAPS, upper-left. Monochrome by default; for a
+ * colour wordmark, set --hf-logotype-fill to `transparent` and paint a
+ * background gradient with background-clip:text.
+ * ============================================================================ */
+
+.hf-logotype {
+    display: inline-block;
+    font-family: var(--hf-font-family);
+    font-weight: var(--hf-weight-bold);
+    font-size: var(--hf-size-lg);
+    line-height: 1;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--hf-logotype-fill, var(--hf-text-bright));
+    white-space: nowrap;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+/* ============================================================================
+ * Top bar — logotype upper-left, normalized control cluster upper-right.
+ * App-specific controls sit between the two; the cluster auto-aligns right.
+ * Background/height beyond the minimum are left to the consuming app.
+ * ============================================================================ */
+
+.hf-topbar {
+    display: flex;
+    align-items: center;
+    gap: var(--hf-space-3);
+    width: 100%;
+    min-height: var(--hf-titlebar-height);
+    padding: var(--hf-space-2) var(--hf-space-3);
+}
+
+.hf-topbar-cluster {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--hf-space-1);
+    margin-left: auto;
+}
+
+/* Top-bar icon buttons are primary affordances, not de-emphasized toolbar
+ * icons: comfortable square target, full opacity, larger glyph. Scoped to the
+ * cluster so the global .hf-icon-btn (menus-and-toolbars.css) and every other
+ * handfish consumer are left untouched. */
+.hf-topbar-cluster .hf-icon-btn {
+    width: var(--hf-control-height-lg);  /* 36px square */
+    height: var(--hf-control-height-lg);
+    opacity: 1;
+}
+
+.hf-topbar-cluster .hf-icon-btn .hf-icon {
+    font-size: var(--hf-size-lg);        /* 18px glyph */
+}
+
+@media (pointer: coarse) {
+    .hf-topbar-cluster .hf-icon-btn {
+        width: 2.75rem;                  /* 44px touch target */
+        height: 2.75rem;
+    }
+}

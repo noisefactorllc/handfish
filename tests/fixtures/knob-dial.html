@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="neutral-dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>knob-dial — test fixture</title>
+    <link rel="stylesheet" href="../../dist/styles/index.css">
+    <link rel="stylesheet" href="../../dist/styles/themes/neutral.css">
+    <style> body { margin: 0; background: var(--hf-bg-base); padding: 40px; } </style>
+    <script type="module">
+        import '../../dist/handfish.esm.js'
+        customElements.whenDefined('knob-dial').then(() => {
+            const k = document.getElementById('k')
+            k.default = 0.5
+            k.value = 0.3
+            k.setAttribute('label', 'gain')
+            window.__ready = true
+        })
+    </script>
+</head>
+<body>
+    <knob-dial id="k"></knob-dial>
+    <knob-dial id="ke" mode="endless" label="enc" display="120"></knob-dial>
+</body>
+</html>

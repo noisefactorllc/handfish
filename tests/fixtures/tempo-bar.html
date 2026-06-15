@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="neutral-dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>tempo-bar — test fixture</title>
+    <link rel="stylesheet" href="../../dist/styles/index.css">
+    <link rel="stylesheet" href="../../dist/styles/themes/neutral.css">
+    <style> body { margin: 0; background: var(--hf-bg-base); padding: 40px; } </style>
+    <script type="module">
+        import '../../dist/handfish.esm.js'
+        customElements.whenDefined('tempo-bar').then(() => { window.__ready = true })
+    </script>
+</head>
+<body>
+    <!-- manual: do not auto-start the beat clock, so tests stay deterministic -->
+    <tempo-bar id="t" manual bpm="128" divider="8"></tempo-bar>
+    <!-- sequencer-style: low BPM range, no divider/phase, external clock -->
+    <tempo-bar id="ts" manual bpm="30" min-bpm="24" max-bpm="280" no-divider no-phase></tempo-bar>
+</body>
+</html>

@@ -393,3 +393,15 @@
     --hf-control-padding: 0.25rem 0.5rem; /* 4px 8px */
     --hf-titlebar-height: 2.25rem;   /* 36px */
 }
+
+/* ============================================================================
+ * LED / dot-matrix display (<led-matrix>)
+ * Emissive monochrome palette, themeable. Defaults to cyan-on-near-black.
+ * ============================================================================ */
+
+:root {
+    --hf-led-bg: #03060a;   /* panel background (near-black) */
+    --hf-led: #8fe9ff;      /* lit pixel */
+    --hf-led-dim: #2c5e72;  /* dim pixel / label */
+    --hf-led-hi: #e6fbff;   /* highlight pixel */
+}
