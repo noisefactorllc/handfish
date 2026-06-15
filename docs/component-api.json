@@ -261,7 +261,10 @@
       "observedAttributes": [
         "value",
         "disabled",
-        "name"
+        "name",
+        "left-label",
+        "center-label",
+        "right-label"
       ],
       "events": [
         {
@@ -282,6 +285,63 @@
     },
     {
       "kind": "custom-element",
+      "tag": "knob-dial",
+      "className": "KnobDial",
+      "directory": "knob-dial",
+      "sourceFile": "src/components/knob-dial/KnobDial.js",
+      "formAssociated": false,
+      "observedAttributes": [
+        "value",
+        "label",
+        "unit",
+        "cc",
+        "disabled",
+        "mode",
+        "display"
+      ],
+      "events": [
+        {
+          "name": "lock",
+          "type": "CustomEvent",
+          "detailKeys": null
+        },
+        {
+          "name": "learn",
+          "type": "CustomEvent",
+          "detailKeys": null
+        },
+        {
+          "name": "turn",
+          "type": "CustomEvent",
+          "detailKeys": null
+        },
+        {
+          "name": "press",
+          "type": "CustomEvent",
+          "detailKeys": null
+        }
+      ],
+      "description": null,
+      "relatedTags": []
+    },
+    {
+      "kind": "custom-element",
+      "tag": "led-matrix",
+      "className": "LedMatrix",
+      "directory": "led-matrix",
+      "sourceFile": "src/components/led-matrix/LedMatrix.js",
+      "formAssociated": false,
+      "observedAttributes": [
+        "label",
+        "value",
+        "mode"
+      ],
+      "events": [],
+      "description": null,
+      "relatedTags": []
+    },
+    {
+      "kind": "custom-element",
       "tag": "select-dropdown",
       "className": "SelectDropdown",
       "directory": "select-dropdown",
@@ -290,7 +350,12 @@
       "observedAttributes": [
         "value",
         "disabled",
-        "name"
+        "name",
+        "placeholder",
+        "empty-text",
+        "dialog-title",
+        "dialog-label",
+        "close-label"
       ],
       "events": [
         {
@@ -332,6 +397,38 @@
         }
       ],
       "description": "Slider Value Web Component",
+      "relatedTags": []
+    },
+    {
+      "kind": "custom-element",
+      "tag": "tempo-bar",
+      "className": "TempoBar",
+      "directory": "tempo-bar",
+      "sourceFile": "src/components/tempo-bar/TempoBar.js",
+      "formAssociated": false,
+      "observedAttributes": [],
+      "events": [
+        {
+          "name": "change",
+          "type": "CustomEvent",
+          "detailKeys": [
+            "bpm"
+          ]
+        },
+        {
+          "name": "dividerchange",
+          "type": "CustomEvent",
+          "detailKeys": [
+            "divider"
+          ]
+        },
+        {
+          "name": "beat",
+          "type": "CustomEvent",
+          "detailKeys": null
+        }
+      ],
+      "description": null,
       "relatedTags": []
     },
     {
@@ -621,25 +718,31 @@
   },
   "index_exports": [
     "AboutDialog",
+    "BeatScheduler",
     "CodeEditor",
     "ColorPicker",
     "ColorSwatch",
     "ColorWheel",
+    "DIVIDER_OPTIONS",
     "DropdownItem",
     "DropdownMenu",
     "EDITOR_THEMES",
     "GradientStops",
     "ImageMagnifier",
     "JustifyButtonGroup",
+    "KnobDial",
+    "LedMatrix",
     "SelectDropdown",
     "SliderValue",
     "THEME_KEYS",
+    "TempoBar",
     "ToggleSwitch",
     "Vector2dPicker",
     "Vector3dPicker",
     "applyEditorTheme",
     "applyEditorThemeGlobal",
     "closeTopmost",
+    "computeBarSeconds",
     "dslTokenizer",
     "hasOpenEscapeables",
     "initEscapeHandler",
