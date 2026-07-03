@@ -27,21 +27,216 @@
         "selection-color",
         "line-numbers"
       ],
-      "events": [
+      "api": [
         {
-          "name": "input",
-          "type": "CustomEvent",
-          "detailKeys": [
-            "value"
-          ]
+          "kind": "property",
+          "name": "collabApiVersion",
+          "static": true,
+          "signature": "static collabApiVersion = 1"
         },
+        {
+          "kind": "get",
+          "name": "collabApiVersion",
+          "static": false,
+          "signature": "get collabApiVersion()"
+        },
+        {
+          "kind": "get",
+          "name": "value",
+          "static": false,
+          "signature": "get value()"
+        },
+        {
+          "kind": "set",
+          "name": "value",
+          "static": false,
+          "signature": "set value(value)"
+        },
+        {
+          "kind": "get",
+          "name": "tokenizer",
+          "static": false,
+          "signature": "get tokenizer()"
+        },
+        {
+          "kind": "set",
+          "name": "tokenizer",
+          "static": false,
+          "signature": "set tokenizer(fn)"
+        },
+        {
+          "kind": "get",
+          "name": "selectionStart",
+          "static": false,
+          "signature": "get selectionStart()"
+        },
+        {
+          "kind": "set",
+          "name": "selectionStart",
+          "static": false,
+          "signature": "set selectionStart(value)"
+        },
+        {
+          "kind": "get",
+          "name": "selectionEnd",
+          "static": false,
+          "signature": "get selectionEnd()"
+        },
+        {
+          "kind": "set",
+          "name": "selectionEnd",
+          "static": false,
+          "signature": "set selectionEnd(value)"
+        },
+        {
+          "kind": "method",
+          "name": "if",
+          "static": false,
+          "signature": "if(!this._rendered)"
+        },
+        {
+          "kind": "method",
+          "name": "switch",
+          "static": false,
+          "signature": "switch(name)"
+        },
+        {
+          "kind": "method",
+          "name": "setTokenizer",
+          "static": false,
+          "signature": "setTokenizer(fn)"
+        },
+        {
+          "kind": "method",
+          "name": "getTextarea",
+          "static": false,
+          "signature": "getTextarea()"
+        },
+        {
+          "kind": "method",
+          "name": "getDisplay",
+          "static": false,
+          "signature": "getDisplay()"
+        },
+        {
+          "kind": "method",
+          "name": "focus",
+          "static": false,
+          "signature": "focus()"
+        },
+        {
+          "kind": "method",
+          "name": "blur",
+          "static": false,
+          "signature": "blur()"
+        },
+        {
+          "kind": "method",
+          "name": "selectAll",
+          "static": false,
+          "signature": "selectAll()"
+        },
+        {
+          "kind": "method",
+          "name": "getSelectionRange",
+          "static": false,
+          "signature": "getSelectionRange()"
+        },
+        {
+          "kind": "method",
+          "name": "setSelectionRange",
+          "static": false,
+          "signature": "setSelectionRange(start, end, direction = 'none')"
+        },
+        {
+          "kind": "method",
+          "name": "replaceRange",
+          "static": false,
+          "signature": "replaceRange(start, end, text, options = {})"
+        },
+        {
+          "kind": "method",
+          "name": "applyTextEdit",
+          "static": false,
+          "signature": "applyTextEdit(edit, options = {})"
+        },
+        {
+          "kind": "method",
+          "name": "setRemoteSelections",
+          "static": false,
+          "signature": "setRemoteSelections(selections)"
+        },
+        {
+          "kind": "method",
+          "name": "setRemoteSelection",
+          "static": false,
+          "signature": "setRemoteSelection(selection)"
+        },
+        {
+          "kind": "method",
+          "name": "clearRemoteSelection",
+          "static": false,
+          "signature": "clearRemoteSelection(id)"
+        },
+        {
+          "kind": "method",
+          "name": "clearRemoteSelections",
+          "static": false,
+          "signature": "clearRemoteSelections()"
+        },
+        {
+          "kind": "method",
+          "name": "flashLines",
+          "static": false,
+          "signature": "flashLines(startLine, endLine, options = {})"
+        },
+        {
+          "kind": "method",
+          "name": "syncDisplay",
+          "static": false,
+          "signature": "syncDisplay()"
+        },
+        {
+          "kind": "method",
+          "name": "syncScroll",
+          "static": false,
+          "signature": "syncScroll()"
+        },
+        {
+          "kind": "method",
+          "name": "for",
+          "static": false,
+          "signature": "for(let index = 0; index < codeLines.length; index += 1)"
+        }
+      ],
+      "events": [
         {
           "name": "forcerecompile",
           "type": "CustomEvent",
           "detailKeys": null
+        },
+        {
+          "name": "selectionchange",
+          "type": "CustomEvent",
+          "detailKeys": [
+            "start",
+            "end",
+            "direction",
+            "value"
+          ]
+        },
+        {
+          "name": "input",
+          "type": "CustomEvent",
+          "detailKeys": [
+            "value",
+            "previousValue",
+            "edit",
+            "source"
+          ]
         }
       ],
-      "description": "Code Editor Web Component",
+      "description": null,
       "relatedTags": []
     },
     {
@@ -56,6 +251,74 @@
         "disabled",
         "name",
         "color-mode"
+      ],
+      "api": [
+        {
+          "kind": "property",
+          "name": "formAssociated",
+          "static": true,
+          "signature": "static formAssociated = true"
+        },
+        {
+          "kind": "get",
+          "name": "value",
+          "static": false,
+          "signature": "get value()"
+        },
+        {
+          "kind": "set",
+          "name": "value",
+          "static": false,
+          "signature": "set value(val)"
+        },
+        {
+          "kind": "get",
+          "name": "disabled",
+          "static": false,
+          "signature": "get disabled()"
+        },
+        {
+          "kind": "set",
+          "name": "disabled",
+          "static": false,
+          "signature": "set disabled(val)"
+        },
+        {
+          "kind": "get",
+          "name": "name",
+          "static": false,
+          "signature": "get name()"
+        },
+        {
+          "kind": "set",
+          "name": "name",
+          "static": false,
+          "signature": "set name(val)"
+        },
+        {
+          "kind": "get",
+          "name": "colorMode",
+          "static": false,
+          "signature": "get colorMode()"
+        },
+        {
+          "kind": "set",
+          "name": "colorMode",
+          "static": false,
+          "signature": "set colorMode(val)"
+        },
+        {
+          "kind": "method",
+          "name": "if",
+          "static": false,
+          "signature": "if(this.constructor.formAssociated)"
+        },
+        {
+          "kind": "method",
+          "name": "switch",
+          "static": false,
+          "signature": "switch(name)"
+        }
       ],
       "events": [
         {
@@ -86,6 +349,68 @@
         "editable",
         "size",
         "show-tooltip"
+      ],
+      "api": [
+        {
+          "kind": "get",
+          "name": "color",
+          "static": false,
+          "signature": "get color()"
+        },
+        {
+          "kind": "set",
+          "name": "color",
+          "static": false,
+          "signature": "set color(val)"
+        },
+        {
+          "kind": "get",
+          "name": "rgb",
+          "static": false,
+          "signature": "get rgb()"
+        },
+        {
+          "kind": "set",
+          "name": "rgb",
+          "static": false,
+          "signature": "set rgb(val)"
+        },
+        {
+          "kind": "get",
+          "name": "selected",
+          "static": false,
+          "signature": "get selected()"
+        },
+        {
+          "kind": "set",
+          "name": "selected",
+          "static": false,
+          "signature": "set selected(val)"
+        },
+        {
+          "kind": "get",
+          "name": "disabled",
+          "static": false,
+          "signature": "get disabled()"
+        },
+        {
+          "kind": "set",
+          "name": "disabled",
+          "static": false,
+          "signature": "set disabled(val)"
+        },
+        {
+          "kind": "method",
+          "name": "if",
+          "static": false,
+          "signature": "if(!this._rendered)"
+        },
+        {
+          "kind": "method",
+          "name": "switch",
+          "static": false,
+          "signature": "switch(name)"
+        }
       ],
       "events": [
         {
@@ -122,6 +447,158 @@
         "disabled",
         "required",
         "name"
+      ],
+      "api": [
+        {
+          "kind": "property",
+          "name": "formAssociated",
+          "static": true,
+          "signature": "static formAssociated = true"
+        },
+        {
+          "kind": "get",
+          "name": "value",
+          "static": false,
+          "signature": "get value()"
+        },
+        {
+          "kind": "set",
+          "name": "value",
+          "static": false,
+          "signature": "set value(val)"
+        },
+        {
+          "kind": "get",
+          "name": "alpha",
+          "static": false,
+          "signature": "get alpha()"
+        },
+        {
+          "kind": "set",
+          "name": "alpha",
+          "static": false,
+          "signature": "set alpha(val)"
+        },
+        {
+          "kind": "get",
+          "name": "mode",
+          "static": false,
+          "signature": "get mode()"
+        },
+        {
+          "kind": "set",
+          "name": "mode",
+          "static": false,
+          "signature": "set mode(val)"
+        },
+        {
+          "kind": "get",
+          "name": "disabled",
+          "static": false,
+          "signature": "get disabled()"
+        },
+        {
+          "kind": "set",
+          "name": "disabled",
+          "static": false,
+          "signature": "set disabled(val)"
+        },
+        {
+          "kind": "get",
+          "name": "required",
+          "static": false,
+          "signature": "get required()"
+        },
+        {
+          "kind": "set",
+          "name": "required",
+          "static": false,
+          "signature": "set required(val)"
+        },
+        {
+          "kind": "get",
+          "name": "name",
+          "static": false,
+          "signature": "get name()"
+        },
+        {
+          "kind": "set",
+          "name": "name",
+          "static": false,
+          "signature": "set name(val)"
+        },
+        {
+          "kind": "get",
+          "name": "valueWithAlpha",
+          "static": false,
+          "signature": "get valueWithAlpha()"
+        },
+        {
+          "kind": "get",
+          "name": "form",
+          "static": false,
+          "signature": "get form()"
+        },
+        {
+          "kind": "get",
+          "name": "validity",
+          "static": false,
+          "signature": "get validity()"
+        },
+        {
+          "kind": "get",
+          "name": "validationMessage",
+          "static": false,
+          "signature": "get validationMessage()"
+        },
+        {
+          "kind": "get",
+          "name": "willValidate",
+          "static": false,
+          "signature": "get willValidate()"
+        },
+        {
+          "kind": "method",
+          "name": "if",
+          "static": false,
+          "signature": "if(this.constructor.formAssociated)"
+        },
+        {
+          "kind": "method",
+          "name": "switch",
+          "static": false,
+          "signature": "switch(name)"
+        },
+        {
+          "kind": "method",
+          "name": "setColor",
+          "static": false,
+          "signature": "setColor(opts)"
+        },
+        {
+          "kind": "method",
+          "name": "getColor",
+          "static": false,
+          "signature": "getColor()"
+        },
+        {
+          "kind": "method",
+          "name": "checkValidity",
+          "static": false,
+          "signature": "checkValidity()"
+        },
+        {
+          "kind": "method",
+          "name": "reportValidity",
+          "static": false,
+          "signature": "reportValidity()"
+        },
+        {
+          "kind": "method",
+          "name": "for",
+          "static": false,
+          "signature": "for(let y = 0; y < size; y++)"
+        }
       ],
       "events": [
         {
@@ -169,6 +646,74 @@
         "align",
         "value"
       ],
+      "api": [
+        {
+          "kind": "get",
+          "name": "value",
+          "static": false,
+          "signature": "get value()"
+        },
+        {
+          "kind": "set",
+          "name": "value",
+          "static": false,
+          "signature": "set value(val)"
+        },
+        {
+          "kind": "get",
+          "name": "isOpen",
+          "static": false,
+          "signature": "get isOpen()"
+        },
+        {
+          "kind": "method",
+          "name": "if",
+          "static": false,
+          "signature": "if(!this._rendered)"
+        },
+        {
+          "kind": "method",
+          "name": "switch",
+          "static": false,
+          "signature": "switch(e.key)"
+        },
+        {
+          "kind": "method",
+          "name": "open",
+          "static": false,
+          "signature": "open()"
+        },
+        {
+          "kind": "method",
+          "name": "close",
+          "static": false,
+          "signature": "close()"
+        },
+        {
+          "kind": "method",
+          "name": "toggle",
+          "static": false,
+          "signature": "toggle()"
+        },
+        {
+          "kind": "method",
+          "name": "setItems",
+          "static": false,
+          "signature": "setItems(items)"
+        },
+        {
+          "kind": "method",
+          "name": "addItem",
+          "static": false,
+          "signature": "addItem(value, label, options = {})"
+        },
+        {
+          "kind": "method",
+          "name": "clearItems",
+          "static": false,
+          "signature": "clearItems()"
+        }
+      ],
       "events": [
         {
           "name": "change",
@@ -196,6 +741,50 @@
       "formAssociated": false,
       "observedAttributes": [
         "disabled"
+      ],
+      "api": [
+        {
+          "kind": "method",
+          "name": "if",
+          "static": false,
+          "signature": "if(name === 'disabled')"
+        },
+        {
+          "kind": "method",
+          "name": "setStops",
+          "static": false,
+          "signature": "setStops(colors, positions)"
+        },
+        {
+          "kind": "method",
+          "name": "while",
+          "static": false,
+          "signature": "while(this._positions.length < this._colors.length)"
+        },
+        {
+          "kind": "method",
+          "name": "getPositions",
+          "static": false,
+          "signature": "getPositions()"
+        },
+        {
+          "kind": "method",
+          "name": "getSelectedIndex",
+          "static": false,
+          "signature": "getSelectedIndex()"
+        },
+        {
+          "kind": "method",
+          "name": "setSelectedIndex",
+          "static": false,
+          "signature": "setSelectedIndex(index)"
+        },
+        {
+          "kind": "method",
+          "name": "setPosition",
+          "static": false,
+          "signature": "setPosition(index, position)"
+        }
       ],
       "events": [
         {
@@ -247,7 +836,120 @@
         "zoom",
         "size"
       ],
+      "api": [
+        {
+          "kind": "get",
+          "name": "centerColor",
+          "static": false,
+          "signature": "get centerColor()"
+        },
+        {
+          "kind": "get",
+          "name": "active",
+          "static": false,
+          "signature": "get active()"
+        },
+        {
+          "kind": "method",
+          "name": "if",
+          "static": false,
+          "signature": "if(!this._rendered)"
+        },
+        {
+          "kind": "method",
+          "name": "switch",
+          "static": false,
+          "signature": "switch(name)"
+        },
+        {
+          "kind": "method",
+          "name": "attach",
+          "static": false,
+          "signature": "attach(canvas)"
+        },
+        {
+          "kind": "method",
+          "name": "detach",
+          "static": false,
+          "signature": "detach()"
+        },
+        {
+          "kind": "method",
+          "name": "show",
+          "static": false,
+          "signature": "show()"
+        },
+        {
+          "kind": "method",
+          "name": "hide",
+          "static": false,
+          "signature": "hide()"
+        }
+      ],
       "events": [],
+      "description": null,
+      "relatedTags": []
+    },
+    {
+      "kind": "custom-element",
+      "tag": "join-session-dialog",
+      "className": "JoinSessionDialog",
+      "directory": "join-session-dialog",
+      "sourceFile": "src/components/join-session-dialog/JoinSessionDialog.js",
+      "formAssociated": false,
+      "observedAttributes": [
+        "title",
+        "copy",
+        "join-label",
+        "cancel-label",
+        "session-id"
+      ],
+      "api": [
+        {
+          "kind": "get",
+          "name": "sessionId",
+          "static": false,
+          "signature": "get sessionId()"
+        },
+        {
+          "kind": "set",
+          "name": "sessionId",
+          "static": false,
+          "signature": "set sessionId(value)"
+        },
+        {
+          "kind": "method",
+          "name": "if",
+          "static": false,
+          "signature": "if(!this._rendered)"
+        },
+        {
+          "kind": "method",
+          "name": "show",
+          "static": false,
+          "signature": "show(options = {})"
+        },
+        {
+          "kind": "method",
+          "name": "hide",
+          "static": false,
+          "signature": "hide({ emitCancel = false } = {})"
+        }
+      ],
+      "events": [
+        {
+          "name": "cancel",
+          "type": "CustomEvent",
+          "detailKeys": null
+        },
+        {
+          "name": "join-session",
+          "type": "CustomEvent",
+          "detailKeys": [
+            "sessionId"
+          ]
+        }
+      ],
       "description": null,
       "relatedTags": []
     },
@@ -265,6 +967,62 @@
         "left-label",
         "center-label",
         "right-label"
+      ],
+      "api": [
+        {
+          "kind": "property",
+          "name": "formAssociated",
+          "static": true,
+          "signature": "static formAssociated = true"
+        },
+        {
+          "kind": "get",
+          "name": "value",
+          "static": false,
+          "signature": "get value()"
+        },
+        {
+          "kind": "set",
+          "name": "value",
+          "static": false,
+          "signature": "set value(val)"
+        },
+        {
+          "kind": "get",
+          "name": "name",
+          "static": false,
+          "signature": "get name()"
+        },
+        {
+          "kind": "set",
+          "name": "name",
+          "static": false,
+          "signature": "set name(val)"
+        },
+        {
+          "kind": "get",
+          "name": "disabled",
+          "static": false,
+          "signature": "get disabled()"
+        },
+        {
+          "kind": "set",
+          "name": "disabled",
+          "static": false,
+          "signature": "set disabled(val)"
+        },
+        {
+          "kind": "method",
+          "name": "if",
+          "static": false,
+          "signature": "if(this.constructor.formAssociated)"
+        },
+        {
+          "kind": "method",
+          "name": "switch",
+          "static": false,
+          "signature": "switch(name)"
+        }
       ],
       "events": [
         {
@@ -298,6 +1056,80 @@
         "disabled",
         "mode",
         "display"
+      ],
+      "api": [
+        {
+          "kind": "get",
+          "name": "value",
+          "static": false,
+          "signature": "get value()"
+        },
+        {
+          "kind": "set",
+          "name": "value",
+          "static": false,
+          "signature": "set value(v)"
+        },
+        {
+          "kind": "get",
+          "name": "default",
+          "static": false,
+          "signature": "get default()"
+        },
+        {
+          "kind": "set",
+          "name": "default",
+          "static": false,
+          "signature": "set default(v)"
+        },
+        {
+          "kind": "get",
+          "name": "step",
+          "static": false,
+          "signature": "get step()"
+        },
+        {
+          "kind": "set",
+          "name": "step",
+          "static": false,
+          "signature": "set step(v)"
+        },
+        {
+          "kind": "get",
+          "name": "mode",
+          "static": false,
+          "signature": "get mode()"
+        },
+        {
+          "kind": "set",
+          "name": "mode",
+          "static": false,
+          "signature": "set mode(m)"
+        },
+        {
+          "kind": "get",
+          "name": "display",
+          "static": false,
+          "signature": "get display()"
+        },
+        {
+          "kind": "set",
+          "name": "display",
+          "static": false,
+          "signature": "set display(t)"
+        },
+        {
+          "kind": "method",
+          "name": "if",
+          "static": false,
+          "signature": "if(cc)"
+        },
+        {
+          "kind": "method",
+          "name": "while",
+          "static": false,
+          "signature": "while(this._acc >= PX_PER_DETENT)"
+        }
       ],
       "events": [
         {
@@ -336,6 +1168,26 @@
         "value",
         "mode"
       ],
+      "api": [
+        {
+          "kind": "method",
+          "name": "if",
+          "static": false,
+          "signature": "if(!this._canvas)"
+        },
+        {
+          "kind": "method",
+          "name": "for",
+          "static": false,
+          "signature": "for(const name of ['label', 'value', 'mode'])"
+        },
+        {
+          "kind": "method",
+          "name": "show",
+          "static": false,
+          "signature": "show(desc)"
+        }
+      ],
       "events": [],
       "description": null,
       "relatedTags": []
@@ -357,6 +1209,86 @@
         "dialog-label",
         "close-label"
       ],
+      "api": [
+        {
+          "kind": "property",
+          "name": "formAssociated",
+          "static": true,
+          "signature": "static formAssociated = true"
+        },
+        {
+          "kind": "get",
+          "name": "value",
+          "static": false,
+          "signature": "get value()"
+        },
+        {
+          "kind": "set",
+          "name": "value",
+          "static": false,
+          "signature": "set value(val)"
+        },
+        {
+          "kind": "get",
+          "name": "disabled",
+          "static": false,
+          "signature": "get disabled()"
+        },
+        {
+          "kind": "set",
+          "name": "disabled",
+          "static": false,
+          "signature": "set disabled(val)"
+        },
+        {
+          "kind": "get",
+          "name": "name",
+          "static": false,
+          "signature": "get name()"
+        },
+        {
+          "kind": "set",
+          "name": "name",
+          "static": false,
+          "signature": "set name(val)"
+        },
+        {
+          "kind": "get",
+          "name": "selectedIndex",
+          "static": false,
+          "signature": "get selectedIndex()"
+        },
+        {
+          "kind": "set",
+          "name": "selectedIndex",
+          "static": false,
+          "signature": "set selectedIndex(idx)"
+        },
+        {
+          "kind": "method",
+          "name": "if",
+          "static": false,
+          "signature": "if(this.constructor.formAssociated)"
+        },
+        {
+          "kind": "method",
+          "name": "switch",
+          "static": false,
+          "signature": "switch(name)"
+        },
+        {
+          "kind": "method",
+          "name": "setOptions",
+          "static": false,
+          "signature": "setOptions(options)"
+        },
+        {
+          "kind": "method",
+          "name": "getOptions",
+          "static": false,
+          "signature": "getOptions()"
+        }
+      ],
       "events": [
         {
           "name": "change",
@@ -365,6 +1297,84 @@
         }
       ],
       "description": "Select Dropdown Web Component",
+      "relatedTags": []
+    },
+    {
+      "kind": "custom-element",
+      "tag": "session-status",
+      "className": "SessionStatus",
+      "directory": "session-status",
+      "sourceFile": "src/components/session-status/SessionStatus.js",
+      "formAssociated": false,
+      "observedAttributes": [
+        "state",
+        "session-id",
+        "session-url",
+        "copy-label",
+        "offline-label"
+      ],
+      "api": [
+        {
+          "kind": "get",
+          "name": "state",
+          "static": false,
+          "signature": "get state()"
+        },
+        {
+          "kind": "set",
+          "name": "state",
+          "static": false,
+          "signature": "set state(value)"
+        },
+        {
+          "kind": "get",
+          "name": "sessionId",
+          "static": false,
+          "signature": "get sessionId()"
+        },
+        {
+          "kind": "set",
+          "name": "sessionId",
+          "static": false,
+          "signature": "set sessionId(value)"
+        },
+        {
+          "kind": "get",
+          "name": "sessionUrl",
+          "static": false,
+          "signature": "get sessionUrl()"
+        },
+        {
+          "kind": "set",
+          "name": "sessionUrl",
+          "static": false,
+          "signature": "set sessionUrl(value)"
+        },
+        {
+          "kind": "method",
+          "name": "if",
+          "static": false,
+          "signature": "if(!this._rendered)"
+        }
+      ],
+      "events": [
+        {
+          "name": "copy-url",
+          "type": "CustomEvent",
+          "detailKeys": [
+            "sessionId",
+            "sessionUrl"
+          ]
+        },
+        {
+          "name": "go-offline",
+          "type": "CustomEvent",
+          "detailKeys": [
+            "sessionId"
+          ]
+        }
+      ],
+      "description": null,
       "relatedTags": []
     },
     {
@@ -383,6 +1393,122 @@
         "name",
         "type",
         "format"
+      ],
+      "api": [
+        {
+          "kind": "property",
+          "name": "formAssociated",
+          "static": true,
+          "signature": "static formAssociated = true"
+        },
+        {
+          "kind": "get",
+          "name": "value",
+          "static": false,
+          "signature": "get value()"
+        },
+        {
+          "kind": "set",
+          "name": "value",
+          "static": false,
+          "signature": "set value(val)"
+        },
+        {
+          "kind": "get",
+          "name": "min",
+          "static": false,
+          "signature": "get min()"
+        },
+        {
+          "kind": "set",
+          "name": "min",
+          "static": false,
+          "signature": "set min(val)"
+        },
+        {
+          "kind": "get",
+          "name": "max",
+          "static": false,
+          "signature": "get max()"
+        },
+        {
+          "kind": "set",
+          "name": "max",
+          "static": false,
+          "signature": "set max(val)"
+        },
+        {
+          "kind": "get",
+          "name": "step",
+          "static": false,
+          "signature": "get step()"
+        },
+        {
+          "kind": "set",
+          "name": "step",
+          "static": false,
+          "signature": "set step(val)"
+        },
+        {
+          "kind": "get",
+          "name": "type",
+          "static": false,
+          "signature": "get type()"
+        },
+        {
+          "kind": "set",
+          "name": "type",
+          "static": false,
+          "signature": "set type(val)"
+        },
+        {
+          "kind": "get",
+          "name": "format",
+          "static": false,
+          "signature": "get format()"
+        },
+        {
+          "kind": "set",
+          "name": "format",
+          "static": false,
+          "signature": "set format(val)"
+        },
+        {
+          "kind": "get",
+          "name": "disabled",
+          "static": false,
+          "signature": "get disabled()"
+        },
+        {
+          "kind": "set",
+          "name": "disabled",
+          "static": false,
+          "signature": "set disabled(val)"
+        },
+        {
+          "kind": "get",
+          "name": "name",
+          "static": false,
+          "signature": "get name()"
+        },
+        {
+          "kind": "set",
+          "name": "name",
+          "static": false,
+          "signature": "set name(val)"
+        },
+        {
+          "kind": "method",
+          "name": "if",
+          "static": false,
+          "signature": "if(this.constructor.formAssociated)"
+        },
+        {
+          "kind": "method",
+          "name": "switch",
+          "static": false,
+          "signature": "switch(name)"
+        }
       ],
       "events": [
         {
@@ -407,6 +1533,80 @@
       "sourceFile": "src/components/tempo-bar/TempoBar.js",
       "formAssociated": false,
       "observedAttributes": [],
+      "api": [
+        {
+          "kind": "get",
+          "name": "scheduler",
+          "static": false,
+          "signature": "get scheduler()"
+        },
+        {
+          "kind": "get",
+          "name": "bpm",
+          "static": false,
+          "signature": "get bpm()"
+        },
+        {
+          "kind": "set",
+          "name": "bpm",
+          "static": false,
+          "signature": "set bpm(v)"
+        },
+        {
+          "kind": "get",
+          "name": "divider",
+          "static": false,
+          "signature": "get divider()"
+        },
+        {
+          "kind": "set",
+          "name": "divider",
+          "static": false,
+          "signature": "set divider(v)"
+        },
+        {
+          "kind": "method",
+          "name": "if",
+          "static": false,
+          "signature": "if(this._els.divider)"
+        },
+        {
+          "kind": "method",
+          "name": "showBeat",
+          "static": false,
+          "signature": "showBeat(beatInBar)"
+        },
+        {
+          "kind": "method",
+          "name": "start",
+          "static": false,
+          "signature": "start()"
+        },
+        {
+          "kind": "method",
+          "name": "stop",
+          "static": false,
+          "signature": "stop()"
+        },
+        {
+          "kind": "method",
+          "name": "tap",
+          "static": false,
+          "signature": "tap(now)"
+        },
+        {
+          "kind": "method",
+          "name": "resetPhase",
+          "static": false,
+          "signature": "resetPhase()"
+        },
+        {
+          "kind": "method",
+          "name": "barSeconds",
+          "static": false,
+          "signature": "barSeconds()"
+        }
+      ],
       "events": [
         {
           "name": "change",
@@ -442,6 +1642,38 @@
         "checked",
         "disabled"
       ],
+      "api": [
+        {
+          "kind": "get",
+          "name": "checked",
+          "static": false,
+          "signature": "get checked()"
+        },
+        {
+          "kind": "set",
+          "name": "checked",
+          "static": false,
+          "signature": "set checked(val)"
+        },
+        {
+          "kind": "get",
+          "name": "disabled",
+          "static": false,
+          "signature": "get disabled()"
+        },
+        {
+          "kind": "set",
+          "name": "disabled",
+          "static": false,
+          "signature": "set disabled(val)"
+        },
+        {
+          "kind": "method",
+          "name": "if",
+          "static": false,
+          "signature": "if(!this._rendered)"
+        }
+      ],
       "events": [
         {
           "name": "change",
@@ -467,6 +1699,74 @@
         "max",
         "step",
         "normalized"
+      ],
+      "api": [
+        {
+          "kind": "property",
+          "name": "formAssociated",
+          "static": true,
+          "signature": "static formAssociated = true"
+        },
+        {
+          "kind": "get",
+          "name": "value",
+          "static": false,
+          "signature": "get value()"
+        },
+        {
+          "kind": "set",
+          "name": "value",
+          "static": false,
+          "signature": "set value(val)"
+        },
+        {
+          "kind": "get",
+          "name": "disabled",
+          "static": false,
+          "signature": "get disabled()"
+        },
+        {
+          "kind": "set",
+          "name": "disabled",
+          "static": false,
+          "signature": "set disabled(val)"
+        },
+        {
+          "kind": "get",
+          "name": "name",
+          "static": false,
+          "signature": "get name()"
+        },
+        {
+          "kind": "set",
+          "name": "name",
+          "static": false,
+          "signature": "set name(val)"
+        },
+        {
+          "kind": "get",
+          "name": "normalized",
+          "static": false,
+          "signature": "get normalized()"
+        },
+        {
+          "kind": "set",
+          "name": "normalized",
+          "static": false,
+          "signature": "set normalized(val)"
+        },
+        {
+          "kind": "method",
+          "name": "if",
+          "static": false,
+          "signature": "if(this.constructor.formAssociated)"
+        },
+        {
+          "kind": "method",
+          "name": "switch",
+          "static": false,
+          "signature": "switch(name)"
+        }
       ],
       "events": [
         {
@@ -499,6 +1799,74 @@
         "step",
         "normalized"
       ],
+      "api": [
+        {
+          "kind": "property",
+          "name": "formAssociated",
+          "static": true,
+          "signature": "static formAssociated = true"
+        },
+        {
+          "kind": "get",
+          "name": "value",
+          "static": false,
+          "signature": "get value()"
+        },
+        {
+          "kind": "set",
+          "name": "value",
+          "static": false,
+          "signature": "set value(val)"
+        },
+        {
+          "kind": "get",
+          "name": "disabled",
+          "static": false,
+          "signature": "get disabled()"
+        },
+        {
+          "kind": "set",
+          "name": "disabled",
+          "static": false,
+          "signature": "set disabled(val)"
+        },
+        {
+          "kind": "get",
+          "name": "name",
+          "static": false,
+          "signature": "get name()"
+        },
+        {
+          "kind": "set",
+          "name": "name",
+          "static": false,
+          "signature": "set name(val)"
+        },
+        {
+          "kind": "get",
+          "name": "normalized",
+          "static": false,
+          "signature": "get normalized()"
+        },
+        {
+          "kind": "set",
+          "name": "normalized",
+          "static": false,
+          "signature": "set normalized(val)"
+        },
+        {
+          "kind": "method",
+          "name": "if",
+          "static": false,
+          "signature": "if(this.constructor.formAssociated)"
+        },
+        {
+          "kind": "method",
+          "name": "switch",
+          "static": false,
+          "signature": "switch(name)"
+        }
+      ],
       "events": [
         {
           "name": "input",
@@ -522,6 +1890,50 @@
       "extends": null,
       "directory": "about-dialog",
       "sourceFile": "src/components/about-dialog/AboutDialog.js",
+      "api": [
+        {
+          "kind": "method",
+          "name": "show",
+          "static": false,
+          "signature": "show()"
+        },
+        {
+          "kind": "method",
+          "name": "hide",
+          "static": false,
+          "signature": "hide()"
+        },
+        {
+          "kind": "method",
+          "name": "destroy",
+          "static": false,
+          "signature": "destroy()"
+        },
+        {
+          "kind": "method",
+          "name": "if",
+          "static": false,
+          "signature": "if(this._dialog)"
+        },
+        {
+          "kind": "method",
+          "name": "setBuild",
+          "static": false,
+          "signature": "setBuild({ hash, deployed } = {})"
+        },
+        {
+          "kind": "method",
+          "name": "setNoisemaker",
+          "static": false,
+          "signature": "setNoisemaker({ version, hash, deployed } = {})"
+        },
+        {
+          "kind": "method",
+          "name": "setEcosystem",
+          "static": false,
+          "signature": "setEcosystem(html)"
+        }
+      ],
       "description": null
     }
   ],
@@ -729,10 +2141,12 @@
     "EDITOR_THEMES",
     "GradientStops",
     "ImageMagnifier",
+    "JoinSessionDialog",
     "JustifyButtonGroup",
     "KnobDial",
     "LedMatrix",
     "SelectDropdown",
+    "SessionStatus",
     "SliderValue",
     "THEME_KEYS",
     "TempoBar",

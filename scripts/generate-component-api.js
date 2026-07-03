@@ -13,13 +13,14 @@
  *   - class name (from `class X extends HTMLElement`)
  *   - observedAttributes list (from `static get observedAttributes() { return [...] }`)
  *   - formAssociated flag (from `static formAssociated = true`)
+ *   - public static/instance properties, accessors, and methods
  *   - dispatched events with their type (Event vs CustomEvent) and the
  *     literal CustomEvent.detail keys when statically extractable
  *   - leading JSDoc block (one-paragraph description)
  *
  * What's NOT extracted (would need full AST analysis):
  *   - default values for attributes
- *   - method signatures and their JSDoc
+ *   - method JSDoc attached to each API member
  *   - non-static event detail payloads
  *
  * Strategy: regex-based extraction. The handfish component pattern is strict
@@ -69,6 +70,11 @@ function readPackageVersion() {
     return JSON.parse(readFileSync(packageFile, 'utf8')).version
 }
 
+function getClassBody(source, className, extendsPattern = 'HTMLElement') {
+    const re = new RegExp(`class\\s+${className}(?:\\s+extends\\s+${extendsPattern})?\\s*\\{([\\s\\S]*?)^\\}`, 'm')
+    return source.match(re)?.[1] || ''
+}
+
 // ----- Per-file extractors --------------------------------------------------
 
 /**
@@ -106,9 +112,7 @@ function extractDefinedElements(source) {
  */
 function extractObservedAttributes(source, className) {
     // Find the class body, then look for the static getter inside
-    const classRe = new RegExp(`class\\s+${className}\\s+extends\\s+HTMLElement\\s*\\{([\\s\\S]*?)^\\}`, 'm')
-    const classMatch = source.match(classRe)
-    const haystack = classMatch ? classMatch[1] : source
+    const haystack = getClassBody(source, className) || source
 
     const re = /static\s+get\s+observedAttributes\(\)\s*\{[\s\S]*?return\s*\[([\s\S]*?)\]/m
     const match = haystack.match(re)
@@ -125,9 +129,7 @@ function extractObservedAttributes(source, className) {
  * Extract the formAssociated flag (true / false). Default false if not declared.
  */
 function extractFormAssociated(source, className) {
-    const classRe = new RegExp(`class\\s+${className}\\s+extends\\s+HTMLElement\\s*\\{([\\s\\S]*?)^\\}`, 'm')
-    const classMatch = source.match(classRe)
-    const haystack = classMatch ? classMatch[1] : source
+    const haystack = getClassBody(source, className) || source
 
     const re = /static\s+formAssociated\s*=\s*(true|false)/
     const match = haystack.match(re)
@@ -174,6 +176,61 @@ function extractEvents(source) {
         }
     }
     return Array.from(events.values())
+}
+
+function extractPublicApi(source, className, extendsPattern = 'HTMLElement') {
+    const body = getClassBody(source, className, extendsPattern)
+    if (!body) return []
+
+    const api = []
+    const seen = new Set()
+    const add = (entry) => {
+        const key = `${entry.kind}:${entry.static}:${entry.name}`
+        if (seen.has(key)) return
+        seen.add(key)
+        api.push(entry)
+    }
+
+    for (const match of body.matchAll(/^\s*static\s+([A-Za-z]\w*)\s*=\s*([^\n;]+)/gm)) {
+        const [, name, value] = match
+        if (name.startsWith('_')) continue
+        add({
+            kind: 'property',
+            name,
+            static: true,
+            signature: `static ${name} = ${value.trim()}`,
+        })
+    }
+
+    for (const match of body.matchAll(/^\s*(static\s+)?(get|set)\s+([A-Za-z]\w*)\s*\(([^)]*)\)\s*\{/gm)) {
+        const [, staticKeyword, accessorKind, name, params] = match
+        if (name.startsWith('_') || name === 'observedAttributes') continue
+        add({
+            kind: accessorKind,
+            name,
+            static: Boolean(staticKeyword),
+            signature: `${staticKeyword || ''}${accessorKind} ${name}(${params.trim()})`.trim(),
+        })
+    }
+
+    const skipMethods = new Set([
+        'constructor',
+        'connectedCallback',
+        'disconnectedCallback',
+        'attributeChangedCallback',
+    ])
+    for (const match of body.matchAll(/^\s*(static\s+)?([A-Za-z]\w*)\s*\(([^)]*)\)\s*\{/gm)) {
+        const [, staticKeyword, name, params] = match
+        if (name.startsWith('_') || skipMethods.has(name) || name === 'get' || name === 'set') continue
+        add({
+            kind: 'method',
+            name,
+            static: Boolean(staticKeyword),
+            signature: `${staticKeyword || ''}${name}(${params.trim()})`.trim(),
+        })
+    }
+
+    return api
 }
 
 /**
@@ -228,6 +285,7 @@ function parseComponentFile(filePath, dirName) {
         sourceFile: `src/components/${dirName}/${basename(filePath)}`,
         formAssociated: extractFormAssociated(source, primaryDef.className),
         observedAttributes: extractObservedAttributes(source, primaryDef.className) || [],
+        api: extractPublicApi(source, primaryDef.className),
         events: extractEvents(source),
         description: extractClassJsdoc(source, primaryDef.className),
         relatedTags: definedElements
@@ -254,6 +312,7 @@ function parseClassOnlyFile(filePath, source, dirName) {
         extends: extendsClass,
         directory: dirName,
         sourceFile: `src/components/${dirName}/${basename(filePath)}`,
+        api: extractPublicApi(source, className, extendsClass || '\\w+'),
         description: (() => {
             const jsdocRe = new RegExp(`\\/\\*\\*([\\s\\S]*?)\\*\\/\\s*export\\s+class\\s+${className}`)
             const m = source.match(jsdocRe)
