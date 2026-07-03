@@ -133,6 +133,22 @@ test.describe('CodeEditor collaboration contract', () => {
         ])
     })
 
+    test('emits selectionchange when value setter clamps selection', async ({ page }) => {
+        await mountEditor(page, { value: 'alpha beta' })
+
+        const events = await page.evaluate(() => {
+            const editor = document.getElementById('collab-editor')
+            editor.setSelectionRange(10, 10, 'none')
+            window.__editorTest.selectionEvents = []
+            editor.value = 'abc'
+            return window.__editorTest.selectionEvents
+        })
+
+        expect(events).toEqual([
+            { start: 3, end: 3, direction: 'none', value: 'abc' },
+        ])
+    })
+
     test('supports replaceRange and applyTextEdit selection policies', async ({ page }) => {
         await mountEditor(page, { value: 'hello world' })
 
@@ -206,6 +222,19 @@ test.describe('CodeEditor collaboration contract', () => {
         expect(snapshot.html).toContain('code-editor-remote-selection')
     })
 
+    test('normalizes remote selection ids when clearing one selection', async ({ page }) => {
+        await mountEditor(page, { value: 'alpha beta' })
+
+        const remaining = await page.evaluate(() => {
+            const editor = document.getElementById('collab-editor')
+            editor.setRemoteSelection({ id: 1, label: 'One', color: '#ff4d6d', start: 0, end: 5 })
+            editor.clearRemoteSelection(1)
+            return editor.getDisplay().querySelectorAll('.code-editor-remote-selection, .code-editor-remote-cursor').length
+        })
+
+        expect(remaining).toBe(0)
+    })
+
     test('keeps remote decorations and flash markers across rerenders and scroll sync', async ({ page }) => {
         await mountEditor(page, { value: 'line 1\nline 2\nline 3\nline 4\nline 5\nline 6', height: '120px' })
 
@@ -235,6 +264,20 @@ test.describe('CodeEditor collaboration contract', () => {
         expect(state.flashCount).toBe(3)
     })
 
+    test('clears flash markers when disconnected before timer expires', async ({ page }) => {
+        await mountEditor(page, { value: 'line 1\nline 2\nline 3' })
+
+        const flashCount = await page.evaluate(() => {
+            const editor = document.getElementById('collab-editor')
+            editor.flashLines(1, 2, { tone: 'remote' })
+            editor.remove()
+            document.body.appendChild(editor)
+            return editor.getDisplay().querySelectorAll('.code-line.flash-remote').length
+        })
+
+        expect(flashCount).toBe(0)
+    })
+
     test('exposes collabApiVersion statically and on instances', async ({ page }) => {
         const versions = await page.evaluate(() => {
             const EditorClass = customElements.get('code-editor')
@@ -249,6 +292,26 @@ test.describe('CodeEditor collaboration contract', () => {
             staticVersion: 1,
             instanceVersion: 1,
         })
+    })
+
+    test('generated component api docs do not include control-flow pseudo-methods', async ({ page }) => {
+        const api = await page.evaluate(async () => {
+            const response = await fetch('/docs/component-api.json')
+            return response.json()
+        })
+        const codeEditor = api.custom_elements.find((component) => component.tag === 'code-editor')
+        const allMethodNames = new Set(
+            api.custom_elements.flatMap((component) => (component.api || []).map((entry) => entry.name)),
+        )
+        const methodNames = new Set((codeEditor.api || []).map((entry) => entry.name))
+
+        expect(codeEditor.description).toContain('Code Editor Web Component')
+        expect(methodNames.has('if')).toBe(false)
+        expect(methodNames.has('switch')).toBe(false)
+        expect(allMethodNames.has('if')).toBe(false)
+        expect(allMethodNames.has('for')).toBe(false)
+        expect(allMethodNames.has('switch')).toBe(false)
+        expect(allMethodNames.has('while')).toBe(false)
     })
 })
 

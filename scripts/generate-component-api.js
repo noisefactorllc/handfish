@@ -75,6 +75,68 @@ function getClassBody(source, className, extendsPattern = 'HTMLElement') {
     return source.match(re)?.[1] || ''
 }
 
+function braceDeltaOutsideStrings(line, state) {
+    let delta = 0
+    let escape = false
+
+    for (let i = 0; i < line.length; i += 1) {
+        const char = line[i]
+        const next = line[i + 1]
+
+        if (state.blockComment) {
+            if (char === '*' && next === '/') {
+                state.blockComment = false
+                i += 1
+            }
+            continue
+        }
+
+        if (state.quote) {
+            if (escape) {
+                escape = false
+            } else if (char === '\\') {
+                escape = true
+            } else if (char === state.quote) {
+                state.quote = null
+            }
+            continue
+        }
+
+        if (char === '/' && next === '/') break
+        if (char === '/' && next === '*') {
+            state.blockComment = true
+            i += 1
+            continue
+        }
+        if (char === '"' || char === "'" || char === '`') {
+            state.quote = char
+            escape = false
+            continue
+        }
+        if (char === '{') delta += 1
+        if (char === '}') delta -= 1
+    }
+
+    return delta
+}
+
+function getTopLevelClassMemberLines(body) {
+    const lines = []
+    const state = { quote: null, blockComment: false }
+    let depth = 0
+
+    for (const line of body.split('\n')) {
+        const trimmed = line.trim()
+        if (depth === 0 && trimmed && !trimmed.startsWith('//') && !trimmed.startsWith('*')) {
+            lines.push(trimmed)
+        }
+        depth += braceDeltaOutsideStrings(line, state)
+        if (depth < 0) depth = 0
+    }
+
+    return lines
+}
+
 // ----- Per-file extractors --------------------------------------------------
 
 /**
@@ -84,8 +146,18 @@ function getClassBody(source, className, extendsPattern = 'HTMLElement') {
 function extractClassJsdoc(source, className) {
     const re = new RegExp(`\\/\\*\\*([\\s\\S]*?)\\*\\/\\s*(?:export\\s+)?class\\s+${className}\\s+extends\\s+HTMLElement`)
     const match = source.match(re)
-    if (!match) return null
-    const cleaned = match[1]
+    if (!match) return extractLeadingJsdoc(source)
+    return cleanJsdoc(match[1])
+}
+
+function extractLeadingJsdoc(source) {
+    const match = source.match(/^\/\*\*([\s\S]*?)\*\//)
+    return match ? cleanJsdoc(match[1]) : null
+}
+
+function cleanJsdoc(jsdoc) {
+    if (!jsdoc) return null
+    const cleaned = jsdoc
         .split('\n')
         .map(l => l.replace(/^\s*\*\s?/, ''))
         .filter(l => !l.trim().startsWith('@'))
@@ -191,43 +263,52 @@ function extractPublicApi(source, className, extendsPattern = 'HTMLElement') {
         api.push(entry)
     }
 
-    for (const match of body.matchAll(/^\s*static\s+([A-Za-z]\w*)\s*=\s*([^\n;]+)/gm)) {
-        const [, name, value] = match
-        if (name.startsWith('_')) continue
-        add({
-            kind: 'property',
-            name,
-            static: true,
-            signature: `static ${name} = ${value.trim()}`,
-        })
-    }
-
-    for (const match of body.matchAll(/^\s*(static\s+)?(get|set)\s+([A-Za-z]\w*)\s*\(([^)]*)\)\s*\{/gm)) {
-        const [, staticKeyword, accessorKind, name, params] = match
-        if (name.startsWith('_') || name === 'observedAttributes') continue
-        add({
-            kind: accessorKind,
-            name,
-            static: Boolean(staticKeyword),
-            signature: `${staticKeyword || ''}${accessorKind} ${name}(${params.trim()})`.trim(),
-        })
-    }
-
     const skipMethods = new Set([
         'constructor',
         'connectedCallback',
         'disconnectedCallback',
         'attributeChangedCallback',
     ])
-    for (const match of body.matchAll(/^\s*(static\s+)?([A-Za-z]\w*)\s*\(([^)]*)\)\s*\{/gm)) {
-        const [, staticKeyword, name, params] = match
-        if (name.startsWith('_') || skipMethods.has(name) || name === 'get' || name === 'set') continue
-        add({
-            kind: 'method',
-            name,
-            static: Boolean(staticKeyword),
-            signature: `${staticKeyword || ''}${name}(${params.trim()})`.trim(),
-        })
+    for (const line of getTopLevelClassMemberLines(body)) {
+        let match = line.match(/^static\s+([A-Za-z]\w*)\s*=\s*([^;]+)/)
+        if (match) {
+            const [, name, value] = match
+            if (!name.startsWith('_')) {
+                add({
+                    kind: 'property',
+                    name,
+                    static: true,
+                    signature: `static ${name} = ${value.trim()}`,
+                })
+            }
+            continue
+        }
+
+        match = line.match(/^(static\s+)?(get|set)\s+([A-Za-z]\w*)\s*\(([^)]*)\)\s*\{/)
+        if (match) {
+            const [, staticKeyword, accessorKind, name, params] = match
+            if (!name.startsWith('_') && name !== 'observedAttributes') {
+                add({
+                    kind: accessorKind,
+                    name,
+                    static: Boolean(staticKeyword),
+                    signature: `${staticKeyword || ''}${accessorKind} ${name}(${params.trim()})`.trim(),
+                })
+            }
+            continue
+        }
+
+        match = line.match(/^(static\s+)?(?:async\s+)?([A-Za-z]\w*)\s*\(([^)]*)\)\s*\{/)
+        if (match) {
+            const [, staticKeyword, name, params] = match
+            if (name.startsWith('_') || skipMethods.has(name) || name === 'get' || name === 'set') continue
+            add({
+                kind: 'method',
+                name,
+                static: Boolean(staticKeyword),
+                signature: `${staticKeyword || ''}${name}(${params.trim()})`.trim(),
+            })
+        }
     }
 
     return api

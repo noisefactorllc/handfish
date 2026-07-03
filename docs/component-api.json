@@ -65,42 +65,6 @@
           "signature": "set tokenizer(fn)"
         },
         {
-          "kind": "get",
-          "name": "selectionStart",
-          "static": false,
-          "signature": "get selectionStart()"
-        },
-        {
-          "kind": "set",
-          "name": "selectionStart",
-          "static": false,
-          "signature": "set selectionStart(value)"
-        },
-        {
-          "kind": "get",
-          "name": "selectionEnd",
-          "static": false,
-          "signature": "get selectionEnd()"
-        },
-        {
-          "kind": "set",
-          "name": "selectionEnd",
-          "static": false,
-          "signature": "set selectionEnd(value)"
-        },
-        {
-          "kind": "method",
-          "name": "if",
-          "static": false,
-          "signature": "if(!this._rendered)"
-        },
-        {
-          "kind": "method",
-          "name": "switch",
-          "static": false,
-          "signature": "switch(name)"
-        },
-        {
           "kind": "method",
           "name": "setTokenizer",
           "static": false,
@@ -135,6 +99,30 @@
           "name": "selectAll",
           "static": false,
           "signature": "selectAll()"
+        },
+        {
+          "kind": "get",
+          "name": "selectionStart",
+          "static": false,
+          "signature": "get selectionStart()"
+        },
+        {
+          "kind": "set",
+          "name": "selectionStart",
+          "static": false,
+          "signature": "set selectionStart(value)"
+        },
+        {
+          "kind": "get",
+          "name": "selectionEnd",
+          "static": false,
+          "signature": "get selectionEnd()"
+        },
+        {
+          "kind": "set",
+          "name": "selectionEnd",
+          "static": false,
+          "signature": "set selectionEnd(value)"
         },
         {
           "kind": "method",
@@ -201,12 +189,6 @@
           "name": "syncScroll",
           "static": false,
           "signature": "syncScroll()"
-        },
-        {
-          "kind": "method",
-          "name": "for",
-          "static": false,
-          "signature": "for(let index = 0; index < codeLines.length; index += 1)"
         }
       ],
       "events": [
@@ -236,7 +218,7 @@
           ]
         }
       ],
-      "description": null,
+      "description": "Code Editor Web Component",
       "relatedTags": []
     },
     {
@@ -306,18 +288,6 @@
           "name": "colorMode",
           "static": false,
           "signature": "set colorMode(val)"
-        },
-        {
-          "kind": "method",
-          "name": "if",
-          "static": false,
-          "signature": "if(this.constructor.formAssociated)"
-        },
-        {
-          "kind": "method",
-          "name": "switch",
-          "static": false,
-          "signature": "switch(name)"
         }
       ],
       "events": [
@@ -332,7 +302,7 @@
           "detailKeys": null
         }
       ],
-      "description": null,
+      "description": "Color Picker Dropdown Component",
       "relatedTags": []
     },
     {
@@ -398,18 +368,6 @@
           "name": "disabled",
           "static": false,
           "signature": "set disabled(val)"
-        },
-        {
-          "kind": "method",
-          "name": "if",
-          "static": false,
-          "signature": "if(!this._rendered)"
-        },
-        {
-          "kind": "method",
-          "name": "switch",
-          "static": false,
-          "signature": "switch(name)"
         }
       ],
       "events": [
@@ -534,6 +492,18 @@
           "signature": "get valueWithAlpha()"
         },
         {
+          "kind": "method",
+          "name": "setColor",
+          "static": false,
+          "signature": "setColor(opts)"
+        },
+        {
+          "kind": "method",
+          "name": "getColor",
+          "static": false,
+          "signature": "getColor()"
+        },
+        {
           "kind": "get",
           "name": "form",
           "static": false,
@@ -559,30 +529,6 @@
         },
         {
           "kind": "method",
-          "name": "if",
-          "static": false,
-          "signature": "if(this.constructor.formAssociated)"
-        },
-        {
-          "kind": "method",
-          "name": "switch",
-          "static": false,
-          "signature": "switch(name)"
-        },
-        {
-          "kind": "method",
-          "name": "setColor",
-          "static": false,
-          "signature": "setColor(opts)"
-        },
-        {
-          "kind": "method",
-          "name": "getColor",
-          "static": false,
-          "signature": "getColor()"
-        },
-        {
-          "kind": "method",
           "name": "checkValidity",
           "static": false,
           "signature": "checkValidity()"
@@ -592,12 +538,6 @@
           "name": "reportValidity",
           "static": false,
           "signature": "reportValidity()"
-        },
-        {
-          "kind": "method",
-          "name": "for",
-          "static": false,
-          "signature": "for(let y = 0; y < size; y++)"
         }
       ],
       "events": [
@@ -617,7 +557,7 @@
           "detailKeys": null
         }
       ],
-      "description": null,
+      "description": "Color Wheel Web Component",
       "relatedTags": []
     },
     {
@@ -660,24 +600,6 @@
           "signature": "set value(val)"
         },
         {
-          "kind": "get",
-          "name": "isOpen",
-          "static": false,
-          "signature": "get isOpen()"
-        },
-        {
-          "kind": "method",
-          "name": "if",
-          "static": false,
-          "signature": "if(!this._rendered)"
-        },
-        {
-          "kind": "method",
-          "name": "switch",
-          "static": false,
-          "signature": "switch(e.key)"
-        },
-        {
           "kind": "method",
           "name": "open",
           "static": false,
@@ -694,6 +616,12 @@
           "name": "toggle",
           "static": false,
           "signature": "toggle()"
+        },
+        {
+          "kind": "get",
+          "name": "isOpen",
+          "static": false,
+          "signature": "get isOpen()"
         },
         {
           "kind": "method",
@@ -745,21 +673,9 @@
       "api": [
         {
           "kind": "method",
-          "name": "if",
-          "static": false,
-          "signature": "if(name === 'disabled')"
-        },
-        {
-          "kind": "method",
           "name": "setStops",
           "static": false,
           "signature": "setStops(colors, positions)"
-        },
-        {
-          "kind": "method",
-          "name": "while",
-          "static": false,
-          "signature": "while(this._positions.length < this._colors.length)"
         },
         {
           "kind": "method",
@@ -821,7 +737,7 @@
           ]
         }
       ],
-      "description": null,
+      "description": "Gradient Stops Component\nDraggable color stop handles for positioning colors in a gradient\nInspired by Photoshop's gradient editor",
       "relatedTags": []
     },
     {
@@ -837,30 +753,6 @@
         "size"
       ],
       "api": [
-        {
-          "kind": "get",
-          "name": "centerColor",
-          "static": false,
-          "signature": "get centerColor()"
-        },
-        {
-          "kind": "get",
-          "name": "active",
-          "static": false,
-          "signature": "get active()"
-        },
-        {
-          "kind": "method",
-          "name": "if",
-          "static": false,
-          "signature": "if(!this._rendered)"
-        },
-        {
-          "kind": "method",
-          "name": "switch",
-          "static": false,
-          "signature": "switch(name)"
-        },
         {
           "kind": "method",
           "name": "attach",
@@ -884,10 +776,22 @@
           "name": "hide",
           "static": false,
           "signature": "hide()"
+        },
+        {
+          "kind": "get",
+          "name": "centerColor",
+          "static": false,
+          "signature": "get centerColor()"
+        },
+        {
+          "kind": "get",
+          "name": "active",
+          "static": false,
+          "signature": "get active()"
         }
       ],
       "events": [],
-      "description": null,
+      "description": "Image Magnifier Web Component",
       "relatedTags": []
     },
     {
@@ -919,12 +823,6 @@
         },
         {
           "kind": "method",
-          "name": "if",
-          "static": false,
-          "signature": "if(!this._rendered)"
-        },
-        {
-          "kind": "method",
           "name": "show",
           "static": false,
           "signature": "show(options = {})"
@@ -950,7 +848,7 @@
           ]
         }
       ],
-      "description": null,
+      "description": "Join Session Dialog Component",
       "relatedTags": []
     },
     {
@@ -1010,18 +908,6 @@
           "name": "disabled",
           "static": false,
           "signature": "set disabled(val)"
-        },
-        {
-          "kind": "method",
-          "name": "if",
-          "static": false,
-          "signature": "if(this.constructor.formAssociated)"
-        },
-        {
-          "kind": "method",
-          "name": "switch",
-          "static": false,
-          "signature": "switch(name)"
         }
       ],
       "events": [
@@ -1117,18 +1003,6 @@
           "name": "display",
           "static": false,
           "signature": "set display(t)"
-        },
-        {
-          "kind": "method",
-          "name": "if",
-          "static": false,
-          "signature": "if(cc)"
-        },
-        {
-          "kind": "method",
-          "name": "while",
-          "static": false,
-          "signature": "while(this._acc >= PX_PER_DETENT)"
         }
       ],
       "events": [
@@ -1169,18 +1043,6 @@
         "mode"
       ],
       "api": [
-        {
-          "kind": "method",
-          "name": "if",
-          "static": false,
-          "signature": "if(!this._canvas)"
-        },
-        {
-          "kind": "method",
-          "name": "for",
-          "static": false,
-          "signature": "for(const name of ['label', 'value', 'mode'])"
-        },
         {
           "kind": "method",
           "name": "show",
@@ -1266,18 +1128,6 @@
         },
         {
           "kind": "method",
-          "name": "if",
-          "static": false,
-          "signature": "if(this.constructor.formAssociated)"
-        },
-        {
-          "kind": "method",
-          "name": "switch",
-          "static": false,
-          "signature": "switch(name)"
-        },
-        {
-          "kind": "method",
           "name": "setOptions",
           "static": false,
           "signature": "setOptions(options)"
@@ -1349,12 +1199,6 @@
           "name": "sessionUrl",
           "static": false,
           "signature": "set sessionUrl(value)"
-        },
-        {
-          "kind": "method",
-          "name": "if",
-          "static": false,
-          "signature": "if(!this._rendered)"
         }
       ],
       "events": [
@@ -1374,7 +1218,7 @@
           ]
         }
       ],
-      "description": null,
+      "description": "Session Status Component",
       "relatedTags": []
     },
     {
@@ -1496,18 +1340,6 @@
           "name": "name",
           "static": false,
           "signature": "set name(val)"
-        },
-        {
-          "kind": "method",
-          "name": "if",
-          "static": false,
-          "signature": "if(this.constructor.formAssociated)"
-        },
-        {
-          "kind": "method",
-          "name": "switch",
-          "static": false,
-          "signature": "switch(name)"
         }
       ],
       "events": [
@@ -1534,6 +1366,12 @@
       "formAssociated": false,
       "observedAttributes": [],
       "api": [
+        {
+          "kind": "method",
+          "name": "showBeat",
+          "static": false,
+          "signature": "showBeat(beatInBar)"
+        },
         {
           "kind": "get",
           "name": "scheduler",
@@ -1563,18 +1401,6 @@
           "name": "divider",
           "static": false,
           "signature": "set divider(v)"
-        },
-        {
-          "kind": "method",
-          "name": "if",
-          "static": false,
-          "signature": "if(this._els.divider)"
-        },
-        {
-          "kind": "method",
-          "name": "showBeat",
-          "static": false,
-          "signature": "showBeat(beatInBar)"
         },
         {
           "kind": "method",
@@ -1666,12 +1492,6 @@
           "name": "disabled",
           "static": false,
           "signature": "set disabled(val)"
-        },
-        {
-          "kind": "method",
-          "name": "if",
-          "static": false,
-          "signature": "if(!this._rendered)"
         }
       ],
       "events": [
@@ -1754,18 +1574,6 @@
           "name": "normalized",
           "static": false,
           "signature": "set normalized(val)"
-        },
-        {
-          "kind": "method",
-          "name": "if",
-          "static": false,
-          "signature": "if(this.constructor.formAssociated)"
-        },
-        {
-          "kind": "method",
-          "name": "switch",
-          "static": false,
-          "signature": "switch(name)"
         }
       ],
       "events": [
@@ -1780,7 +1588,7 @@
           "detailKeys": null
         }
       ],
-      "description": null,
+      "description": "Vector2D Picker Component",
       "relatedTags": []
     },
     {
@@ -1853,18 +1661,6 @@
           "name": "normalized",
           "static": false,
           "signature": "set normalized(val)"
-        },
-        {
-          "kind": "method",
-          "name": "if",
-          "static": false,
-          "signature": "if(this.constructor.formAssociated)"
-        },
-        {
-          "kind": "method",
-          "name": "switch",
-          "static": false,
-          "signature": "switch(name)"
         }
       ],
       "events": [
@@ -1879,7 +1675,7 @@
           "detailKeys": null
         }
       ],
-      "description": null,
+      "description": "Vector3D Picker Component",
       "relatedTags": []
     }
   ],
@@ -1911,12 +1707,6 @@
         },
         {
           "kind": "method",
-          "name": "if",
-          "static": false,
-          "signature": "if(this._dialog)"
-        },
-        {
-          "kind": "method",
           "name": "setBuild",
           "static": false,
           "signature": "setBuild({ hash, deployed } = {})"
@@ -1926,6 +1716,12 @@
           "name": "setNoisemaker",
           "static": false,
           "signature": "setNoisemaker({ version, hash, deployed } = {})"
+        },
+        {
+          "kind": "method",
+          "name": "setNoisemakerFromUrl",
+          "static": false,
+          "signature": "setNoisemakerFromUrl(metaUrl)"
         },
         {
           "kind": "method",

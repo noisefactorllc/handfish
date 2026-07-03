@@ -502,6 +502,7 @@ class CodeEditor extends HTMLElement {
             clearTimeout(timer)
         }
         this._flashTimers.clear()
+        this._flashMarks = []
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
@@ -565,6 +566,7 @@ class CodeEditor extends HTMLElement {
         if (this._textarea) {
             this._origDescriptor.set.call(this._textarea, this._value)
             this.syncDisplay()
+            this._emitSelectionChangeIfNeeded()
             requestAnimationFrame(() => this.syncScroll())
         }
     }
@@ -709,7 +711,8 @@ class CodeEditor extends HTMLElement {
     }
 
     clearRemoteSelection(id) {
-        this.setRemoteSelections(this._remoteSelections.filter((selection) => selection.id !== id))
+        const normalizedId = String(id)
+        this.setRemoteSelections(this._remoteSelections.filter((selection) => selection.id !== normalizedId))
     }
 
     clearRemoteSelections() {
