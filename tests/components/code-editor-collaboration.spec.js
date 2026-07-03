@@ -106,6 +106,25 @@ test.describe('CodeEditor collaboration contract', () => {
         })
     })
 
+    test('emits compile shortcut events without app-local editor enhancers', async ({ page }) => {
+        await mountEditor(page, { value: 'alpha\nbeta' })
+        await page.evaluate(() => {
+            const editor = document.getElementById('collab-editor')
+            window.__editorTest.compileEvents = []
+            editor.addEventListener('forcerecompile', () => window.__editorTest.compileEvents.push('compile'))
+            editor.addEventListener('forceevalblock', () => window.__editorTest.compileEvents.push('block'))
+        })
+
+        const textarea = page.locator('#collab-editor .code-editor-textarea')
+        await textarea.focus()
+        await page.keyboard.press('Control+Enter')
+        await page.keyboard.press('Control+Shift+Enter')
+        await page.keyboard.press('Alt+Enter')
+
+        const events = await page.evaluate(() => window.__editorTest.compileEvents)
+        expect(events).toEqual(['compile', 'block', 'block'])
+    })
+
     test('emits selectionchange for keyboard and programmatic selection updates', async ({ page }) => {
         await mountEditor(page, { value: 'alpha beta' })
 

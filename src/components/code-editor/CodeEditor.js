@@ -962,6 +962,18 @@ class CodeEditor extends HTMLElement {
     }
 
     _handleKeydown(event) {
+        if (
+            event.key === 'Enter' &&
+            (event.altKey || ((event.ctrlKey || event.metaKey) && event.shiftKey))
+        ) {
+            event.preventDefault()
+            this.dispatchEvent(new CustomEvent('forceevalblock', {
+                bubbles: true,
+                composed: true,
+            }))
+            return
+        }
+
         if ((event.ctrlKey || event.metaKey) && event.key === 'Enter') {
             event.preventDefault()
             this.dispatchEvent(new CustomEvent('forcerecompile', {
