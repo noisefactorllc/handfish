@@ -720,7 +720,8 @@ class CodeEditor extends HTMLElement {
     }
 
     flashLines(startLine, endLine, options = {}) {
-        const tone = options.tone || (options.error ? 'error' : 'eval')
+        const requestedTone = options.tone || (options.error ? 'error' : 'eval')
+        const tone = ['eval', 'error', 'remote'].includes(requestedTone) ? requestedTone : 'eval'
         const rangeStart = Math.max(1, Number.isFinite(startLine) ? Math.floor(startLine) : 1)
         const rangeEnd = Math.max(rangeStart, Number.isFinite(endLine) ? Math.floor(endLine) : rangeStart)
         const id = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`
@@ -940,9 +941,7 @@ class CodeEditor extends HTMLElement {
         }
     }
 
-    _handleInput(event) {
-        event.stopPropagation()
-
+    _handleInput() {
         const previousValue = this._value
         const nextValue = this.value
         const edit = computeTextEdit(previousValue, nextValue)

@@ -63,7 +63,6 @@ if (!document.getElementById(JOIN_SESSION_DIALOG_STYLES_ID)) {
             padding: 0.7rem 0.8rem;
             font: 700 1rem/1.2 var(--hf-font-family-mono, monospace);
             letter-spacing: 0.18em;
-            text-transform: uppercase;
         }
 
         join-session-dialog .hf-join-session-input::placeholder {
@@ -99,8 +98,7 @@ if (!document.getElementById(JOIN_SESSION_DIALOG_STYLES_ID)) {
 
 function normalizeSessionId(value) {
     return String(value || '')
-        .toUpperCase()
-        .replace(/[^A-Z0-9]/g, '')
+        .replace(/[^A-Za-z0-9]/g, '')
         .slice(0, 6)
 }
 
@@ -189,7 +187,7 @@ class JoinSessionDialog extends HTMLElement {
                     </div>
                     <label class="hf-join-session-field">
                         <span class="hf-join-session-label">Session ID</span>
-                        <input class="hf-join-session-input" name="sessionId" type="text" inputmode="text" autocomplete="off" autocapitalize="characters" maxlength="6" placeholder="ABC123">
+                        <input class="hf-join-session-input" name="sessionId" type="text" inputmode="text" autocomplete="off" autocapitalize="off" maxlength="6" placeholder="aB12cD">
                     </label>
                     <div class="hf-join-session-actions">
                         <button class="hf-join-session-button" type="button" data-action="cancel">Cancel</button>
@@ -262,7 +260,7 @@ class JoinSessionDialog extends HTMLElement {
     _handleSubmit = (event) => {
         event.preventDefault()
         const sessionId = normalizeSessionId(this._input?.value || '')
-        if (!sessionId) return
+        if (sessionId.length !== 6) return
 
         this.sessionId = sessionId
         this.dispatchEvent(new CustomEvent('join-session', {

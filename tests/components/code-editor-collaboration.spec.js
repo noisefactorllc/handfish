@@ -59,7 +59,11 @@ test.describe('CodeEditor collaboration contract', () => {
             const gutter = editor.querySelector('.code-editor-gutter')
 
             const values = []
+            const inputTargets = []
             editor.addEventListener('input', (event) => values.push(event.detail.value), { once: true })
+            editor.addEventListener('input', (event) => {
+                inputTargets.push(event.target === textarea ? 'textarea' : event.target.tagName.toLowerCase())
+            })
 
             textarea.focus()
             textarea.setSelectionRange(textarea.value.length, textarea.value.length)
@@ -76,6 +80,7 @@ test.describe('CodeEditor collaboration contract', () => {
                 displayTransform: display.style.transform,
                 gutterTransform: gutter.style.transform,
                 gutterVisible: getComputedStyle(gutter).display,
+                inputTargets,
             }
         })
 
@@ -84,6 +89,7 @@ test.describe('CodeEditor collaboration contract', () => {
         expect(baseline.displayTransform).toBe('translateY(-48px)')
         expect(baseline.gutterTransform).toBe('translateY(-48px)')
         expect(baseline.gutterVisible).not.toBe('none')
+        expect(baseline.inputTargets).toEqual(expect.arrayContaining(['code-editor', 'textarea']))
 
         await mountEditor(page, { id: 'baseline-attrs', value: 'x', lineNumbers: false })
         await expect(page.locator('#baseline-attrs .code-editor-gutter')).toBeHidden()
@@ -222,7 +228,8 @@ test.describe('CodeEditor collaboration contract', () => {
             const editor = document.getElementById('collab-editor')
             editor.setRemoteSelections([
                 { id: 'peer-a', label: 'Ada', color: '#ff4d6d', start: 0, end: 5, updatedAt: 1 },
-                { id: 'peer-b', label: 'Bea', color: '#4dabf7', start: 6, end: 6, updatedAt: 2 },
+                { id: 'peer-b', label: 'Bea', color: '#4dabf7', start: 6, end: 10, updatedAt: 2 },
+                { id: 'peer-c', label: 'Cam', color: '#51cf66', start: 12, end: 12, updatedAt: 3 },
             ])
             return {
                 value: editor.value,
@@ -231,12 +238,12 @@ test.describe('CodeEditor collaboration contract', () => {
         })
 
         expect(snapshot.value).toBe('alpha\nbeta\ngamma')
-        await expect(page.locator('#collab-editor .code-editor-display .code-editor-remote-selection')).toHaveCount(1)
+        await expect(page.locator('#collab-editor .code-editor-display .code-editor-remote-selection')).toHaveCount(2)
         await expect(page.locator('#collab-editor .code-editor-display .code-editor-remote-cursor')).toHaveCount(1)
-        await expect(page.locator('#collab-editor .code-editor-display .code-editor-remote-selection')).toHaveAttribute('data-remote-label', 'Ada')
-        await expect(page.locator('#collab-editor .code-editor-display .code-editor-remote-cursor')).toHaveAttribute('data-remote-label', 'Bea')
+        await expect(page.locator('#collab-editor .code-editor-display .code-editor-remote-selection').first()).toHaveAttribute('data-remote-label', 'Ada')
+        await expect(page.locator('#collab-editor .code-editor-display .code-editor-remote-cursor')).toHaveAttribute('data-remote-label', 'Cam')
 
-        const pointerEvents = await page.locator('#collab-editor .code-editor-display .code-editor-remote-selection').evaluate((node) => getComputedStyle(node).pointerEvents)
+        const pointerEvents = await page.locator('#collab-editor .code-editor-display .code-editor-remote-selection').first().evaluate((node) => getComputedStyle(node).pointerEvents)
         expect(pointerEvents).toBe('none')
         expect(snapshot.html).toContain('code-editor-remote-selection')
     })
@@ -297,6 +304,20 @@ test.describe('CodeEditor collaboration contract', () => {
         expect(flashCount).toBe(0)
     })
 
+    test('normalizes unsupported flash tones to the eval tone', async ({ page }) => {
+        await mountEditor(page, { value: 'line 1\nline 2' })
+
+        const classes = await page.evaluate(() => {
+            const editor = document.getElementById('collab-editor')
+            editor.flashLines(1, 1, { tone: 'remote danger' })
+            return Array.from(editor.getDisplay().querySelectorAll('.code-line'))
+                .map((line) => line.className)
+        })
+
+        expect(classes[0]).toContain('flash-eval')
+        expect(classes[0]).not.toContain('flash-remote danger')
+    })
+
     test('exposes collabApiVersion statically and on instances', async ({ page }) => {
         const versions = await page.evaluate(() => {
             const EditorClass = customElements.get('code-editor')
@@ -323,6 +344,7 @@ test.describe('CodeEditor collaboration contract', () => {
             api.custom_elements.flatMap((component) => (component.api || []).map((entry) => entry.name)),
         )
         const methodNames = new Set((codeEditor.api || []).map((entry) => entry.name))
+        const eventNames = new Set((codeEditor.events || []).map((entry) => entry.name))
 
         expect(codeEditor.description).toContain('Code Editor Web Component')
         expect(methodNames.has('if')).toBe(false)
@@ -331,6 +353,7 @@ test.describe('CodeEditor collaboration contract', () => {
         expect(allMethodNames.has('for')).toBe(false)
         expect(allMethodNames.has('switch')).toBe(false)
         expect(allMethodNames.has('while')).toBe(false)
+        expect(eventNames.has('forceevalblock')).toBe(true)
     })
 })
 
@@ -382,14 +405,37 @@ test.describe('Shared collaboration affordances', () => {
 
         const dialog = page.locator('#join-session-test dialog')
         await expect(dialog).toBeVisible()
-        await expect(dialog.locator('input[name="sessionId"]')).toHaveValue('AB12CD')
+        await expect(dialog.locator('input[name="sessionId"]')).toHaveValue('ab12cd')
 
-        await dialog.locator('input[name="sessionId"]').fill('zx90yx')
+        await dialog.locator('input[name="sessionId"]').fill('zx90yX')
         await dialog.locator('button[type="submit"]').click()
 
         const events = await page.evaluate(() => window.__joinSessionEvents)
-        expect(events).toEqual([{ sessionId: 'ZX90YX' }])
+        expect(events).toEqual([{ sessionId: 'zx90yX' }])
         await expect(dialog).not.toBeVisible()
+    })
+
+    test('requires exactly six session id characters before joining', async ({ page }) => {
+        await page.evaluate(() => {
+            document.getElementById('join-session-short')?.remove()
+            window.__joinSessionEvents = []
+
+            const prompt = document.createElement('join-session-dialog')
+            prompt.id = 'join-session-short'
+            prompt.addEventListener('join-session', (event) => {
+                window.__joinSessionEvents.push(structuredClone(event.detail))
+            })
+            document.body.appendChild(prompt)
+            prompt.show()
+        })
+
+        const dialog = page.locator('#join-session-short dialog')
+        await dialog.locator('input[name="sessionId"]').fill('a1b')
+        await dialog.locator('button[type="submit"]').click()
+
+        const events = await page.evaluate(() => window.__joinSessionEvents)
+        expect(events).toEqual([])
+        await expect(dialog).toBeVisible()
     })
 
     test('registers the join-session dialog with escape handling', async ({ page }) => {

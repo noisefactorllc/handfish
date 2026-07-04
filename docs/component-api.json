@@ -193,6 +193,11 @@
       ],
       "events": [
         {
+          "name": "forceevalblock",
+          "type": "CustomEvent",
+          "detailKeys": null
+        },
+        {
           "name": "forcerecompile",
           "type": "CustomEvent",
           "detailKeys": null
