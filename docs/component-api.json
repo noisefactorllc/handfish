@@ -1061,6 +1061,114 @@
     },
     {
       "kind": "custom-element",
+      "tag": "seance-dialog",
+      "className": "SeanceDialog",
+      "directory": "seance-dialog",
+      "sourceFile": "src/components/seance-dialog/SeanceDialog.js",
+      "formAssociated": false,
+      "observedAttributes": [
+        "heading",
+        "state",
+        "session-id",
+        "session-url",
+        "copy",
+        "take-label",
+        "join-label",
+        "join-label-text",
+        "join-placeholder",
+        "copy-label",
+        "offline-label",
+        "offline-status-label",
+        "connecting-label",
+        "online-label",
+        "url-label"
+      ],
+      "api": [
+        {
+          "kind": "get",
+          "name": "state",
+          "static": false,
+          "signature": "get state()"
+        },
+        {
+          "kind": "set",
+          "name": "state",
+          "static": false,
+          "signature": "set state(value)"
+        },
+        {
+          "kind": "get",
+          "name": "sessionId",
+          "static": false,
+          "signature": "get sessionId()"
+        },
+        {
+          "kind": "set",
+          "name": "sessionId",
+          "static": false,
+          "signature": "set sessionId(value)"
+        },
+        {
+          "kind": "get",
+          "name": "sessionUrl",
+          "static": false,
+          "signature": "get sessionUrl()"
+        },
+        {
+          "kind": "set",
+          "name": "sessionUrl",
+          "static": false,
+          "signature": "set sessionUrl(value)"
+        },
+        {
+          "kind": "method",
+          "name": "show",
+          "static": false,
+          "signature": "show()"
+        },
+        {
+          "kind": "method",
+          "name": "hide",
+          "static": false,
+          "signature": "hide({ emitCancel = false } = {})"
+        }
+      ],
+      "events": [
+        {
+          "name": "cancel",
+          "type": "CustomEvent",
+          "detailKeys": null
+        },
+        {
+          "name": "join-session",
+          "type": "CustomEvent",
+          "detailKeys": [
+            "sessionId"
+          ]
+        },
+        {
+          "name": "take-online",
+          "type": "CustomEvent",
+          "detailKeys": null
+        },
+        {
+          "name": "copy-url",
+          "type": "CustomEvent",
+          "detailKeys": [
+            "sessionUrl"
+          ]
+        },
+        {
+          "name": "go-offline",
+          "type": "CustomEvent",
+          "detailKeys": null
+        }
+      ],
+      "description": "Seance Dialog Component",
+      "relatedTags": []
+    },
+    {
+      "kind": "custom-element",
       "tag": "select-dropdown",
       "className": "SelectDropdown",
       "directory": "select-dropdown",
@@ -1946,6 +2054,8 @@
     "JustifyButtonGroup",
     "KnobDial",
     "LedMatrix",
+    "SEANCE_LOGO_SVG",
+    "SeanceDialog",
     "SelectDropdown",
     "SessionStatus",
     "SliderValue",
