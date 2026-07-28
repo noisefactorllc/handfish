@@ -75,7 +75,7 @@ menu-bar {
     align-items: center;
     gap: 0.25em;
     height: 100%;
-    padding: 0 0.25em;
+    padding: 0 0.125em;
     background: none;
     border: none;
     cursor: pointer;
@@ -881,6 +881,7 @@ class MenuBar extends HTMLElement {
         if (entry.group) {
             const { group, button } = entry
             if (this._resolve(this._fieldFor(button, 'disabled'))) return
+            this._closeMenu()
             button.onSelect?.()
             group.onSelect?.(button.id)
             this.dispatchEvent(new CustomEvent('menu-select', {
@@ -894,6 +895,9 @@ class MenuBar extends HTMLElement {
         const control = entry
         if (control.type === 'label' && !this._resolve(this._fieldFor(control, 'interactive'))) return
         if (this._resolve(this._fieldFor(control, 'disabled'))) return
+        // Activating a bar control dismisses any open dropdown — matches the
+        // document-level close-on-any-click behavior of the source apps.
+        this._closeMenu()
         control.onSelect?.()
         this.dispatchEvent(new CustomEvent('menu-select', {
             bubbles: true,

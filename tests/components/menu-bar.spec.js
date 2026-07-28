@@ -317,6 +317,27 @@ test.describe('MenuBar controls', () => {
         await expect(mb.locator('#appSlot')).toHaveText('X')
     })
 
+    test('activating a bar control closes an open dropdown (stale-state guard)', async ({ page }) => {
+        const mb = await mount(page, `{
+            regions: {
+                left: [ { type: 'menu', id: 'm', trigger: { label: 'm' }, items: [
+                    { type: 'checkbox', id: 'chk', label: 'thing', checked: () => window.__cs, onSelect: () => {} },
+                ] } ],
+                right: [ { type: 'button', id: 'flipBtn', icon: 'bolt', ariaLabel: 'Flip',
+                           onSelect: () => { window.__cs = !window.__cs } } ],
+            }
+        }`)
+        await page.evaluate(() => { window.__cs = false })
+        await mb.locator('.hf-menubar-trigger').click()
+        await expect(mb.locator('#chk')).toHaveAttribute('aria-checked', 'false')
+        await mb.locator('#flipBtn').click()
+        // dropdown must close so it can't display stale state
+        await expect(mb.locator('.hf-menubar-panel')).toBeHidden()
+        expect(await page.evaluate(() => document.getElementById('mb-test').openMenuId)).toBe(null)
+        await mb.locator('.hf-menubar-trigger').click()
+        await expect(mb.locator('#chk')).toHaveAttribute('aria-checked', 'true')
+    })
+
     test('custom slot content survives a full config re-assignment (sync)', async ({ page }) => {
         const mb = await mount(page, CONTROLS)
         await page.evaluate(() => {
