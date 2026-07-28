@@ -10,6 +10,7 @@
 export * from './utils/colorConversions.js'
 export { initializeTooltips } from './utils/tooltips.js'
 export { registerEscapeable, unregisterEscapeable, closeTopmost, hasOpenEscapeables, initEscapeHandler } from './utils/escapeHandler.js'
+export { formatShortcut, isMacPlatform } from './utils/shortcuts.js'
 
 // Existing components
 export { ToggleSwitch } from './components/toggle-switch/ToggleSwitch.js'
@@ -38,3 +39,4 @@ export { LedMatrix } from './components/led-matrix/LedMatrix.js'
 export { KnobDial } from './components/knob-dial/KnobDial.js'
 export { TempoBar } from './components/tempo-bar/TempoBar.js'
 export { BeatScheduler, DIVIDER_OPTIONS, computeBarSeconds } from './components/tempo-bar/beatScheduler.js'
+export { MenuBar } from './components/menu-bar/MenuBar.js'

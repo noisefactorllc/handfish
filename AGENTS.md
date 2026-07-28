@@ -121,10 +121,11 @@ export { MyComponent }
 
 All public API is re-exported from `src/index.js`. When adding a new component or utility, add its export there.
 
-## Components (14)
+## Components (15)
 
 | Component | Tag | Source |
 |-----------|-----|--------|
+| Menu Bar | `<menu-bar>` | Original (config-driven; unifies the Noisedeck/Polymorphic/Shade/Foundry app menu bars) |
 | Toggle Switch | `<toggle-switch>` | Original |
 | Slider Value | `<slider-value>` | Original |
 | Select Dropdown | `<select-dropdown>` | Original |

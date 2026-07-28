@@ -325,4 +325,47 @@ test.describe('Bidi readiness and label overrides', () => {
             'https://github.com/noisefactorllc/noisemaker/tree/engine/v1%40beta'
         )
     })
+
+    test('menu-bar inherits RTL and renders an overridable bar label', async ({ page }) => {
+        await page.evaluate(() => {
+            const bar = document.createElement('menu-bar')
+            bar.id = 'bidi-menubar'
+            bar.setAttribute('bar-label', 'قائمة التطبيق')
+            bar.config = { regions: { left: [
+                { type: 'menu', id: 'file', trigger: { label: 'ملف' }, items: [{ id: 'bidiItem', label: 'جديد' }] },
+            ] } }
+            document.body.appendChild(bar)
+        })
+        const bar = page.locator('#bidi-menubar')
+        await expect(bar).toHaveCSS('direction', 'rtl')
+        await expect(bar.locator('.hf-menubar')).toHaveAttribute('aria-label', 'قائمة التطبيق')
+        await expect(bar.locator('.hf-menubar-trigger')).toHaveText('ملف')
+    })
+
+    test('menu-bar panel align end is logical in RTL; align left stays physical', async ({ page }) => {
+        await page.evaluate(() => {
+            const bar = document.createElement('menu-bar')
+            bar.id = 'bidi-menubar-align'
+            bar.config = { regions: { left: [
+                { type: 'menu', id: 'endMenu', trigger: { label: 'endmenu' }, align: 'end', items: [{ id: 'e1', label: 'aaa' }] },
+                { type: 'menu', id: 'leftMenu', trigger: { label: 'leftmenu' }, align: 'left', items: [{ id: 'l1', label: 'bbb' }] },
+            ] } }
+            document.body.appendChild(bar)
+        })
+        const bar = page.locator('#bidi-menubar-align')
+
+        // align="end" resolves to the inline-end edge, which under RTL is physical left
+        const endWrapper = bar.locator('.hf-menubar-menu').nth(0)
+        await endWrapper.locator('.hf-menubar-trigger').click()
+        const endPanel = bar.locator('.hf-menubar-panel').nth(0)
+        const [endPanelBox, endWrapperBox] = [await endPanel.boundingBox(), await endWrapper.boundingBox()]
+        expect(Math.abs(endPanelBox.x - endWrapperBox.x)).toBeLessThanOrEqual(1)
+
+        // legacy align="left" stays physical under RTL (-10px shift from the wrapper's left edge)
+        const leftWrapper = bar.locator('.hf-menubar-menu').nth(1)
+        await leftWrapper.locator('.hf-menubar-trigger').click()
+        const leftPanel = bar.locator('.hf-menubar-panel').nth(1)
+        const [leftPanelBox, leftWrapperBox] = [await leftPanel.boundingBox(), await leftWrapper.boundingBox()]
+        expect(Math.round(leftPanelBox.x - leftWrapperBox.x)).toBe(-10)
+    })
 })

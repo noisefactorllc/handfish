@@ -1061,6 +1061,92 @@
     },
     {
       "kind": "custom-element",
+      "tag": "menu-bar",
+      "className": "MenuBar",
+      "directory": "menu-bar",
+      "sourceFile": "src/components/menu-bar/MenuBar.js",
+      "formAssociated": false,
+      "observedAttributes": [
+        "floating",
+        "hover-switch",
+        "bar-label"
+      ],
+      "api": [
+        {
+          "kind": "get",
+          "name": "config",
+          "static": false,
+          "signature": "get config()"
+        },
+        {
+          "kind": "set",
+          "name": "config",
+          "static": false,
+          "signature": "set config(value)"
+        },
+        {
+          "kind": "get",
+          "name": "openMenuId",
+          "static": false,
+          "signature": "get openMenuId()"
+        },
+        {
+          "kind": "method",
+          "name": "openMenu",
+          "static": false,
+          "signature": "openMenu(menuId)"
+        },
+        {
+          "kind": "method",
+          "name": "closeAll",
+          "static": false,
+          "signature": "closeAll()"
+        },
+        {
+          "kind": "method",
+          "name": "refresh",
+          "static": false,
+          "signature": "refresh()"
+        },
+        {
+          "kind": "method",
+          "name": "update",
+          "static": false,
+          "signature": "update(id, patch)"
+        }
+      ],
+      "events": [
+        {
+          "name": "menu-open",
+          "type": "CustomEvent",
+          "detailKeys": [
+            "menuId"
+          ]
+        },
+        {
+          "name": "menu-close",
+          "type": "CustomEvent",
+          "detailKeys": [
+            "menuId"
+          ]
+        },
+        {
+          "name": "menu-select",
+          "type": "CustomEvent",
+          "detailKeys": [
+            "id",
+            "menuId",
+            "controlType",
+            "itemType",
+            "checked"
+          ]
+        }
+      ],
+      "description": "Application menu bar web component",
+      "relatedTags": []
+    },
+    {
+      "kind": "custom-element",
       "tag": "seance-dialog",
       "className": "SeanceDialog",
       "directory": "seance-dialog",
@@ -1889,6 +1975,14 @@
         "unregisterEscapeable"
       ]
     },
+    "shortcuts": {
+      "kind": "utility-functions",
+      "sourceFile": "src/utils/shortcuts.js",
+      "exports": [
+        "formatShortcut",
+        "isMacPlatform"
+      ]
+    },
     "tooltips": {
       "kind": "utility-functions",
       "sourceFile": "src/utils/tooltips.js",
@@ -2054,6 +2148,7 @@
     "JustifyButtonGroup",
     "KnobDial",
     "LedMatrix",
+    "MenuBar",
     "SEANCE_LOGO_SVG",
     "SeanceDialog",
     "SelectDropdown",
@@ -2069,9 +2164,11 @@
     "closeTopmost",
     "computeBarSeconds",
     "dslTokenizer",
+    "formatShortcut",
     "hasOpenEscapeables",
     "initEscapeHandler",
     "initializeTooltips",
+    "isMacPlatform",
     "registerEscapeable",
     "showError",
     "showInfo",

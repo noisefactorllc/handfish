@@ -1056,6 +1056,22 @@ render(o0)</pre>
     </section>
 
     <!-- ================================================================
+         Menu Bar
+         ================================================================ -->
+    <section class="demo-section" id="menu-bar-demo">
+        <h2>menu bar</h2>
+        <div class="demo-grid">
+            <div class="demo-item" style="grid-column: 1 / -1;">
+                <h3>Config-driven app menu bar</h3>
+                <div class="demo-item-content">
+                    <menu-bar id="mbDemo" bar-label="Demo menu"></menu-bar>
+                    <div class="output" id="mbOutput">-</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================================================================
          About Dialog
          ================================================================ -->
     <section class="demo-section" id="about-dialog-demo">
@@ -1160,6 +1176,75 @@ render(o0)</pre>
         select3.value = 'sin'
         select3.addEventListener('change', (e) => {
             document.getElementById('selectCatOutput').textContent = e.target.value
+        })
+
+        // Menu bar demo
+        const mbState = { grid: true, zoom: 'fit', playing: true, quality: 'draft', file: 'scene.dsl' }
+        const mbDemo = document.getElementById('mbDemo')
+        mbDemo.config = {
+            regions: {
+                left: [
+                    {
+                        type: 'menu',
+                        id: 'mbDemoApp',
+                        trigger: { icon: 'apps', ariaLabel: 'App menu' },
+                        items: [
+                            { type: 'link', id: 'mbDemoDocs', label: 'documentation', href: 'https://handfish.noisefactor.io', target: '_blank', rel: 'noopener' },
+                            { type: 'separator' },
+                            { id: 'mbDemoSettings', label: 'settings…' },
+                        ],
+                    },
+                    {
+                        type: 'menu',
+                        id: 'mbDemoFile',
+                        trigger: { label: 'file' },
+                        items: [
+                            { id: 'mbDemoNew', label: 'new…', shortcut: 'Ctrl+N' },
+                            { id: 'mbDemoSave', label: 'save', shortcut: 'Ctrl+S' },
+                            { type: 'separator' },
+                            { type: 'submenu', id: 'mbDemoExport', label: 'export', items: [
+                                { id: 'mbDemoExportPng', label: 'as png' },
+                                { id: 'mbDemoExportZip', label: 'as zip' },
+                            ] },
+                            { type: 'separator' },
+                            { id: 'mbDemoDelete', label: 'delete…', destructive: true },
+                        ],
+                    },
+                    {
+                        type: 'menu',
+                        id: 'mbDemoView',
+                        trigger: { label: 'view' },
+                        items: [
+                            { type: 'checkbox', id: 'mbDemoGrid', label: 'show grid', checked: () => mbState.grid,
+                              onSelect: () => { mbState.grid = !mbState.grid } },
+                            { type: 'separator' },
+                            { type: 'radio', id: 'mbDemoZoomFit', label: 'fit in window', checked: () => mbState.zoom === 'fit',
+                              onSelect: () => { mbState.zoom = 'fit' } },
+                            { type: 'radio', id: 'mbDemoZoom100', label: '100%', checked: () => mbState.zoom === '100',
+                              onSelect: () => { mbState.zoom = '100' } },
+                        ],
+                    },
+                ],
+                center: [
+                    { type: 'label', id: 'mbDemoFilename', text: () => mbState.file },
+                ],
+                right: [
+                    { type: 'segmented', id: 'mbDemoQuality', ariaLabel: 'Render quality', buttons: [
+                        { id: 'mbDemoDraft', label: 'Draft', pressed: () => mbState.quality === 'draft',
+                          onSelect: () => { mbState.quality = 'draft' } },
+                        { id: 'mbDemoFinal', label: 'Final', pressed: () => mbState.quality === 'final',
+                          onSelect: () => { mbState.quality = 'final' } },
+                    ] },
+                    { type: 'separator' },
+                    { type: 'button', id: 'mbDemoPlay', icon: () => mbState.playing ? 'pause' : 'play_arrow',
+                      tooltip: () => mbState.playing ? 'pause' : 'play', ariaLabel: 'Play/Pause',
+                      onSelect: () => { mbState.playing = !mbState.playing } },
+                    { type: 'badge', id: 'mbDemoBadge', label: 'demo' },
+                ],
+            },
+        }
+        mbDemo.addEventListener('menu-select', (e) => {
+            document.getElementById('mbOutput').textContent = e.detail.id
         })
 
         // Dropdown menu output
