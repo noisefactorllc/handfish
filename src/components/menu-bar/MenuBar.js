@@ -110,10 +110,6 @@ menu-bar {
     overflow-y: auto;
 }
 
-.hf-menubar-panel[hidden] {
-    display: none;
-}
-
 .hf-menubar-panel-left { left: -10px; }
 .hf-menubar-panel-right { right: 0; }
 .hf-menubar-panel-start { inset-inline-start: -10px; }
@@ -124,11 +120,11 @@ menu-bar {
     text-align: start;
 }
 
-/* .hf-menu-item / .hf-menu set their own display; keep [hidden] authoritative */
-.hf-menubar .hf-menu-item[hidden],
-.hf-menubar .hf-menu-separator[hidden],
-.hf-menubar .hf-menu-header[hidden] {
-    display: none;
+/* The hidden attribute is the component's JS-owned visibility state; app
+ * display rules at any specificity must not resurrect hidden elements. */
+.hf-menubar [hidden],
+menu-bar [hidden] {
+    display: none !important;
 }
 
 .hf-menubar-submenu-holder {
@@ -143,10 +139,6 @@ menu-bar {
 
 .hf-menubar-btn .hf-icon {
     font-size: 20px;
-}
-
-.hf-menubar-btn[hidden] {
-    display: none;
 }
 
 .hf-menubar-btn.active {
@@ -167,10 +159,6 @@ menu-bar {
     border: 1px solid var(--hf-border-subtle);
     border-radius: var(--hf-radius-sm, 0.25rem);
     overflow: hidden;
-}
-
-.hf-menubar-segmented[hidden] {
-    display: none;
 }
 
 .hf-menubar-segment {
@@ -221,10 +209,6 @@ menu-bar {
     font-size: 0.7em;
 }
 
-.hf-menubar-badge[hidden] {
-    display: none;
-}
-
 .hf-menubar-has-submenu::after {
     content: '\\25b8';
     margin-inline-start: auto;
@@ -239,10 +223,6 @@ menu-bar {
     white-space: nowrap;
     max-height: calc(100vh - var(--hf-titlebar-height, 2.25rem) - 8px);
     overflow-y: auto;
-}
-
-.hf-menubar-subpanel[hidden] {
-    display: none;
 }
 
 /* Floating island placement (the shared cross-product titlebar language) */
