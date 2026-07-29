@@ -613,15 +613,14 @@ class MenuBar extends HTMLElement {
                     this._toggleSubmenu(itemEl)
                     const sub = this._subpanelForOwner.get(itemEl)
                     if (sub && !sub.hidden) this._enabledItems(sub)[0]?.focus()
-                } else if (itemEl.tagName === 'A') {
-                    // Link items: a synthetic click both follows the href and
-                    // bubbles into the delegated activation path exactly once.
+                } else {
+                    // A synthetic click bubbles into the delegated activation
+                    // path exactly once (running onSelect, emitting menu-select
+                    // and closing) — and for links it also follows the href.
+                    // Keyboard and mouse thereby share one code path, so app
+                    // listeners bound directly to items fire for both.
                     const trigger = openMenu?.trigger
                     itemEl.click()
-                    trigger?.focus()
-                } else {
-                    const trigger = openMenu?.trigger
-                    this._activateItem(itemEl)
                     trigger?.focus()
                 }
                 break
