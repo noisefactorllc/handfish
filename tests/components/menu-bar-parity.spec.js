@@ -57,8 +57,10 @@ async function structuralMismatches(page) {
                 if (type === 'submenu') {
                     if (!child.classList.contains('hf-menubar-submenu-holder')) { problems.push(`${where}: expected submenu holder`); return }
                     itemEl = child.querySelector('.hf-menu-item')
-                    const sub = child.querySelector('.hf-menubar-subpanel')
-                    if (!sub) problems.push(`${where}: missing subpanel`)
+                    // subpanels render as wrapper-level siblings; the ARIA
+                    // pair is the link
+                    const sub = document.getElementById(itemEl?.getAttribute('aria-controls') || '')
+                    if (!sub || !sub.classList.contains('hf-menubar-subpanel')) problems.push(`${where}: missing subpanel`)
                     else checkItems(item.items || [], sub, `${where}>sub`)
                 }
                 if (type === 'link') {

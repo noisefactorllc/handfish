@@ -663,6 +663,54 @@ test.describe('MenuBar submenus (hover + dynamic positioning)', () => {
         const box = await sub.boundingBox()
         expect(box.x).toBeGreaterThanOrEqual(47)
     })
+
+    test('Escape closes just the subpanel, then the menu (APG); Tab exits and closes', async ({ page }) => {
+        const mb = await mount(page, SUBMENUS)
+        const trigger = mb.locator('.hf-menubar-trigger')
+        await trigger.focus()
+        await page.keyboard.press('Enter')
+        const panel = mb.locator('.hf-menubar-panel').first()
+        await expect(panel).toBeVisible()
+        await page.keyboard.press('ArrowDown')   // plainItem → toneSub
+        await expect(mb.locator('#toneSub')).toBeFocused()
+        await page.keyboard.press('ArrowRight')
+        const sub = mb.locator('.hf-menubar-subpanel').first()
+        await expect(sub).toBeVisible()
+        await expect(mb.locator('#toneA')).toBeFocused()
+        // first Escape: subpanel only, focus returns to the owner row
+        await page.keyboard.press('Escape')
+        await expect(sub).toBeHidden()
+        await expect(panel).toBeVisible()
+        await expect(mb.locator('#toneSub')).toBeFocused()
+        // second Escape: whole menu, focus returns to the trigger
+        await page.keyboard.press('Escape')
+        await expect(panel).toBeHidden()
+        await expect(trigger).toBeFocused()
+        // Tab from inside an open menu closes it without trapping focus
+        await page.keyboard.press('Enter')
+        await expect(panel).toBeVisible()
+        await page.keyboard.press('Tab')
+        await expect(panel).toBeHidden()
+        await expect(trigger).toHaveAttribute('aria-expanded', 'false')
+    })
+
+    test('panels and subpanels carry aria-controls/aria-labelledby pairs', async ({ page }) => {
+        const mb = await mount(page, SUBMENUS)
+        await mb.locator('.hf-menubar-trigger').click()
+        expect(await mb.evaluate(el => {
+            const trigger = el.querySelector('.hf-menubar-trigger')
+            const panel = el.querySelector('.hf-menubar-panel')
+            const owner = el.querySelector('#toneSub')
+            const sub = el.querySelector('.hf-menubar-subpanel')
+            return {
+                panelPair: trigger.getAttribute('aria-controls') === panel.id
+                    && panel.getAttribute('aria-labelledby') === trigger.id,
+                subPair: owner.getAttribute('aria-controls') === sub.id
+                    && sub.getAttribute('aria-labelledby') === owner.id,
+                idsPresent: !!(trigger.id && panel.id && owner.id && sub.id),
+            }
+        })).toEqual({ panelPair: true, subPair: true, idsPresent: true })
+    })
 })
 
 test.describe('MenuBar skeleton', () => {
