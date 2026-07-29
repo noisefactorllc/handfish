@@ -6,7 +6,7 @@ import { test, expect } from '@playwright/test'
 // app-specific behaviors (auth/mode gating, pull-based checkmarks, label
 // swaps, split-button, segmented control, center label, delegation).
 
-const APPS = ['noisedeck', 'polymorphic', 'shade', 'foundry']
+const APPS = ['noisedeck', 'polymorphic', 'shade', 'foundry', 'layers']
 
 async function mountApp(page, app) {
     await page.goto('/examples/')
@@ -100,15 +100,20 @@ async function structuralMismatches(page) {
         }
 
         const regions = el.config.regions || {}
+        // Menu wrappers render in config order (left→center→right), so id-less
+        // menus (Layers mirrors its id-less app markup) open via their trigger.
+        const wrappers = [...el.querySelectorAll('.hf-menubar-menu')]
+        let mi = 0
         for (const name of ['left', 'center', 'right']) {
             (regions[name] || []).forEach((control, ci) => {
                 if (control.type !== 'menu') return
-                const path = `${name}[${ci}] menu ${control.id}`
-                el.openMenu(control.id)   // opening refreshes dynamic state
-                const menuEl = [...el.querySelectorAll('.hf-menubar-menu')]
-                    .find(w => w.querySelector('.hf-menubar-panel') && !w.querySelector('.hf-menubar-panel').hidden)
-                if (!menuEl) { problems.push(`${path}: did not open`); return }
-                checkItems(control.items || [], menuEl.querySelector('.hf-menubar-panel'), path)
+                const path = `${name}[${ci}] menu ${control.id || `#${mi}`}`
+                const wrapper = wrappers[mi++]
+                if (!wrapper) { problems.push(`${path}: no rendered wrapper`); return }
+                wrapper.querySelector('.hf-menubar-trigger').click()   // opening refreshes dynamic state
+                const panel = wrapper.querySelector('.hf-menubar-panel')
+                if (!panel || panel.hidden) { problems.push(`${path}: did not open`); return }
+                checkItems(control.items || [], panel, path)
                 el.closeAll()
             })
         }
@@ -305,4 +310,80 @@ test('foundry: undo/redo disabled buttons, gated interactive filename', async ({
     // doc + dsl buttons start active (defaults on in Foundry)
     await expect(mb.locator('#doc-toggle-btn')).toHaveClass(/active/)
     await expect(mb.locator('#toggle-dsl-overlay')).toHaveClass(/active/)
+})
+
+test('layers: effect-leaf delegation attrs, 3-way layer action, zoom radios, gating', async ({ page }) => {
+    const mb = await mountApp(page, 'layers')
+
+    // filter taxonomy: open the glitch category, activate its data-params leaf
+    await mb.locator('.hf-menubar-trigger', { hasText: 'filter' }).click()
+    await mb.locator('#filterGlitchTrigger').click()
+    const leaf = mb.locator('.hf-menubar-subpanel [role="menuitem"]', {
+        has: page.locator('.hf-menubar-item-label', { hasText: /^glitch$/ }),
+    })
+    // delegation contract: closest('[data-effect]') from the clicked node
+    // resolves inside the filterMenu wrapper with parseable data-params
+    expect(await leaf.evaluate(el => {
+        const hit = el.closest('[data-effect]')
+        return {
+            effect: hit?.getAttribute('data-effect'),
+            params: JSON.parse(hit?.getAttribute('data-params') ?? 'null'),
+            inFilterMenu: !!hit?.closest('#filterMenu'),
+        }
+    })).toEqual({
+        effect: 'classicNoisedeck/glitch',
+        params: { glitchiness: 50, aberration: 30 },
+        inFilterMenu: true,
+    })
+    await leaf.click()
+    expect(await calls(page)).toContain('effect:classicNoisedeck/glitch')
+    await expect(mb.locator('.hf-menubar-panel').nth(6)).toBeHidden()   // activation closed the menu
+
+    // 3-way layer action label pulled per open
+    const layerTrigger = mb.locator('.hf-menubar-trigger', { hasText: 'layer' })
+    await layerTrigger.click()
+    await expect(mb.locator('#layerActionMenuItem')).toHaveText('flatten image')
+    await expect(mb.locator('#duplicateLayerMenuItem')).toHaveAttribute('aria-disabled', 'true')
+    await page.locator('body').click({ position: { x: 600, y: 400 } })
+    await page.evaluate(() => { window.__parity.state.selectedLayerIds = ['a'] })
+    await layerTrigger.click()
+    await expect(mb.locator('#layerActionMenuItem')).toHaveText('rasterize layer')
+    await expect(mb.locator('#duplicateLayerMenuItem')).not.toHaveAttribute('aria-disabled', 'true')
+    await page.locator('body').click({ position: { x: 600, y: 400 } })
+    await page.evaluate(() => { window.__parity.state.selectedLayerIds = ['a', 'b'] })
+    await layerTrigger.click()
+    await expect(mb.locator('#layerActionMenuItem')).toHaveText('flatten layers')
+
+    // selection gating pulled on open (menu item + submenu sibling row)
+    const imageTrigger = mb.locator('.hf-menubar-trigger', { hasText: 'image' })
+    await imageTrigger.click()
+    await expect(mb.locator('#cropToSelectionMenuItem')).toHaveAttribute('aria-disabled', 'true')
+    await page.locator('body').click({ position: { x: 600, y: 400 } })
+    await page.evaluate(() => { window.__parity.state.hasSelection = true })
+    await imageTrigger.click()
+    await expect(mb.locator('#cropToSelectionMenuItem')).not.toHaveAttribute('aria-disabled', 'true')
+
+    // zoom radio group tracks state
+    const viewTrigger = mb.locator('.hf-menubar-trigger', { hasText: 'view' })
+    await viewTrigger.click()
+    await expect(mb.locator('#fitInWindowMenuItem')).toHaveAttribute('aria-checked', 'true')
+    await mb.locator('#zoom100MenuItem').click()
+    expect(await calls(page)).toContain('zoom100MenuItem')
+    await viewTrigger.click()
+    await expect(mb.locator('#fitInWindowMenuItem')).toHaveAttribute('aria-checked', 'false')
+    await expect(mb.locator('#zoom100MenuItem')).toHaveAttribute('aria-checked', 'true')
+    await page.locator('body').click({ position: { x: 600, y: 400 } })
+
+    // collab kill-switch hides the go-online separator+item pair
+    await page.evaluate(() => { window.__parity.state.collab = false; document.getElementById('mb-parity').refresh() })
+    await mb.locator('.hf-menubar-trigger', { hasText: 'file' }).click()
+    await expect(mb.locator('#goOnlineMenuItem')).toBeHidden()
+    await expect(mb.locator('#onlineCollabMenuSeparator')).toBeHidden()
+    await page.locator('body').click({ position: { x: 600, y: 400 } })
+
+    // play/pause icon re-pulled after activation
+    await expect(mb.locator('#playPauseBtn .hf-icon')).toHaveText('pause')
+    await mb.locator('#playPauseBtn').click()
+    expect(await calls(page)).toContain('playPauseBtn')
+    await expect(mb.locator('#playPauseBtn .hf-icon')).toHaveText('play_arrow')
 })

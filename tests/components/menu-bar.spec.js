@@ -25,6 +25,23 @@ async function mount(page, configExpr, attrs = {}) {
 const events = page => page.evaluate(() => window.__mbTest.events)
 const calls = page => page.evaluate(() => window.__mbTest.calls)
 
+// Isolated minimal-page mount for geometry tests: no examples-page content,
+// no scrolling, deterministic layout. Imports the dist bundle directly.
+async function mountIsolated(page, configExpr) {
+    await page.goto('/', { waitUntil: 'domcontentloaded' })
+    await page.setContent('<!doctype html><html><head></head><body></body></html>')
+    await page.addScriptTag({ type: 'module', content: "import '/dist/handfish.esm.js'; window.__ready = 1" })
+    await page.waitForFunction(() => window.__ready)
+    await page.evaluate((expr) => {
+        window.__mbTest = { events: [], calls: [] }
+        const el = document.createElement('menu-bar')
+        el.id = 'mb-iso'
+        // eslint-disable-next-line no-new-func
+        el.config = new Function(`return (${expr})`)()
+        document.body.appendChild(el)
+    }, configExpr)
+}
+
 const NDLIKE = `{
   regions: { left: [
     { type: 'menu', id: 'logo', trigger: { html: '<svg viewBox="0 0 10 10"></svg>', ariaLabel: 'App menu' }, items: [
@@ -117,6 +134,40 @@ test.describe('MenuBar interaction', () => {
         const evs = await events(page)
         expect(evs).toContainEqual({ type: 'menu-open', detail: { menuId: 'file' } })
         expect(evs).toContainEqual({ type: 'menu-close', detail: { menuId: 'file' } })
+    })
+
+    test('id-less menus open/switch/close independently; menu id/classes/attrs land on the wrapper', async ({ page }) => {
+        // Layers mirrors its app markup: most menus have no container id.
+        const mb = await mount(page, `{
+          regions: { left: [
+            { type: 'menu', trigger: { label: 'file' }, items: [ { id: 'aItem', label: 'a', onSelect: () => window.__mbTest.calls.push('a') } ] },
+            { type: 'menu', trigger: { label: 'edit' }, items: [ { id: 'bItem', label: 'b' } ] },
+            { type: 'menu', id: 'filterMenu', classes: 'has-taxonomy', attrs: { 'data-kind': 'filters' }, trigger: { label: 'filter' }, items: [ { id: 'cItem', label: 'c' } ] },
+          ] }
+        }`)
+        // container reflection: the wrapper is the app's menu-container analog
+        const wrapper = mb.locator('#filterMenu')
+        await expect(wrapper).toHaveClass(/hf-menubar-menu/)
+        await expect(wrapper).toHaveClass(/has-taxonomy/)
+        await expect(wrapper).toHaveAttribute('data-kind', 'filters')
+        expect(await wrapper.evaluate(el => el.contains(document.getElementById('cItem')))).toBe(true)
+
+        const file = mb.locator('.hf-menubar-trigger', { hasText: 'file' })
+        const edit = mb.locator('.hf-menubar-trigger', { hasText: 'edit' })
+        await file.click()
+        await expect(mb.locator('.hf-menubar-panel').nth(0)).toBeVisible()
+        await edit.click()   // sibling id-less menu switches
+        await expect(mb.locator('.hf-menubar-panel').nth(0)).toBeHidden()
+        await expect(mb.locator('.hf-menubar-panel').nth(1)).toBeVisible()
+        await edit.click()   // second click closes
+        await expect(mb.locator('.hf-menubar-panel').nth(1)).toBeHidden()
+        await file.click()
+        await mb.locator('#aItem').click()
+        expect(await calls(page)).toEqual(['a'])
+        // events surface null (not an internal fallback) for id-less menus
+        const evs = await events(page)
+        expect(evs).toContainEqual({ type: 'menu-open', detail: { menuId: null } })
+        expect(evs).toContainEqual({ type: 'menu-select', detail: { id: 'aItem', menuId: null, controlType: 'menu', itemType: 'action', checked: null } })
     })
 
     test('item activation runs onSelect, emits menu-select, closes; disabled items inert', async ({ page }) => {
@@ -399,6 +450,14 @@ test.describe('MenuBar split-button, floating, bidi', () => {
             { type: 'menu', id: 'mEnd', trigger: { label: 'endmenu' }, align: 'end', items: [{ id: 'e1', label: 'x' }] },
             { type: 'menu', id: 'mLeft', trigger: { label: 'leftmenu' }, align: 'left', items: [{ id: 'l1', label: 'y' }] },
         ] } }`)
+        // Constrain the host so the rtl-flipped panels stay inside the viewport —
+        // otherwise the viewport clamp (correctly) shifts them and the pure
+        // alignment geometry can't be read.
+        await page.evaluate(() => {
+            const el = document.getElementById('mb-test')
+            el.style.width = '600px'
+            el.style.marginRight = '500px'   // keep rtl-flipped panels clear of the right-edge viewport clamp
+        })
         await page.evaluate(() => document.documentElement.setAttribute('dir', 'rtl'))
         const endMenuWrapper = mb.locator('.hf-menubar-menu').nth(0)
         await endMenuWrapper.locator('.hf-menubar-trigger').click()
@@ -520,6 +579,89 @@ test.describe('MenuBar review fixes', () => {
         await expect(mb.locator('#sepX')).not.toBeHidden()
         await expect(mb.locator('#segB')).toBeEnabled()
         await expect(mb.locator('#segB')).toHaveAttribute('title', 'now allowed')
+    })
+})
+
+const SUBMENUS = `{
+  regions: { left: [
+    { type: 'menu', id: 'm', trigger: { label: 'image' }, items: [
+        { id: 'plainItem', label: 'auto levels', onSelect: () => window.__mbTest.calls.push('plain') },
+        { type: 'submenu', id: 'toneSub', label: 'tone', items: [
+            { id: 'toneA', label: 'brightness/contrast', onSelect: () => window.__mbTest.calls.push('toneA') },
+            { id: 'toneB', label: 'levels' },
+        ] },
+        { type: 'submenu', id: 'colorSub', label: 'color', items: [
+            { id: 'colorA', label: 'tint' },
+        ] },
+    ] },
+  ] }
+}`
+
+test.describe('MenuBar submenus (hover + dynamic positioning)', () => {
+    test('hovering a submenu item opens its panel; moving into the panel keeps it; leaving closes it', async ({ page }) => {
+        const mb = await mount(page, SUBMENUS)
+        await mb.locator('.hf-menubar-trigger').click()
+        await mb.locator('#toneSub').hover()
+        const sub = mb.locator('.hf-menubar-subpanel').first()
+        await expect(sub).toBeVisible()
+        await expect(mb.locator('#toneSub')).toHaveAttribute('aria-expanded', 'true')
+        // into the subpanel: stays open
+        await mb.locator('#toneA').hover()
+        await expect(sub).toBeVisible()
+        // out to a plain item in the parent panel: closes
+        await mb.locator('#plainItem').hover()
+        await expect(sub).toBeHidden()
+        // hovering the other submenu trigger switches panels
+        await mb.locator('#colorSub').hover()
+        await expect(mb.locator('.hf-menubar-subpanel').nth(1)).toBeVisible()
+        await expect(mb.locator('.hf-menubar-subpanel').nth(0)).toBeHidden()
+    })
+
+    test('subpanel flips to the left when it would overflow the right viewport edge', async ({ page }) => {
+        await page.setViewportSize({ width: 340, height: 500 })
+        await mountIsolated(page, SUBMENUS)
+        await page.click('#mb-iso .hf-menubar-trigger')
+        // dispatch directly: the flipped subpanel overlays the trigger, which
+        // deadlocks page.hover()'s actionability retries
+        await page.evaluate(() => document.getElementById('toneSub').dispatchEvent(new PointerEvent('pointerover', { bubbles: true })))
+        const sub = page.locator('#mb-iso .hf-menubar-subpanel').first()
+        await expect(sub).toBeVisible()
+        const [subBox, panelBox] = [await sub.boundingBox(), await page.locator('#mb-iso .hf-menubar-panel').boundingBox()]
+        expect(subBox.x + subBox.width).toBeLessThanOrEqual(340 - 7)
+        expect(subBox.x).toBeLessThan(panelBox.x + panelBox.width)   // flipped/clamped, not off-screen right
+    })
+
+    test('panel is clamped inside the viewport on narrow screens and re-clamped on resize', async ({ page }) => {
+        await page.setViewportSize({ width: 900, height: 500 })
+        const mb = await mount(page, `{
+            regions: { left: [
+                { type: 'menu', id: 'far', align: 'right', trigger: { label: 'farmenu' }, items: [
+                    { id: 'f1', label: 'menu item' },
+                ] },
+            ] }
+        }`)
+        await mb.locator('.hf-menubar-trigger').click()
+        const panel = mb.locator('.hf-menubar-panel')
+        await expect(panel).toBeVisible()
+        let box = await panel.boundingBox()
+        expect(box.x).toBeGreaterThanOrEqual(7)
+        await page.setViewportSize({ width: 280, height: 500 })
+        await page.waitForTimeout(200)
+        box = await panel.boundingBox()
+        expect(box.x).toBeGreaterThanOrEqual(7)
+        expect(box.x + box.width).toBeLessThanOrEqual(280 - 7)
+    })
+
+    test('subpanel respects the min-left floor variable (toolbar inset)', async ({ page }) => {
+        await page.setViewportSize({ width: 300, height: 500 })
+        await mountIsolated(page, SUBMENUS)
+        await page.evaluate(() => { document.getElementById('mb-iso').style.setProperty('--hf-menubar-subpanel-min-left', '48px') })
+        await page.click('#mb-iso .hf-menubar-trigger')
+        await page.evaluate(() => document.getElementById('toneSub').dispatchEvent(new PointerEvent('pointerover', { bubbles: true })))
+        const sub = page.locator('#mb-iso .hf-menubar-subpanel').first()
+        await expect(sub).toBeVisible()
+        const box = await sub.boundingBox()
+        expect(box.x).toBeGreaterThanOrEqual(47)
     })
 })
 

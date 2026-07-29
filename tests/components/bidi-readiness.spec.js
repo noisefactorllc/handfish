@@ -346,6 +346,10 @@ test.describe('Bidi readiness and label overrides', () => {
         await page.evaluate(() => {
             const bar = document.createElement('menu-bar')
             bar.id = 'bidi-menubar-align'
+            // Constrained width keeps the rtl-flipped panels clear of the
+            // viewport clamp so alignment geometry is readable.
+            bar.style.width = '600px'
+            bar.style.marginRight = '500px'   // clear of the right-edge viewport clamp
             bar.config = { regions: { left: [
                 { type: 'menu', id: 'endMenu', trigger: { label: 'endmenu' }, align: 'end', items: [{ id: 'e1', label: 'aaa' }] },
                 { type: 'menu', id: 'leftMenu', trigger: { label: 'leftmenu' }, align: 'left', items: [{ id: 'l1', label: 'bbb' }] },

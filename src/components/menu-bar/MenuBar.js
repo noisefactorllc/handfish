@@ -315,7 +315,11 @@ class MenuBar extends HTMLElement {
             const itemEl = e.target.closest?.('.hf-menu-item')
             if (itemEl && this.contains(itemEl)) {
                 if (itemEl.classList.contains('hf-menubar-has-submenu')) {
-                    this._toggleSubmenu(itemEl)
+                    const hover = this._subHoverOpenedAt
+                    this._subHoverOpenedAt = null
+                    if (!(hover && hover.el === itemEl && performance.now() - hover.at < 400)) {
+                        this._toggleSubmenu(itemEl)
+                    }
                 } else {
                     this._activateItem(itemEl)
                 }
@@ -328,6 +332,24 @@ class MenuBar extends HTMLElement {
         }
 
         this._onPointerOver = (e) => {
+            if (this._openMenuId !== null) {
+                // Submenu hover: entering a submenu owner opens its panel;
+                // entering anything else in the open dropdown (except the
+                // subpanel itself) closes open subpanels.
+                const subOwner = e.target.closest?.('.hf-menubar-has-submenu')
+                const inSubpanel = e.target.closest?.('.hf-menubar-subpanel')
+                const inPanel = e.target.closest?.('.hf-menubar-panel')
+                if (subOwner && this.contains(subOwner)) {
+                    if (subOwner.getAttribute('aria-expanded') !== 'true') {
+                        this._toggleSubmenu(subOwner)
+                        // The click that follows this hover-open is the same
+                        // gesture — it must not toggle the subpanel closed.
+                        this._subHoverOpenedAt = { el: subOwner, at: performance.now() }
+                    }
+                } else if (inPanel && !inSubpanel && this.contains(inPanel)) {
+                    this._closeSubmenus(inPanel)
+                }
+            }
             if (this.getAttribute('hover-switch') === 'off') return
             if (this._openMenuId === null) return
             const trigger = e.target.closest?.('.hf-menubar-trigger')
@@ -339,6 +361,16 @@ class MenuBar extends HTMLElement {
                 // gesture — it must not toggle the menu straight back closed.
                 this._hoverSwitchedAt = { id: menu.id, at: performance.now() }
             }
+        }
+
+        this._onResize = () => {
+            if (this._openMenuId === null) return
+            const menu = this._findMenu(this._openMenuId)
+            if (!menu) return
+            this._clampPanel(menu)
+            const openOwner = menu.panel.querySelector('.hf-menubar-has-submenu[aria-expanded="true"]')
+            const openSub = menu.panel.querySelector('.hf-menubar-subpanel:not([hidden])')
+            if (openOwner && openSub) this._positionSubpanel(openOwner, openSub)
         }
 
         this._onDocumentClick = (e) => {
@@ -388,6 +420,7 @@ class MenuBar extends HTMLElement {
         this.addEventListener('pointerover', this._onPointerOver)
         this.addEventListener('keydown', this._onKeyDown)
         document.addEventListener('click', this._onDocumentClick)
+        window.addEventListener('resize', this._onResize)
         this._sync()
     }
 
@@ -396,6 +429,7 @@ class MenuBar extends HTMLElement {
         this.removeEventListener('pointerover', this._onPointerOver)
         this.removeEventListener('keydown', this._onKeyDown)
         document.removeEventListener('click', this._onDocumentClick)
+        window.removeEventListener('resize', this._onResize)
         unregisterEscapeable(this)
     }
 
@@ -602,11 +636,12 @@ class MenuBar extends HTMLElement {
         menu.panel.hidden = false
         menu.trigger.setAttribute('aria-expanded', 'true')
         this._openMenuId = menu.id
+        this._clampPanel(menu)
         registerEscapeable(this, () => {
             this._closeMenu()
             menu.trigger.focus()
         })
-        this.dispatchEvent(new CustomEvent('menu-open', { bubbles: true, composed: true, detail: { menuId: menu.id } }))
+        this.dispatchEvent(new CustomEvent('menu-open', { bubbles: true, composed: true, detail: { menuId: menu.config.id || null } }))
     }
 
     _closeMenu() {
@@ -616,14 +651,21 @@ class MenuBar extends HTMLElement {
         unregisterEscapeable(this)
         if (menu) {
             menu.panel.hidden = true
+            menu.panel.style.left = ''
+            menu.panel.style.right = ''
             menu.trigger.setAttribute('aria-expanded', 'false')
             this._closeSubmenus(menu.panel)
-            this.dispatchEvent(new CustomEvent('menu-close', { bubbles: true, composed: true, detail: { menuId: menu.id } }))
+            this.dispatchEvent(new CustomEvent('menu-close', { bubbles: true, composed: true, detail: { menuId: menu.config.id || null } }))
         }
     }
 
     _closeSubmenus(panel) {
-        for (const sub of panel.querySelectorAll('.hf-menubar-subpanel')) sub.hidden = true
+        for (const sub of panel.querySelectorAll('.hf-menubar-subpanel')) {
+            sub.hidden = true
+            sub.style.left = ''
+            sub.style.right = ''
+            sub.style.top = ''
+        }
         for (const owner of panel.querySelectorAll('.hf-menubar-has-submenu')) {
             owner.setAttribute('aria-expanded', 'false')
         }
@@ -640,6 +682,67 @@ class MenuBar extends HTMLElement {
         if (panel) this._closeSubmenus(panel)
         subpanel.hidden = !willOpen
         itemEl.setAttribute('aria-expanded', String(willOpen))
+        if (willOpen) this._positionSubpanel(itemEl, subpanel)
+    }
+
+    _viewportInset() {
+        const v = parseFloat(getComputedStyle(this).getPropertyValue('--hf-menubar-viewport-inset'))
+        return Number.isFinite(v) ? v : 8
+    }
+
+    // Dynamic subpanel placement: opens to the right of the dropdown, flips to
+    // the left when it would overflow the viewport, clamps past the min-left
+    // floor (--hf-menubar-subpanel-min-left, e.g. a fixed side toolbar), and
+    // shifts vertically to stay inside the viewport.
+    _positionSubpanel(ownerEl, subpanel) {
+        const holder = ownerEl.closest('.hf-menubar-submenu-holder')
+        if (!holder) return
+        const inset = this._viewportInset()
+        const floorVar = parseFloat(getComputedStyle(this).getPropertyValue('--hf-menubar-subpanel-min-left'))
+        const minLeft = Math.max(inset, Number.isFinite(floorVar) ? floorVar : inset)
+
+        subpanel.style.left = ''
+        subpanel.style.right = ''
+        subpanel.style.top = ''
+        const holderRect = holder.getBoundingClientRect()
+        let rect = subpanel.getBoundingClientRect()
+        if (rect.right > window.innerWidth - inset) {
+            subpanel.style.left = 'auto'
+            subpanel.style.right = '100%'
+            rect = subpanel.getBoundingClientRect()
+        }
+        if (rect.left < minLeft) {
+            subpanel.style.right = ''
+            subpanel.style.left = `${minLeft - holderRect.left}px`
+            rect = subpanel.getBoundingClientRect()
+        }
+        let top = 0
+        if (rect.bottom > window.innerHeight - inset) {
+            top -= rect.bottom - (window.innerHeight - inset)
+        }
+        if (rect.top + top < inset) {
+            top += inset - (rect.top + top)
+        }
+        if (top !== 0) subpanel.style.top = `${top}px`
+    }
+
+    // Keep an open dropdown panel horizontally inside the viewport.
+    _clampPanel(menu) {
+        const panel = menu.panel
+        panel.style.left = ''
+        panel.style.right = ''
+        const inset = this._viewportInset()
+        const wrapperRect = menu.wrapper.getBoundingClientRect()
+        let rect = panel.getBoundingClientRect()
+        if (rect.right > window.innerWidth - inset) {
+            panel.style.right = ''
+            panel.style.left = `${(window.innerWidth - inset - rect.width) - wrapperRect.left}px`
+            rect = panel.getBoundingClientRect()
+        }
+        if (rect.left < inset) {
+            panel.style.right = ''
+            panel.style.left = `${inset - wrapperRect.left}px`
+        }
     }
 
     _activateItem(itemEl) {
@@ -657,7 +760,7 @@ class MenuBar extends HTMLElement {
             composed: true,
             detail: {
                 id: item.id || null,
-                menuId: menu ? menu.id : null,
+                menuId: menu ? (menu.config.id || null) : null,
                 controlType: 'menu',
                 itemType: type,
                 checked,
@@ -966,7 +1069,14 @@ class MenuBar extends HTMLElement {
         const align = control.align || 'left'
         panel.classList.add(`hf-menubar-panel-${['left', 'right', 'start', 'end'].includes(align) ? align : 'left'}`)
 
-        const menu = { id: control.id || null, config: control, trigger, panel, wrapper, entries: [] }
+        // The wrapper is the analog of the app's own menu container element —
+        // reflect the control's id/classes/attrs onto it so app CSS overrides
+        // (#filterMenu …) and JS lookups (delegated listeners) keep working.
+        this._applyCommon(wrapper, control)
+        // Internal id must be unique and non-null: null is the "no menu open"
+        // sentinel in _openMenuId, so an id-less menu would read as already
+        // open and never open at all.
+        const menu = { id: control.id || `__menu${this._menus.length}`, config: control, trigger, panel, wrapper, entries: [] }
         for (const item of control.items || []) {
             panel.appendChild(this._renderItem(item, menu))
         }
