@@ -72,6 +72,7 @@ menu-bar {
 
 .hf-menubar-trigger {
     display: flex;
+    letter-spacing: inherit;
     align-items: center;
     gap: 0.25em;
     height: 100%;
@@ -133,6 +134,7 @@ menu-bar [hidden] {
 }
 
 .hf-menubar-btn {
+    letter-spacing: inherit;
     font-size: 1.2em;
     padding: 0.18em 0.32em;
 }
@@ -162,6 +164,7 @@ menu-bar [hidden] {
 }
 
 .hf-menubar-segment {
+    letter-spacing: inherit;
     background: none;
     border: none;
     cursor: pointer;
@@ -206,6 +209,7 @@ menu-bar [hidden] {
 }
 
 .hf-menubar-badge {
+    letter-spacing: inherit;
     font-size: 0.7em;
 }
 
