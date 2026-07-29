@@ -371,6 +371,14 @@ class MenuBar extends HTMLElement {
             }
         }
 
+        // Roving tabindex follows focus however it arrives (mouse, script, or
+        // keyboard), so tabbing away and back returns to the last-active
+        // top-level control.
+        this._onFocusIn = (e) => {
+            const top = e.target.closest?.(TOP_FOCUSABLE_SELECTOR)
+            if (top && this.contains(top)) this._setRoving(top)
+        }
+
         this._onResize = () => {
             if (this._openMenuId === null) return
             const menu = this._findMenu(this._openMenuId)
@@ -378,7 +386,15 @@ class MenuBar extends HTMLElement {
             this._clampPanel(menu)
             const openOwner = menu.panel.querySelector('.hf-menubar-has-submenu[aria-expanded="true"]')
             const openSub = menu.wrapper.querySelector('.hf-menubar-subpanel:not([hidden])')
-            if (openOwner && openSub) this._positionSubpanel(openOwner, openSub)
+            if (openOwner && openSub) {
+                this._positionSubpanel(openOwner, openSub)
+                // Repositioning can shrink the subpanel's scroll viewport; keep
+                // the keyboard-focused item visible (focus only auto-scrolls at
+                // focus time, not when the container later resizes).
+                if (openSub.contains(document.activeElement)) {
+                    document.activeElement.scrollIntoView({ block: 'nearest' })
+                }
+            }
         }
 
         this._onDocumentClick = (e) => {
@@ -433,6 +449,7 @@ class MenuBar extends HTMLElement {
         this.addEventListener('click', this._onClick)
         this.addEventListener('pointerover', this._onPointerOver)
         this.addEventListener('keydown', this._onKeyDown)
+        this.addEventListener('focusin', this._onFocusIn)
         document.addEventListener('click', this._onDocumentClick)
         window.addEventListener('resize', this._onResize)
         this._sync()
@@ -442,6 +459,7 @@ class MenuBar extends HTMLElement {
         this.removeEventListener('click', this._onClick)
         this.removeEventListener('pointerover', this._onPointerOver)
         this.removeEventListener('keydown', this._onKeyDown)
+        this.removeEventListener('focusin', this._onFocusIn)
         document.removeEventListener('click', this._onDocumentClick)
         window.removeEventListener('resize', this._onResize)
         unregisterEscapeable(this)
@@ -549,6 +567,16 @@ class MenuBar extends HTMLElement {
                 this._openMenu(menu)
                 this._enabledItems(menu.panel)[0]?.focus()
                 break
+            case 'ArrowUp': {
+                // APG: ArrowUp on a menubar trigger opens the menu and
+                // focuses the last item.
+                if (!menu) return
+                e.preventDefault()
+                this._openMenu(menu)
+                const items = this._enabledItems(menu.panel)
+                items[items.length - 1]?.focus()
+                break
+            }
             default:
                 break
         }

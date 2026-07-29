@@ -694,6 +694,28 @@ test.describe('MenuBar submenus (hover + dynamic positioning)', () => {
         await expect(trigger).toHaveAttribute('aria-expanded', 'false')
     })
 
+    test('ArrowUp on a trigger opens the menu focusing the last item; roving tabindex follows focus', async ({ page }) => {
+        const mb = await mount(page, `{
+          regions: { left: [
+            { type: 'menu', trigger: { label: 'file' }, items: [ { id: 'fA', label: 'first' }, { id: 'fB', label: 'last' } ] },
+            { type: 'menu', trigger: { label: 'edit' }, items: [ { id: 'eA', label: 'only' } ] },
+          ] }
+        }`)
+        const edit = mb.locator('.hf-menubar-trigger', { hasText: 'edit' })
+        await edit.focus()
+        await page.keyboard.press('ArrowUp')
+        await expect(mb.locator('#eA')).toBeFocused()
+        await page.keyboard.press('Escape')
+        await expect(edit).toBeFocused()
+        // roving followed the programmatic focus: edit is the tab stop now
+        await expect(edit).toHaveAttribute('tabindex', '0')
+        await expect(mb.locator('.hf-menubar-trigger', { hasText: 'file' })).toHaveAttribute('tabindex', '-1')
+        // ArrowUp focuses the LAST item
+        await page.keyboard.press('ArrowLeft')   // move to file
+        await page.keyboard.press('ArrowUp')
+        await expect(mb.locator('#fB')).toBeFocused()
+    })
+
     test('panels and subpanels carry aria-controls/aria-labelledby pairs', async ({ page }) => {
         const mb = await mount(page, SUBMENUS)
         await mb.locator('.hf-menubar-trigger').click()
