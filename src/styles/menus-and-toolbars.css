@@ -57,7 +57,9 @@
 }
 
 .hf-menu-item:hover {
-    background: color-mix(in srgb, var(--hf-accent) 12%, transparent 88%);
+    /* longhand — the shorthand resets background-image/-clip, which
+     * destroys gradient-text (background-clip: text) items on hover */
+    background-color: color-mix(in srgb, var(--hf-accent) 12%, transparent 88%);
     color: var(--hf-accent-hover);
 }
 
@@ -95,7 +97,7 @@
 }
 
 .hf-menu-item-destructive:hover {
-    background: color-mix(in srgb, var(--hf-red) 12%, transparent 88%);
+    background-color: color-mix(in srgb, var(--hf-red) 12%, transparent 88%);
     color: var(--hf-red);
 }
 
