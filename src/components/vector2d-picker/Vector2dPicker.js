@@ -513,6 +513,8 @@ class Vector2dPicker extends HTMLElement {
 
     disconnectedCallback() {
         this._closeDialog()
+        this._isDragging = false
+        this._releaseDragListeners()
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
@@ -769,8 +771,7 @@ class Vector2dPicker extends HTMLElement {
             this._isDragging = false
             this._emitChange()
         }
-        document.removeEventListener('mousemove', this._boundMouseMove)
-        document.removeEventListener('mouseup', this._boundMouseUp)
+        this._releaseDragListeners()
     }
 
     _onPadTouchStart(e) {
@@ -798,8 +799,27 @@ class Vector2dPicker extends HTMLElement {
             this._isDragging = false
             this._emitChange()
         }
-        document.removeEventListener('touchmove', this._boundTouchMove)
-        document.removeEventListener('touchend', this._boundTouchEnd)
+        this._releaseDragListeners()
+    }
+
+    /**
+     * Detach any document-level drag listeners this instance currently holds.
+     * Idempotent: safe to call when no drag is in flight.
+     * @protected
+     */
+    _releaseDragListeners() {
+        if (this._boundMouseMove) {
+            document.removeEventListener('mousemove', this._boundMouseMove)
+            document.removeEventListener('mouseup', this._boundMouseUp)
+            this._boundMouseMove = null
+            this._boundMouseUp = null
+        }
+        if (this._boundTouchMove) {
+            document.removeEventListener('touchmove', this._boundTouchMove)
+            document.removeEventListener('touchend', this._boundTouchEnd)
+            this._boundTouchMove = null
+            this._boundTouchEnd = null
+        }
     }
 
     _updateFromPadEvent(e) {

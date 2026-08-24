@@ -549,6 +549,8 @@ class Vector3dPicker extends HTMLElement {
 
     disconnectedCallback() {
         this._closeDialog()
+        this._isDragging = false
+        this._releaseDragListeners()
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
@@ -758,11 +760,6 @@ class Vector3dPicker extends HTMLElement {
         sphereGizmo.addEventListener('mousedown', (e) => this._onGizmoMouseDown(e))
         sphereGizmo.addEventListener('touchstart', (e) => this._onGizmoTouchStart(e), { passive: false })
 
-        document.addEventListener('mousemove', (e) => this._onGizmoMouseMove(e))
-        document.addEventListener('mouseup', () => this._onGizmoMouseUp())
-        document.addEventListener('touchmove', (e) => this._onGizmoTouchMove(e), { passive: false })
-        document.addEventListener('touchend', () => this._onGizmoTouchEnd())
-
         const sliders = this.querySelectorAll('.axis-slider')
         sliders.forEach((slider) => {
             slider.addEventListener('input', (e) => {
@@ -855,6 +852,10 @@ class Vector3dPicker extends HTMLElement {
         e.preventDefault()
         this._isDragging = true
         this._updateFromGizmoEvent(e)
+        this._boundMouseMove = (ev) => this._onGizmoMouseMove(ev)
+        this._boundMouseUp = () => this._onGizmoMouseUp()
+        document.addEventListener('mousemove', this._boundMouseMove)
+        document.addEventListener('mouseup', this._boundMouseUp)
     }
 
     _onGizmoMouseMove(e) {
@@ -867,6 +868,7 @@ class Vector3dPicker extends HTMLElement {
             this._isDragging = false
             this._emitChange()
         }
+        this._releaseDragListeners()
     }
 
     _onGizmoTouchStart(e) {
@@ -875,6 +877,10 @@ class Vector3dPicker extends HTMLElement {
         if (e.touches.length > 0) {
             this._updateFromGizmoEvent(e.touches[0])
         }
+        this._boundTouchMove = (ev) => this._onGizmoTouchMove(ev)
+        this._boundTouchEnd = () => this._onGizmoTouchEnd()
+        document.addEventListener('touchmove', this._boundTouchMove, { passive: false })
+        document.addEventListener('touchend', this._boundTouchEnd)
     }
 
     _onGizmoTouchMove(e) {
@@ -889,6 +895,27 @@ class Vector3dPicker extends HTMLElement {
         if (this._isDragging) {
             this._isDragging = false
             this._emitChange()
+        }
+        this._releaseDragListeners()
+    }
+
+    /**
+     * Detach any document-level drag listeners this instance currently holds.
+     * Idempotent: safe to call when no drag is in flight.
+     * @protected
+     */
+    _releaseDragListeners() {
+        if (this._boundMouseMove) {
+            document.removeEventListener('mousemove', this._boundMouseMove)
+            document.removeEventListener('mouseup', this._boundMouseUp)
+            this._boundMouseMove = null
+            this._boundMouseUp = null
+        }
+        if (this._boundTouchMove) {
+            document.removeEventListener('touchmove', this._boundTouchMove)
+            document.removeEventListener('touchend', this._boundTouchEnd)
+            this._boundTouchMove = null
+            this._boundTouchEnd = null
         }
     }
 

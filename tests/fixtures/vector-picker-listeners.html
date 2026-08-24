@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="neutral-dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>vector pickers — document listener accounting fixture</title>
+    <link rel="stylesheet" href="../../dist/styles/index.css">
+    <link rel="stylesheet" href="../../dist/styles/themes/neutral.css">
+    <style> body { margin: 0; background: var(--hf-bg-base); padding: 40px; } </style>
+    <script>
+        // Count live document-level listeners per type. Installed before the
+        // bundle is imported so module-level listeners land in the baseline
+        // and per-instance listeners show up as a delta.
+        //
+        // The DOM de-duplicates identical (type, listener, capture) triples and
+        // ignores removals that match nothing; this counter does not. Handfish
+        // registers a fresh closure per drag and removes exactly what it added,
+        // so the two agree here.
+        ;(function () {
+            const counts = Object.create(null)
+            const add = document.addEventListener.bind(document)
+            const remove = document.removeEventListener.bind(document)
+            document.addEventListener = function (type, fn, opts) {
+                counts[type] = (counts[type] || 0) + 1
+                return add(type, fn, opts)
+            }
+            document.removeEventListener = function (type, fn, opts) {
+                counts[type] = (counts[type] || 0) - 1
+                return remove(type, fn, opts)
+            }
+            const TYPES = ['mousemove', 'mouseup', 'touchmove', 'touchend']
+            const snapshot = () => Object.fromEntries(TYPES.map(t => [t, counts[t] || 0]))
+            window.__snapshot = snapshot
+            window.__delta = () => {
+                const now = snapshot()
+                return Object.fromEntries(TYPES.map(t => [t, now[t] - window.__baseline[t]]))
+            }
+        })()
+    </script>
+    <script type="module">
+        import '../../dist/handfish.esm.js'
+        Promise.all([
+            customElements.whenDefined('vector3d-picker'),
+            customElements.whenDefined('vector2d-picker'),
+        ]).then(() => {
+            // Baseline taken with no picker in the document, so every counted
+            // listener from here on belongs to an instance.
+            window.__baseline = window.__snapshot()
+            window.__make = (tag) => {
+                const el = document.createElement(tag)
+                el.id = 'picker'
+                document.body.appendChild(el)
+                return el
+            }
+            window.__ready = true
+        })
+    </script>
+</head>
+<body>
+</body>
+</html>
