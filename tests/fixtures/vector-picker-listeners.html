@@ -8,32 +8,55 @@
     <link rel="stylesheet" href="../../dist/styles/themes/neutral.css">
     <style> body { margin: 0; background: var(--hf-bg-base); padding: 40px; } </style>
     <script>
-        // Count live document-level listeners per type. Installed before the
-        // bundle is imported so module-level listeners land in the baseline
-        // and per-instance listeners show up as a delta.
+        // Track live listeners on the two global targets a component could
+        // reach for. Installed before the bundle is imported, so module-level
+        // listeners land in the baseline and per-instance listeners show up as
+        // a delta.
         //
-        // The DOM de-duplicates identical (type, listener, capture) triples and
-        // ignores removals that match nothing; this counter does not. Handfish
-        // registers a fresh closure per drag and removes exactly what it added,
-        // so the two agree here.
+        // The set is keyed the way the DOM keys its own listener list —
+        // (target, type, listener, capture) — so registering the same triple
+        // twice counts once, and removing something never registered counts
+        // for nothing. An approximate counter would let an unbalanced remove
+        // (-1) cancel out an unbalanced add (+1) and hide a leak.
         ;(function () {
-            const counts = Object.create(null)
-            const add = document.addEventListener.bind(document)
-            const remove = document.removeEventListener.bind(document)
-            document.addEventListener = function (type, fn, opts) {
-                counts[type] = (counts[type] || 0) + 1
-                return add(type, fn, opts)
+            const ids = new WeakMap()
+            let nextId = 1
+            const idOf = (fn) => {
+                if (fn === null || (typeof fn !== 'object' && typeof fn !== 'function')) return String(fn)
+                if (!ids.has(fn)) ids.set(fn, nextId++)
+                return ids.get(fn)
             }
-            document.removeEventListener = function (type, fn, opts) {
-                counts[type] = (counts[type] || 0) - 1
-                return remove(type, fn, opts)
+            const nameOf = (target) => (target === document ? 'document' : target === window ? 'window' : null)
+            const isCapture = (opts) => (opts === true || !!(opts && opts.capture)) ? 'capture' : 'bubble'
+            const live = new Set()
+
+            const add = EventTarget.prototype.addEventListener
+            const remove = EventTarget.prototype.removeEventListener
+            EventTarget.prototype.addEventListener = function (type, fn, opts) {
+                const target = nameOf(this)
+                if (target) live.add(`${target}|${type}|${idOf(fn)}|${isCapture(opts)}`)
+                return add.call(this, type, fn, opts)
             }
+            EventTarget.prototype.removeEventListener = function (type, fn, opts) {
+                const target = nameOf(this)
+                if (target) live.delete(`${target}|${type}|${idOf(fn)}|${isCapture(opts)}`)
+                return remove.call(this, type, fn, opts)
+            }
+
             const TYPES = ['mousemove', 'mouseup', 'touchmove', 'touchend']
-            const snapshot = () => Object.fromEntries(TYPES.map(t => [t, counts[t] || 0]))
-            window.__snapshot = snapshot
+            const snapshot = () => Object.fromEntries(TYPES.map(t =>
+                [t, [...live].filter(k => k.split('|')[1] === t).length]
+            ))
+            // Marked by the test rather than at load, because Playwright
+            // installs its own capturing window listeners for the very types
+            // counted here, and does so lazily on first interaction. The spec
+            // forces those into place and then marks, so the delta reflects
+            // only what the component under test registered.
+            let mark = snapshot()
+            window.__mark = () => { mark = snapshot() }
             window.__delta = () => {
                 const now = snapshot()
-                return Object.fromEntries(TYPES.map(t => [t, now[t] - window.__baseline[t]]))
+                return Object.fromEntries(TYPES.map(t => [t, now[t] - mark[t]]))
             }
         })()
     </script>
@@ -43,14 +66,36 @@
             customElements.whenDefined('vector3d-picker'),
             customElements.whenDefined('vector2d-picker'),
         ]).then(() => {
-            // Baseline taken with no picker in the document, so every counted
-            // listener from here on belongs to an instance.
-            window.__baseline = window.__snapshot()
+            let n = 0
             window.__make = (tag) => {
                 const el = document.createElement(tag)
-                el.id = 'picker'
+                el.id = `picker-${n++}`
                 document.body.appendChild(el)
+                window.__picker = el
                 return el
+            }
+
+            // Synthesise touch sequences. Playwright's touchscreen API is
+            // single-contact; the multi-touch cases below need two.
+            window.__touch = (selector, type, points) => {
+                const el = document.querySelector(selector)
+                const rect = el.getBoundingClientRect()
+                const touches = points.map(p => new Touch({
+                    identifier: p.id,
+                    target: el,
+                    clientX: rect.left + rect.width * p.fx,
+                    clientY: rect.top + rect.height * p.fy,
+                }))
+                const changed = type === 'touchend'
+                    ? touches.slice(-1)
+                    : touches
+                el.dispatchEvent(new TouchEvent(type, {
+                    touches: type === 'touchend' ? touches.slice(0, -1) : touches,
+                    targetTouches: type === 'touchend' ? touches.slice(0, -1) : touches,
+                    changedTouches: changed,
+                    bubbles: true,
+                    cancelable: true,
+                }))
             }
             window.__ready = true
         })

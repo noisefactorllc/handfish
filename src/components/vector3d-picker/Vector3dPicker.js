@@ -522,6 +522,15 @@ class Vector3dPicker extends HTMLElement {
         this._isOpen = false
         this._isDragging = false
 
+        /** @type {?function(MouseEvent): void} */
+        this._boundMouseMove = null
+        /** @type {?function(): void} */
+        this._boundMouseUp = null
+        /** @type {?function(TouchEvent): void} */
+        this._boundTouchMove = null
+        /** @type {?function(): void} */
+        this._boundTouchEnd = null
+
         /** @type {boolean} */
         this._rendered = false
 
@@ -838,6 +847,7 @@ class Vector3dPicker extends HTMLElement {
     }
 
     _onDialogClosed() {
+        this._endDrag()
         const button = this.querySelector('.vector-button')
         if (button) button.setAttribute('aria-expanded', 'false')
         this.classList.remove('dialog-open')
@@ -852,6 +862,7 @@ class Vector3dPicker extends HTMLElement {
         e.preventDefault()
         this._isDragging = true
         this._updateFromGizmoEvent(e)
+        this._releaseMouseDragListeners()
         this._boundMouseMove = (ev) => this._onGizmoMouseMove(ev)
         this._boundMouseUp = () => this._onGizmoMouseUp()
         document.addEventListener('mousemove', this._boundMouseMove)
@@ -868,7 +879,7 @@ class Vector3dPicker extends HTMLElement {
             this._isDragging = false
             this._emitChange()
         }
-        this._releaseDragListeners()
+        this._releaseMouseDragListeners()
     }
 
     _onGizmoTouchStart(e) {
@@ -877,6 +888,7 @@ class Vector3dPicker extends HTMLElement {
         if (e.touches.length > 0) {
             this._updateFromGizmoEvent(e.touches[0])
         }
+        this._releaseTouchDragListeners()
         this._boundTouchMove = (ev) => this._onGizmoTouchMove(ev)
         this._boundTouchEnd = () => this._onGizmoTouchEnd()
         document.addEventListener('touchmove', this._boundTouchMove, { passive: false })
@@ -896,32 +908,66 @@ class Vector3dPicker extends HTMLElement {
             this._isDragging = false
             this._emitChange()
         }
-        this._releaseDragListeners()
+        this._releaseTouchDragListeners()
     }
 
     /**
-     * Detach any document-level drag listeners this instance currently holds.
-     * Idempotent: safe to call when no drag is in flight.
+     * Detach the mouse drag listeners this instance currently holds.
+     * Idempotent, and independent of the touch pair so that activity in one
+     * modality cannot tear down an in-flight drag in the other.
+     * @protected
+     */
+    _releaseMouseDragListeners() {
+        if (!this._boundMouseMove) return
+        document.removeEventListener('mousemove', this._boundMouseMove)
+        document.removeEventListener('mouseup', this._boundMouseUp)
+        this._boundMouseMove = null
+        this._boundMouseUp = null
+    }
+
+    /**
+     * Detach the touch drag listeners this instance currently holds.
+     * Idempotent.
+     * @protected
+     */
+    _releaseTouchDragListeners() {
+        if (!this._boundTouchMove) return
+        document.removeEventListener('touchmove', this._boundTouchMove)
+        document.removeEventListener('touchend', this._boundTouchEnd)
+        this._boundTouchMove = null
+        this._boundTouchEnd = null
+    }
+
+    /**
+     * Detach every document-level drag listener this instance holds.
      * @protected
      */
     _releaseDragListeners() {
-        if (this._boundMouseMove) {
-            document.removeEventListener('mousemove', this._boundMouseMove)
-            document.removeEventListener('mouseup', this._boundMouseUp)
-            this._boundMouseMove = null
-            this._boundMouseUp = null
-        }
-        if (this._boundTouchMove) {
-            document.removeEventListener('touchmove', this._boundTouchMove)
-            document.removeEventListener('touchend', this._boundTouchEnd)
-            this._boundTouchMove = null
-            this._boundTouchEnd = null
-        }
+        this._releaseMouseDragListeners()
+        this._releaseTouchDragListeners()
+    }
+
+    /**
+     * End an in-flight drag from outside the pointer stream — the dialog
+     * closing, or the element leaving the document. Commits the drag the way
+     * a release would, but only while the element is still connected: a
+     * detached element has nobody left to hear the event.
+     * @protected
+     */
+    _endDrag() {
+        this._releaseDragListeners()
+        if (!this._isDragging) return
+        this._isDragging = false
+        if (this.isConnected) this._emitChange()
     }
 
     _updateFromGizmoEvent(e) {
         const gizmo = this.querySelector('.sphere-gizmo')
         const rect = gizmo.getBoundingClientRect()
+        // A closed dialog, a hidden ancestor, or a detached subtree all give a
+        // zero-size rect. Dividing by it yields NaN, which would then be
+        // published as the form value.
+        if (!rect.width || !rect.height) return
         const centerX = rect.left + rect.width / 2
         const centerY = rect.top + rect.height / 2
         const radius = rect.width / 2
