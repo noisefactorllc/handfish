@@ -1,3 +1,8 @@
+<!-- repo-hero -->
+<a href="https://handfish.noisefactor.io/"><img src="docs/hero.jpg" alt="Handfish Design system: UI components and styles" width="100%"></a>
+
+<sub>Open source from <a href="https://noisefactor.io">Noise Factor</a> &middot; <a href="https://github.com/noisefactorllc">more projects</a></sub>
+
 # Handfish Design System
 
 A modern, accessible component library for creative tools. Built with Web Components and CSS Custom Properties.
