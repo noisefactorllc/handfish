@@ -4,6 +4,7 @@ playwright-report/
 dist/
 docs/*
 !docs/component-api.json
+!docs/hero.jpg
 .superpowers/
 docs/superpowers/
 .worktrees/
