@@ -563,6 +563,161 @@ test.describe('CodeEditor collaboration contract', () => {
         expect(outcome.hostInputs).toEqual([{ value: 'Rabか', previousValue: 'ab' }])
     })
 
+    test('a remote snapshot waits for IME commit and keeps the composed character', async ({ page }) => {
+        await mountEditor(page, { value: 'ab' })
+        const outcome = await page.evaluate(() => {
+            const editor = document.getElementById('collab-editor')
+            const textarea = editor.getTextarea()
+            const nativeValue = Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, 'value').set
+            textarea.focus()
+            textarea.setSelectionRange(2, 2)
+            textarea.dispatchEvent(new CompositionEvent('compositionstart', { bubbles: true }))
+            nativeValue.call(textarea, 'abか')
+            textarea.setSelectionRange(3, 3)
+            textarea.dispatchEvent(new Event('input', { bubbles: true }))
+            editor.value = 'Rab'
+            const duringComposition = editor.value
+            textarea.dispatchEvent(new CompositionEvent('compositionend', { bubbles: true, data: 'か' }))
+            return { duringComposition, committed: editor.value }
+        })
+        expect(outcome).toEqual({ duringComposition: 'abか', committed: 'Rabか' })
+    })
+
+    test('successive remote edits rebase against the evolving IME composition position', async ({ page }) => {
+        await mountEditor(page, { value: 'ab' })
+        const outcome = await page.evaluate(() => {
+            const editor = document.getElementById('collab-editor')
+            const textarea = editor.getTextarea()
+            const nativeValue = Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, 'value').set
+            textarea.focus()
+            textarea.setSelectionRange(1, 1)
+            textarea.dispatchEvent(new CompositionEvent('compositionstart', { bubbles: true }))
+            nativeValue.call(textarea, 'aかb')
+            textarea.setSelectionRange(2, 2)
+            textarea.dispatchEvent(new Event('input', { bubbles: true }))
+            editor.applyTextEdit({ start: 0, end: 0, text: 'RR' }, { source: 'remote' })
+            editor.applyTextEdit({ start: 2, end: 2, text: 'X' }, { source: 'remote' })
+            const duringComposition = editor.value
+            textarea.dispatchEvent(new CompositionEvent('compositionend', { bubbles: true, data: 'か' }))
+            return { duringComposition, committed: editor.value }
+        })
+        expect(outcome).toEqual({ duringComposition: 'aかb', committed: 'RRXaかb' })
+    })
+
+    for (const scenario of [
+        { name: 'equal-position insert', base: 'ab', composed: 'aかb', caret: 2,
+            edits: [{ start: 1, end: 1, text: 'R' }], expected: 'aRかb', expectedCaret: 3 },
+        { name: 'overlapping replacements', base: 'abcd', composed: 'aかd', caret: 2,
+            edits: [{ start: 0, end: 2, text: 'R' }], expected: 'かd', expectedCaret: 1 },
+        { name: 'remote ranges beyond original length', base: 'ab', composed: 'aかb', caret: 2,
+            edits: [{ start: 0, end: 0, text: 'RR' }, { start: 4, end: 4, text: 'S' }],
+            expected: 'RRaかbS', expectedCaret: 4 },
+        { name: 'remote replacement around local insertion', base: 'abc', composed: 'aかbc', caret: 2,
+            edits: [{ start: 0, end: 3, text: 'R' }], expected: 'Rか', expectedCaret: 2 },
+    ]) {
+        test(`IME merge preserves text and caret for ${scenario.name}`, async ({ page }) => {
+            await mountEditor(page, { value: scenario.base })
+            const outcome = await page.evaluate(scenario => {
+                const editor = document.getElementById('collab-editor')
+                const textarea = editor.getTextarea()
+                const nativeValue = Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, 'value').set
+                const desyncs = []
+                editor.addEventListener('collabdesync', event => desyncs.push(event.detail))
+                textarea.focus()
+                textarea.dispatchEvent(new CompositionEvent('compositionstart', { bubbles: true }))
+                nativeValue.call(textarea, scenario.composed)
+                textarea.setSelectionRange(scenario.caret, scenario.caret)
+                textarea.dispatchEvent(new Event('input', { bubbles: true }))
+                for (const edit of scenario.edits) editor.applyTextEdit(edit, { source: 'remote' })
+                textarea.dispatchEvent(new CompositionEvent('compositionend', { bubbles: true, data: 'か' }))
+                return { value: editor.value, start: textarea.selectionStart, end: textarea.selectionEnd, desyncs }
+            }, scenario)
+            expect(outcome).toEqual({ value: scenario.expected, start: scenario.expectedCaret, end: scenario.expectedCaret, desyncs: [] })
+        })
+    }
+
+    test('clears peer selections immediately during composition', async ({ page }) => {
+        await mountEditor(page, { value: 'abc' })
+        const outcome = await page.evaluate(() => {
+            const editor = document.getElementById('collab-editor')
+            const textarea = editor.getTextarea()
+            editor.setRemoteSelection({ id: 'peer', start: 0, end: 1 })
+            textarea.dispatchEvent(new CompositionEvent('compositionstart', { bubbles: true }))
+            editor.clearRemoteSelections()
+            const during = editor.getDisplay().querySelectorAll('.code-editor-remote-selection').length
+            textarea.dispatchEvent(new CompositionEvent('compositionend', { bubbles: true }))
+            const after = editor.getDisplay().querySelectorAll('.code-editor-remote-selection').length
+            return { during, after }
+        })
+        expect(outcome).toEqual({ during: 0, after: 0 })
+    })
+
+    for (const scenario of [
+        { name: 'snapshot', base: 'abc', selectionEnd: 1, snapshot: 'Rabc',
+            expected: 'Raかbc', caret: 3, peerText: 'c' },
+        { name: 'remote edits on both sides', base: 'abc', selectionEnd: 1,
+            edits: [{ start: 0, end: 0, text: 'RR' }, { start: 5, end: 5, text: 'S' }],
+            expected: 'RRaかbcS', caret: 4, peerText: 'c' },
+        { name: 'a fresh peer selection after a deferred remote edit', base: 'abc', selectionEnd: 1,
+            edits: [{ start: 0, end: 0, text: 'RR' }], freshPeer: { id: 'peer', start: 4, end: 5 },
+            expected: 'RRaかbc', caret: 4, peerText: 'c' },
+        { name: 'overlapping replacement', base: 'abcd', selectionEnd: 3,
+            edits: [{ start: 0, end: 2, text: 'R' }], expected: 'かd', caret: 1 },
+    ]) {
+        test(`native Chromium IME preserves composition through ${scenario.name}`, async ({ page }) => {
+            await mountEditor(page, { value: scenario.base })
+            await page.evaluate(scenario => {
+                const editor = document.getElementById('collab-editor')
+                const textarea = editor.getTextarea()
+                textarea.focus()
+                textarea.setSelectionRange(1, scenario.selectionEnd)
+                if (scenario.peerText && !scenario.freshPeer) editor.setRemoteSelection({ id: 'peer', start: 2, end: 3 })
+                window.__editorTest.nativeCompositionInputs = 0
+                textarea.addEventListener('input', event => {
+                    if (event.isTrusted && event.isComposing) window.__editorTest.nativeCompositionInputs += 1
+                })
+            }, scenario)
+
+            // CDP invokes Chromium's IME path: the browser updates the textarea
+            // and emits native input events, including a second candidate after
+            // the remote changes arrive. No textarea setter simulates the IME.
+            const cdp = await page.context().newCDPSession(page)
+            try {
+                await cdp.send('Input.imeSetComposition', { text: 'k', selectionStart: 1, selectionEnd: 1 })
+                const during = await page.evaluate(scenario => {
+                    const editor = document.getElementById('collab-editor')
+                    const before = editor.value
+                    if (scenario.snapshot) editor.value = scenario.snapshot
+                    for (const edit of scenario.edits || []) editor.applyTextEdit(edit, { source: 'remote' })
+                    if (scenario.freshPeer) editor.setRemoteSelection(scenario.freshPeer)
+                    return { before, after: editor.value, hostInputs: window.__editorTest.inputEvents.length }
+                }, scenario)
+                expect(during.after).toBe(during.before)
+                expect(during.hostInputs).toBe(0)
+
+                await cdp.send('Input.imeSetComposition', { text: 'か', selectionStart: 1, selectionEnd: 1 })
+                await cdp.send('Input.insertText', { text: 'か' })
+                const result = await page.evaluate(() => {
+                    const editor = document.getElementById('collab-editor')
+                    return {
+                        value: editor.value,
+                        selection: editor.getSelectionRange(),
+                        nativeInputs: window.__editorTest.nativeCompositionInputs,
+                        hostInputs: window.__editorTest.inputEvents.map(event => ({ value: event.value, source: event.source })),
+                        peerText: editor.getDisplay().querySelector('.code-editor-remote-selection')?.textContent,
+                    }
+                })
+                expect(result.value).toBe(scenario.expected)
+                expect(result.selection).toEqual({ start: scenario.caret, end: scenario.caret, direction: 'none' })
+                expect(result.nativeInputs).toBeGreaterThanOrEqual(2)
+                expect(result.hostInputs).toEqual([{ value: scenario.expected, source: 'user' }])
+                if (scenario.peerText) expect(result.peerText).toBe(scenario.peerText)
+            } finally {
+                await cdp.detach()
+            }
+        })
+    }
+
     test('forwards its accessible name to the editable textarea', async ({ page }) => {
         await mountEditor(page, { value: 'abc' })
 

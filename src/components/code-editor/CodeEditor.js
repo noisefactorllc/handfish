@@ -77,14 +77,44 @@ function transformOffsetThrough(offset, edit) {
     return edit.start + edit.text.length
 }
 
+// Match Seance's local-edit rebase policy: accepted remote insertions precede
+// a local insertion at the same point, and overlapping local replacements win.
 function transformEditThrough(edit, applied) {
-    const start = transformOffsetThrough(edit.start, applied)
-    const end = transformOffsetThrough(edit.end, applied)
+    const delta = applied.text.length - (applied.end - applied.start)
+    if (edit.start === edit.end) {
+        const pos = edit.start
+        const offset = pos < applied.start ? pos
+            : applied.start === applied.end ? pos + applied.text.length
+                : pos === applied.start ? applied.start
+                    : pos <= applied.end ? applied.start + applied.text.length
+                        : pos + delta
+        return { start: offset, end: offset, text: edit.text }
+    }
+    const mapStart = pos => pos < applied.start ? pos
+        : applied.start === applied.end ? pos + applied.text.length
+            : pos < applied.end ? applied.start
+                : pos + delta
+    const mapEnd = pos => pos < applied.start ? pos
+        : applied.start === applied.end ? pos + applied.text.length
+            : pos <= applied.start ? pos
+                : pos <= applied.end ? applied.start + applied.text.length
+                    : pos + delta
+    const start = mapStart(edit.start)
+    const end = mapEnd(edit.end)
     return { start: Math.min(start, end), end: Math.max(start, end), text: edit.text }
 }
 
 function isEmptyEdit(edit) {
     return !edit || (edit.start === edit.end && edit.text === '')
+}
+
+function transformSelectionsThrough(selections, edit) {
+    if (isEmptyEdit(edit)) return selections
+    return selections.map(selection => {
+        const start = transformOffsetThrough(selection.start, edit)
+        const end = transformOffsetThrough(selection.end, edit)
+        return { ...selection, start: Math.min(start, end), end: Math.max(start, end) }
+    })
 }
 
 function parseCssColor(color) {
@@ -512,6 +542,8 @@ class CodeEditor extends HTMLElement {
         this._selectionFrame = 0
         this._composing = false
         this._compositionBase = ''
+        this._compositionRemoteValue = ''
+        this._compositionRemoteSelections = []
         this._deferredEdits = []
         this._programmaticDepth = 0
         this._boundScrollHandler = null
@@ -631,6 +663,12 @@ class CodeEditor extends HTMLElement {
             return
         }
 
+        if (this._composing) {
+            const edit = computeTextEdit(this._compositionRemoteValue, next)
+            if (!isEmptyEdit(edit)) this.applyTextEdit(edit, { source: 'remote' })
+            return
+        }
+
         const previous = this._origDescriptor.get.call(this._textarea)
         if (previous === next) {
             this._value = next
@@ -722,7 +760,9 @@ class CodeEditor extends HTMLElement {
     }
 
     replaceRange(start, end, text, options = {}) {
-        const previousValue = this.value
+        // Incoming ranges refer to the remote shadow, which already contains
+        // earlier deferred edits and excludes the uncommitted IME text.
+        const previousValue = this._composing ? this._compositionRemoteValue : this.value
         const requestedStart = Number.isFinite(start) ? start : 0
         const requestedEnd = Number.isFinite(end) ? end : requestedStart
         const safeStart = clamp(requestedStart, 0, previousValue.length)
@@ -754,8 +794,12 @@ class CodeEditor extends HTMLElement {
             // then commits them a second time. Hold the edit and apply it
             // against the composed text (see _flushDeferredEdits).
             this._deferredEdits.push({ start: safeStart, end: safeEnd, text: replacement })
+            this._compositionRemoteValue = `${previousValue.slice(0, safeStart)}${replacement}${previousValue.slice(safeEnd)}`
+            this._compositionRemoteSelections = transformSelectionsThrough(this._compositionRemoteSelections, {
+                start: safeStart, end: safeEnd, text: replacement,
+            })
             return {
-                value: previousValue,
+                value: this.value,
                 selection: this.getSelectionRange(),
                 deferred: true,
             }
@@ -794,7 +838,7 @@ class CodeEditor extends HTMLElement {
     }
 
     setRemoteSelections(selections) {
-        this._remoteSelections = Array.isArray(selections)
+        const normalized = Array.isArray(selections)
             ? selections
                 .map((selection) => this._normalizeRemoteSelection(selection))
                 .filter(Boolean)
@@ -804,6 +848,16 @@ class CodeEditor extends HTMLElement {
                     return String(a.id).localeCompare(String(b.id))
                 })
             : []
+        if (this._composing) {
+            // Peer updates use the same evolving remote text as deferred edits.
+            // Keep their offsets there until the composition has committed.
+            this._compositionRemoteSelections = normalized
+            const ids = new Set(normalized.map(selection => selection.id))
+            this._remoteSelections = this._remoteSelections.filter(selection => ids.has(selection.id))
+            this.syncDisplay()
+            return
+        }
+        this._remoteSelections = normalized
         this.syncDisplay()
     }
 
@@ -811,7 +865,7 @@ class CodeEditor extends HTMLElement {
         const normalized = this._normalizeRemoteSelection(selection)
         if (!normalized) return
 
-        const nextSelections = [...this._remoteSelections]
+        const nextSelections = [...(this._composing ? this._compositionRemoteSelections : this._remoteSelections)]
         const index = nextSelections.findIndex((entry) => entry.id === normalized.id)
         if (index === -1) {
             nextSelections.push(normalized)
@@ -823,7 +877,8 @@ class CodeEditor extends HTMLElement {
 
     clearRemoteSelection(id) {
         const normalizedId = String(id)
-        this.setRemoteSelections(this._remoteSelections.filter((selection) => selection.id !== normalizedId))
+        const selections = this._composing ? this._compositionRemoteSelections : this._remoteSelections
+        this.setRemoteSelections(selections.filter((selection) => selection.id !== normalizedId))
     }
 
     clearRemoteSelections() {
@@ -847,12 +902,13 @@ class CodeEditor extends HTMLElement {
         // published API docs may as well not exist.
         const at = Number.isFinite(now) ? now : Date.now()
         if (!Number.isFinite(maxAgeMs) || maxAgeMs <= 0) return []
-        const stale = this._remoteSelections
+        const selections = this._composing ? this._compositionRemoteSelections : this._remoteSelections
+        const stale = selections
             .filter((selection) => Number.isFinite(selection.updatedAt) && at - selection.updatedAt > maxAgeMs)
             .map((selection) => selection.id)
         if (stale.length) {
             const dropped = new Set(stale)
-            this.setRemoteSelections(this._remoteSelections.filter((selection) => !dropped.has(selection.id)))
+            this.setRemoteSelections(selections.filter((selection) => !dropped.has(selection.id)))
         }
         return stale
     }
@@ -986,28 +1042,51 @@ class CodeEditor extends HTMLElement {
      * on every keystroke anyone makes, until that peer happens to move.
      */
     _transformRemoteSelections(edit) {
-        if (isEmptyEdit(edit) || !this._remoteSelections.length) return
-        this._remoteSelections = this._remoteSelections.map((selection) => {
-            const start = transformOffsetThrough(selection.start, edit)
-            const end = transformOffsetThrough(selection.end, edit)
-            return { ...selection, start: Math.min(start, end), end: Math.max(start, end) }
-        })
+        this._remoteSelections = transformSelectionsThrough(this._remoteSelections, edit)
     }
 
     /**
-     * Apply edits held back during a composition, rebased onto the text the
-     * IME just committed. The composition arrived after the peers' edits were
-     * computed, so each held edit shifts by whatever the composition inserted.
+     * Rebase the committed local composition onto the remote shadow. Applying
+     * a remote replacement to the composed textarea could delete the newly
+     * composed characters when the two edits overlap.
      */
     _flushDeferredEdits(compositionEdit) {
+        const originalComposition = compositionEdit
+        const selection = this.getSelectionRange()
+        const remoteSelections = this._compositionRemoteSelections
+        this._compositionRemoteSelections = []
         const deferred = this._deferredEdits
         this._deferredEdits = []
-        for (const edit of deferred) {
-            const rebased = isEmptyEdit(compositionEdit)
-                ? edit
-                : transformEditThrough(edit, compositionEdit)
-            this.replaceRange(rebased.start, rebased.end, rebased.text, { source: 'remote' })
+        const remoteValue = this._compositionRemoteValue
+        this._compositionRemoteValue = ''
+        if (!deferred.length) {
+            this._remoteSelections = transformSelectionsThrough(remoteSelections, compositionEdit)
+            return
         }
+        for (const edit of deferred) {
+            compositionEdit = transformEditThrough(compositionEdit, edit)
+        }
+        const nextValue = `${remoteValue.slice(0, compositionEdit.start)}${compositionEdit.text}${remoteValue.slice(compositionEdit.end)}`
+        const previousValue = this.value
+        if (previousValue !== nextValue) {
+            this._writeValue(nextValue, computeTextEdit(previousValue, nextValue))
+        }
+        // The final diff may span several independent remote edits. Preserve
+        // positions within the composed text directly instead of collapsing
+        // the caret across that broad replacement.
+        const mapSelectionOffset = offset => {
+            const localStart = originalComposition.start
+            const localEnd = localStart + originalComposition.text.length
+            if (offset >= localStart && offset <= localEnd) {
+                return compositionEdit.start + offset - localStart
+            }
+            let baseOffset = offset < localStart ? offset
+                : offset - originalComposition.text.length + originalComposition.end - localStart
+            for (const edit of deferred) baseOffset = transformOffsetThrough(baseOffset, edit)
+            return transformOffsetThrough(baseOffset, compositionEdit)
+        }
+        this._remoteSelections = transformSelectionsThrough(remoteSelections, compositionEdit)
+        this.setSelectionRange(mapSelectionOffset(selection.start), mapSelectionOffset(selection.end), selection.direction)
     }
 
     syncScroll() {
@@ -1271,6 +1350,9 @@ class CodeEditor extends HTMLElement {
     _handleCompositionStart() {
         this._composing = true
         this._compositionBase = this.value
+        this._compositionRemoteValue = this._compositionBase
+        this._compositionRemoteSelections = this._remoteSelections
+        this._deferredEdits = []
     }
 
     _handleCompositionEnd() {
@@ -1282,7 +1364,6 @@ class CodeEditor extends HTMLElement {
         this._value = this.value
 
         const compositionEdit = computeTextEdit(previousValue, this._value)
-        this._transformRemoteSelections(compositionEdit)
         // Peers' edits land first, so the value announced below already
         // contains them and the SDK's diff sees only what was composed here.
         this._flushDeferredEdits(compositionEdit)
@@ -1408,7 +1489,7 @@ class CodeEditor extends HTMLElement {
     _normalizeRemoteSelection(selection) {
         if (!selection || selection.id == null) return null
 
-        const length = this.value.length
+        const length = this._composing ? this._compositionRemoteValue.length : this.value.length
         const rawStart = Number.isFinite(selection.start) ? Math.floor(selection.start) : 0
         const rawEnd = Number.isFinite(selection.end) ? Math.floor(selection.end) : rawStart
         const start = clamp(Math.min(rawStart, rawEnd), 0, length)
