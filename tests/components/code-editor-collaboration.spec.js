@@ -1,5 +1,16 @@
 import { test, expect } from '@playwright/test'
 
+async function getNativeCaretDirection(page) {
+    // Chromium maps a requested "none" to "forward" on Linux, while macOS
+    // keeps "none". CodeEditor exposes the native textarea direction.
+    return page.evaluate(() => {
+        const textarea = document.createElement('textarea')
+        textarea.value = 'x'
+        textarea.setSelectionRange(1, 1, 'none')
+        return textarea.selectionDirection
+    })
+}
+
 async function mountEditor(page, options = {}) {
     const {
         id = 'collab-editor',
@@ -170,7 +181,7 @@ test.describe('CodeEditor collaboration contract', () => {
         })
 
         expect(events).toEqual([
-            { start: 3, end: 3, direction: 'none', value: 'abc' },
+            { start: 3, end: 3, direction: await getNativeCaretDirection(page), value: 'abc' },
         ])
     })
 
@@ -364,7 +375,7 @@ test.describe('CodeEditor collaboration contract', () => {
         expect(outcome.value).toEqual(['line 1', 'remote', 'line 2'])
         // "line 1\n" is 7 chars, so the caret sat exactly where the peer's
         // "remote\n" (7 more) went in, and rides to the end of it.
-        expect(outcome.selection).toEqual({ start: 14, end: 14, direction: 'none' })
+        expect(outcome.selection).toEqual({ start: 14, end: 14, direction: await getNativeCaretDirection(page) })
         expect(outcome.scrollTop).toBe(40)
         expect(outcome.emitted).toEqual([14])
     })
@@ -708,7 +719,7 @@ test.describe('CodeEditor collaboration contract', () => {
                     }
                 })
                 expect(result.value).toBe(scenario.expected)
-                expect(result.selection).toEqual({ start: scenario.caret, end: scenario.caret, direction: 'none' })
+                expect(result.selection).toEqual({ start: scenario.caret, end: scenario.caret, direction: await getNativeCaretDirection(page) })
                 expect(result.nativeInputs).toBeGreaterThanOrEqual(2)
                 expect(result.hostInputs).toEqual([{ value: scenario.expected, source: 'user' }])
                 if (scenario.peerText) expect(result.peerText).toBe(scenario.peerText)
