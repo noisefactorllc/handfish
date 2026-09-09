@@ -67,6 +67,29 @@ if (typeof document !== 'undefined' && !document.getElementById(SEANCE_DIALOG_ST
             filter: drop-shadow(0 0 20px color-mix(in srgb, var(--hf-accent-3, var(--hf-accent, #5a7fdd)) 40%, transparent 60%));
         }
 
+        seance-dialog .hf-seance-close {
+            position: absolute;
+            top: 0.6rem;
+            right: 0.6rem;
+            appearance: none;
+            border: 1px solid transparent;
+            border-radius: var(--hf-radius-sm, 6px);
+            background: transparent;
+            color: var(--hf-text-dim, #b6bdc9);
+            font: 700 1rem/1 var(--hf-font-family, sans-serif);
+            padding: 0.25rem 0.5rem;
+            cursor: pointer;
+        }
+
+        seance-dialog .hf-seance-close:hover {
+            color: var(--hf-text-bright, #f5f7fb);
+            border-color: var(--hf-border, rgba(255, 255, 255, 0.16));
+        }
+
+        seance-dialog .hf-seance-content {
+            position: relative;
+        }
+
         seance-dialog .hf-seance-details {
             display: flex;
             flex-direction: column;
@@ -106,10 +129,14 @@ if (typeof document !== 'undefined' && !document.getElementById(SEANCE_DIALOG_ST
             flex: none;
         }
 
-        seance-dialog[state="online"] .hf-seance-status-dot,
-        seance-dialog[state="readonly"] .hf-seance-status-dot {
+        seance-dialog[state="online"] .hf-seance-status-dot {
             background: var(--hf-success, #59d499);
             box-shadow: 0 0 8px color-mix(in srgb, var(--hf-success, #59d499) 70%, transparent 30%);
+        }
+
+        seance-dialog[state="readonly"] .hf-seance-status-dot {
+            background: var(--hf-warning, #e0a33e);
+            box-shadow: 0 0 8px color-mix(in srgb, var(--hf-warning, #e0a33e) 70%, transparent 30%);
         }
 
         seance-dialog[state="connecting"] .hf-seance-status-dot {
@@ -230,11 +257,34 @@ if (typeof document !== 'undefined' && !document.getElementById(SEANCE_DIALOG_ST
     document.head.appendChild(style)
 }
 
+/**
+ * Reduce whatever the user pasted to a six-character session id.
+ *
+ * People paste the whole share URL far more often than they retype the id, and
+ * stripping punctuation from `https://app.example/?seance=Ab12Cd` used to
+ * yield `httpsp`, which the dialog then submitted as a real session id. Pull
+ * the `seance` parameter out first when the value looks like a URL.
+ */
 function normalizeSessionId(value) {
-    return String(value || '')
+    return String(extractSessionId(value) || '')
         .replace(/[^A-Za-z0-9]/g, '')
         .slice(0, 6)
 }
+
+function extractSessionId(value) {
+    const raw = String(value || '').trim()
+    if (!/[:/?=]/.test(raw)) return raw
+    const match = raw.match(/[?&#]seance=([^&#\s]+)/i)
+    if (match) return decodeURIComponent(match[1])
+    try {
+        const url = new URL(raw, 'http://localhost/')
+        return url.searchParams.get('seance') || raw
+    } catch {
+        return raw
+    }
+}
+
+let instanceCounter = 0
 
 class SeanceDialog extends HTMLElement {
     static get observedAttributes() {
@@ -242,7 +292,7 @@ class SeanceDialog extends HTMLElement {
             'heading', 'state', 'session-id', 'session-url', 'copy',
             'take-label', 'join-label', 'join-label-text', 'join-placeholder',
             'copy-label', 'offline-label', 'offline-status-label',
-            'connecting-label', 'online-label', 'url-label',
+            'connecting-label', 'online-label', 'url-label', 'readonly-label',
         ]
     }
 
@@ -253,6 +303,10 @@ class SeanceDialog extends HTMLElement {
         this._joinForm = null
         this._joinInput = null
         this._listenersAttached = false
+        instanceCounter += 1
+        this._headingId = `hf-seance-heading-${instanceCounter}`
+        this._joinInputId = `hf-seance-join-input-${instanceCounter}`
+        this._urlInputId = `hf-seance-url-${instanceCounter}`
     }
 
     connectedCallback() {
@@ -331,14 +385,18 @@ class SeanceDialog extends HTMLElement {
     }
 
     _render() {
+        // Ids are per instance: two dialogs on one page (an app that mounts a
+        // second one, or a test harness) would otherwise share ids, and each
+        // label would point at the first instance's input.
         this.innerHTML = `
-            <dialog class="hf-dialog hf-seance-dialog" aria-labelledby="hf-seance-heading">
+            <dialog class="hf-dialog hf-seance-dialog" aria-labelledby="${this._headingId}">
                 <div class="hf-seance-content">
+                    <button class="hf-seance-close" type="button" data-action="close" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     <div class="hf-seance-graphic" role="presentation">${SEANCE_LOGO_SVG}</div>
                     <div class="hf-seance-details">
-                        <div class="hf-seance-name" id="hf-seance-heading"></div>
-                        <div class="hf-seance-status">
-                            <span class="hf-seance-status-dot"></span>
+                        <div class="hf-seance-name" id="${this._headingId}"></div>
+                        <div class="hf-seance-status" role="status" aria-live="polite">
+                            <span class="hf-seance-status-dot" aria-hidden="true"></span>
                             <span class="hf-seance-status-text"></span>
                             <span class="hf-seance-session-id" data-role="session-id"></span>
                         </div>
@@ -348,17 +406,17 @@ class SeanceDialog extends HTMLElement {
                         </div>
                         <hr class="hf-seance-divider" data-view="offline">
                         <form class="hf-seance-field" data-view="offline" method="dialog">
-                            <label class="hf-seance-label" for="hf-seance-join-input"></label>
+                            <label class="hf-seance-label" for="${this._joinInputId}"></label>
                             <div class="hf-seance-join-row">
-                                <input class="hf-seance-join-input" id="hf-seance-join-input" name="sessionId" type="text" inputmode="text" autocomplete="off" autocapitalize="off">
+                                <input class="hf-seance-join-input" id="${this._joinInputId}" name="sessionId" type="text" inputmode="text" autocomplete="off" autocapitalize="off">
 
                                 <button class="hf-seance-button" type="submit" data-action="join"></button>
                             </div>
                         </form>
                         <div class="hf-seance-field" data-view="online">
-                            <label class="hf-seance-label" data-role="url-label"></label>
+                            <label class="hf-seance-label" data-role="url-label" for="${this._urlInputId}"></label>
                             <div class="hf-seance-url-row">
-                                <input class="hf-seance-url" type="text" readonly>
+                                <input class="hf-seance-url" id="${this._urlInputId}" type="text" readonly>
                                 <button class="hf-seance-button" type="button" data-action="copy-url"></button>
                             </div>
                         </div>
@@ -373,6 +431,7 @@ class SeanceDialog extends HTMLElement {
         this._dialog = this.querySelector('dialog')
         this._joinForm = this.querySelector('form')
         this._joinInput = this.querySelector('.hf-seance-join-input')
+        this._closeButton = this.querySelector('[data-action="close"]')
     }
 
     _sync() {
@@ -387,11 +446,16 @@ class SeanceDialog extends HTMLElement {
 
         const statusText = this.querySelector('.hf-seance-status-text')
         if (statusText) {
-            statusText.textContent = onlineish
-                ? (this.getAttribute('online-label') || 'Online')
-                : connecting
-                    ? (this.getAttribute('connecting-label') || 'Connecting…')
-                    : (this.getAttribute('offline-status-label') || 'Offline')
+            // A read-only participant is online but cannot type. Saying
+            // "Online" to both left moderated users staring at a locked editor
+            // with nothing on screen explaining it.
+            statusText.textContent = state === 'readonly'
+                ? (this.getAttribute('readonly-label') || 'Online, read-only')
+                : onlineish
+                    ? (this.getAttribute('online-label') || 'Online')
+                    : connecting
+                        ? (this.getAttribute('connecting-label') || 'Connecting…')
+                        : (this.getAttribute('offline-status-label') || 'Offline')
         }
 
         const sessionIdEl = this.querySelector('[data-role="session-id"]')
@@ -441,6 +505,26 @@ class SeanceDialog extends HTMLElement {
         for (const el of this.querySelectorAll('[data-view="online"]')) {
             el.hidden = !onlineish
         }
+
+        this._restoreFocusAfterViewChange()
+    }
+
+    /**
+     * Going online hides the control the user was standing on, and the browser
+     * drops focus to <body>: a keyboard user is then outside the dialog with
+     * nothing to tab to. Put focus back on something inside it.
+     */
+    _restoreFocusAfterViewChange() {
+        if (!this._dialog?.open) return
+        const active = document.activeElement
+        const lost = !active || active === document.body || !this.contains(active) || Boolean(active.closest?.('[hidden]')) || active.disabled
+        if (!lost) return
+
+        const onlineish = this.state === 'online' || this.state === 'readonly'
+        const target = onlineish
+            ? this.querySelector('.hf-seance-url')
+            : this.querySelector('[data-action="take-online"]:not([disabled])')
+        ;(target || this._closeButton)?.focus()
     }
 
     _attachEventListeners() {
@@ -500,6 +584,8 @@ class SeanceDialog extends HTMLElement {
                 composed: true,
                 detail: { sessionUrl: this.sessionUrl },
             }))
+        } else if (action === 'close') {
+            this.hide({ emitCancel: true })
         } else if (action === 'go-offline') {
             this.dispatchEvent(new CustomEvent('go-offline', {
                 bubbles: true,

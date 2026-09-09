@@ -25,14 +25,16 @@
         "text-bg-color",
         "caret-color",
         "selection-color",
-        "line-numbers"
+        "line-numbers",
+        "aria-label",
+        "aria-labelledby"
       ],
       "api": [
         {
           "kind": "property",
           "name": "collabApiVersion",
           "static": true,
-          "signature": "static collabApiVersion = 1"
+          "signature": "static collabApiVersion = 2"
         },
         {
           "kind": "get",
@@ -174,6 +176,12 @@
         },
         {
           "kind": "method",
+          "name": "pruneRemoteSelections",
+          "static": false,
+          "signature": "pruneRemoteSelections(maxAgeMs, now)"
+        },
+        {
+          "kind": "method",
           "name": "flashLines",
           "static": false,
           "signature": "flashLines(startLine, endLine, options = {})"
@@ -192,6 +200,15 @@
         }
       ],
       "events": [
+        {
+          "name": "collabdesync",
+          "type": "CustomEvent",
+          "detailKeys": [
+            "reason",
+            "requested",
+            "end"
+          ]
+        },
         {
           "name": "forceevalblock",
           "type": "CustomEvent",
@@ -1167,7 +1184,8 @@
         "offline-status-label",
         "connecting-label",
         "online-label",
-        "url-label"
+        "url-label",
+        "readonly-label"
       ],
       "api": [
         {

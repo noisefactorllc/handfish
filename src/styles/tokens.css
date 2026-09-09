@@ -141,6 +141,13 @@
     --hf-yellow: oklch(89.1% 0.133 89);
     --hf-blue: oklch(61.1% 0.153 260);
 
+    /* Semantic aliases. Defined once: the indirection resolves at use, so
+       these follow whichever theme block last set --hf-green / --hf-yellow.
+       Components referenced --hf-success before it existed and silently fell
+       back to a literal hex, which ignored the theme. */
+    --hf-success: var(--hf-green);
+    --hf-warning: var(--hf-yellow);
+
     /* Computed colors */
     --hf-border: color-mix(in srgb, var(--hf-accent-3) 25%, transparent 75%);
     --hf-border-hover: color-mix(in srgb, var(--hf-accent-3) 40%, transparent 60%);

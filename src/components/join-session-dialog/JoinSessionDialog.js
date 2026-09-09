@@ -96,10 +96,28 @@ if (!document.getElementById(JOIN_SESSION_DIALOG_STYLES_ID)) {
     document.head.appendChild(style)
 }
 
+/**
+ * Reduce whatever the user pasted to a six-character session id, pulling the
+ * `seance` parameter out of a share URL first. Kept identical to the same
+ * helper in SeanceDialog: both dialogs accept the same input.
+ */
 function normalizeSessionId(value) {
-    return String(value || '')
+    return String(extractSessionId(value) || '')
         .replace(/[^A-Za-z0-9]/g, '')
         .slice(0, 6)
+}
+
+function extractSessionId(value) {
+    const raw = String(value || '').trim()
+    if (!/[:/?=]/.test(raw)) return raw
+    const match = raw.match(/[?&#]seance=([^&#\s]+)/i)
+    if (match) return decodeURIComponent(match[1])
+    try {
+        const url = new URL(raw, 'http://localhost/')
+        return url.searchParams.get('seance') || raw
+    } catch {
+        return raw
+    }
 }
 
 class JoinSessionDialog extends HTMLElement {
@@ -187,7 +205,7 @@ class JoinSessionDialog extends HTMLElement {
                     </div>
                     <label class="hf-join-session-field">
                         <span class="hf-join-session-label">Session ID</span>
-                        <input class="hf-join-session-input" name="sessionId" type="text" inputmode="text" autocomplete="off" autocapitalize="off" maxlength="6" placeholder="aB12cD">
+                        <input class="hf-join-session-input" name="sessionId" type="text" inputmode="text" autocomplete="off" autocapitalize="off" placeholder="aB12cD">
                     </label>
                     <div class="hf-join-session-actions">
                         <button class="hf-join-session-button" type="button" data-action="cancel">Cancel</button>
@@ -292,6 +310,8 @@ class JoinSessionDialog extends HTMLElement {
     }
 }
 
-customElements.define('join-session-dialog', JoinSessionDialog)
+if (typeof customElements !== 'undefined' && !customElements.get('join-session-dialog')) {
+    customElements.define('join-session-dialog', JoinSessionDialog)
+}
 
 export { JoinSessionDialog }
