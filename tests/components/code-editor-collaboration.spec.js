@@ -369,6 +369,55 @@ test.describe('CodeEditor collaboration contract', () => {
         expect(outcome.emitted).toEqual([14])
     })
 
+    test('a programmatic write stays silent on the app listener', async ({ page }) => {
+        // Assigning .value has never produced an input event, and an app is
+        // entitled to read one as "the user changed this". Routing edits
+        // through the browser's undo stack fires real input events on the
+        // textarea, so they must not escape the component.
+        await mountEditor(page, { value: 'hello' })
+
+        const counts = await page.evaluate(() => {
+            const editor = document.getElementById('collab-editor')
+            const textarea = editor.getTextarea()
+            textarea.focus()
+            const seen = { host: 0, bubbled: 0 }
+            editor.addEventListener('input', (event) => {
+                if (event.target === editor) seen.host += 1
+                else seen.bubbled += 1
+            })
+            document.addEventListener('input', () => { seen.bubbled += 1 }, { once: false })
+
+            editor.value = 'hello world'
+            editor.applyTextEdit({ start: 0, end: 0, text: '>> ' }, { source: 'remote' })
+            return { ...seen, value: editor.value }
+        })
+
+        expect(counts.value).toBe('>> hello world')
+        expect(counts).toMatchObject({ host: 0, bubbled: 0 })
+    })
+
+    test('an unfocused load leaves a caret, never a selection', async ({ page }) => {
+        // A stale range mapped through a whole-document load would sit there
+        // selected, and the next insert-at-cursor helper would replace it.
+        await mountEditor(page, { value: 'search synth\n\nnoise().write(o0)' })
+
+        const outcome = await page.evaluate(() => {
+            const editor = document.getElementById('collab-editor')
+            const textarea = editor.getTextarea()
+            textarea.focus()
+            editor.setSelectionRange(14, 21, 'forward')
+            textarea.blur()
+            document.body.focus()
+
+            editor.value = 'search synth\n\nsolid(g: 1).write(o0)'
+            const selection = editor.getSelectionRange()
+            return { selection, collapsed: selection.start === selection.end, length: editor.value.length }
+        })
+
+        expect(outcome.collapsed).toBe(true)
+        expect(outcome.selection.start).toBe(outcome.length)
+    })
+
     test('a remote edit does not throw away the local undo history', async ({ page }) => {
         await mountEditor(page, { value: 'hello' })
         const textarea = page.locator('#collab-editor .code-editor-textarea')

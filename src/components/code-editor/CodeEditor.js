@@ -517,6 +517,7 @@ class CodeEditor extends HTMLElement {
         this._boundScrollHandler = null
         this._boundInputHandler = null
         this._boundKeydownHandler = null
+        this._boundInputSuppressor = null
         this._boundSelectionHandler = null
         this._boundCompositionStartHandler = null
         this._boundCompositionEndHandler = null
@@ -921,6 +922,7 @@ class CodeEditor extends HTMLElement {
             return
         }
 
+        const focused = typeof document !== 'undefined' && document.activeElement === textarea
         const previousSelection = this.getSelectionRange()
         const scrollTop = textarea.scrollTop
 
@@ -929,13 +931,14 @@ class CodeEditor extends HTMLElement {
         }
         this._value = nextValue
 
-        const mapped = this._selectionAfterEdit(
-            previousSelection,
-            edit.start,
-            edit.end,
-            edit.text,
-            'preserve',
-        )
+        // Only a focused editor has a caret a person is standing on. Mapping a
+        // stale selection through an unfocused load would leave a range
+        // selected in a document the user has not looked at yet, and the next
+        // insert-at-cursor would replace it. Unfocused keeps the historical
+        // behaviour: the caret ends up after the text.
+        const mapped = focused
+            ? this._selectionAfterEdit(previousSelection, edit.start, edit.end, edit.text, 'preserve')
+            : { start: nextValue.length, end: nextValue.length, direction: 'none' }
         textarea.setSelectionRange(mapped.start, mapped.end, mapped.direction)
         textarea.scrollTop = scrollTop
 
@@ -1169,12 +1172,24 @@ class CodeEditor extends HTMLElement {
         if (!this._textarea) return
 
         this._boundScrollHandler = () => this.syncScroll()
+        // Registered before every other input listener, and first in
+        // registration order so it runs first at the target. An edit applied
+        // through the undo stack fires real input events on the textarea, and
+        // those bubble to whatever the host app listens on. Assigning `.value`
+        // never produced any, and an app is entitled to read an input event as
+        // "the user changed this" (marking a document dirty, scheduling a
+        // rebuild). The host announces programmatic writes through its own
+        // event, with a source, so these stop here.
+        this._boundInputSuppressor = (event) => {
+            if (this._programmaticDepth > 0) event.stopImmediatePropagation()
+        }
         this._boundInputHandler = (event) => this._handleInput(event)
         this._boundKeydownHandler = (event) => this._handleKeydown(event)
         this._boundSelectionHandler = () => this._emitSelectionChangeIfNeeded()
         this._boundCompositionStartHandler = () => this._handleCompositionStart()
         this._boundCompositionEndHandler = () => this._handleCompositionEnd()
 
+        this._textarea.addEventListener('input', this._boundInputSuppressor, true)
         this._textarea.addEventListener('scroll', this._boundScrollHandler, { passive: true })
         this._textarea.addEventListener('input', this._boundInputHandler)
         this._textarea.addEventListener('keydown', this._boundKeydownHandler)
@@ -1191,6 +1206,9 @@ class CodeEditor extends HTMLElement {
 
         if (this._boundScrollHandler) {
             this._textarea.removeEventListener('scroll', this._boundScrollHandler)
+        }
+        if (this._boundInputSuppressor) {
+            this._textarea.removeEventListener('input', this._boundInputSuppressor, true)
         }
         if (this._boundInputHandler) {
             this._textarea.removeEventListener('input', this._boundInputHandler)
