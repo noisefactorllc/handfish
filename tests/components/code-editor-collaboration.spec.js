@@ -329,9 +329,204 @@ test.describe('CodeEditor collaboration contract', () => {
         })
 
         expect(versions).toEqual({
-            staticVersion: 1,
-            instanceVersion: 1,
+            staticVersion: 2,
+            instanceVersion: 2,
         })
+    })
+
+    test('the value setter keeps the caret and the scroll position', async ({ page }) => {
+        // The SDK assigns .value for every remote update it cannot express as
+        // a range edit, which is most of them once local text is pending. When
+        // that threw the caret to the end of the document, the local typist
+        // lost their place and broadcast the wrong cursor.
+        await mountEditor(page, { value: Array.from({ length: 40 }, (_, i) => `line ${i + 1}`).join('\n'), height: '120px' })
+
+        const outcome = await page.evaluate(() => {
+            const editor = document.getElementById('collab-editor')
+            const textarea = editor.getTextarea()
+            textarea.focus()
+            editor.setSelectionRange(7, 7, 'none')
+            textarea.scrollTop = 40
+            window.__editorTest.selectionEvents = []
+
+            // A peer inserted a line above the caret.
+            const next = editor.value.replace('line 1\n', 'line 1\nremote\n')
+            editor.value = next
+
+            return {
+                selection: editor.getSelectionRange(),
+                scrollTop: textarea.scrollTop,
+                emitted: window.__editorTest.selectionEvents.map((event) => event.start),
+                value: editor.value.split('\n').slice(0, 3),
+            }
+        })
+
+        expect(outcome.value).toEqual(['line 1', 'remote', 'line 2'])
+        // "line 1\n" is 7 chars, so the caret sat exactly where the peer's
+        // "remote\n" (7 more) went in, and rides to the end of it.
+        expect(outcome.selection).toEqual({ start: 14, end: 14, direction: 'none' })
+        expect(outcome.scrollTop).toBe(40)
+        expect(outcome.emitted).toEqual([14])
+    })
+
+    test('a remote edit does not throw away the local undo history', async ({ page }) => {
+        await mountEditor(page, { value: 'hello' })
+        const textarea = page.locator('#collab-editor .code-editor-textarea')
+        await textarea.click()
+        await textarea.press('End')
+        await page.keyboard.type(' world')
+
+        await page.evaluate(() => {
+            document.getElementById('collab-editor').applyTextEdit({ start: 0, end: 0, text: '>> ' }, { source: 'remote' })
+        })
+        await textarea.focus()
+        await page.keyboard.press('ControlOrMeta+z')
+
+        // The remote insert is itself undoable, so the first undo takes it
+        // back; what matters is that the local typing underneath survived.
+        await page.keyboard.press('ControlOrMeta+z')
+        const value = await page.evaluate(() => document.getElementById('collab-editor').value)
+        expect(value).not.toBe('>> hello world')
+        expect(value.replace('>> ', '')).not.toBe('hello world')
+    })
+
+    test('remote carets follow the text when anyone edits', async ({ page }) => {
+        await mountEditor(page, { value: 'hello world' })
+
+        const outcome = await page.evaluate(() => {
+            const editor = document.getElementById('collab-editor')
+            editor.setRemoteSelection({ id: 'peer', label: 'Peer', color: '#ff6b6b', start: 6, end: 11 })
+            const read = () => {
+                const span = editor.getDisplay().querySelector('.code-editor-remote-selection')
+                return span ? span.textContent : null
+            }
+            const before = read()
+
+            // Local typing ahead of the peer's selection.
+            const textarea = editor.getTextarea()
+            textarea.focus()
+            textarea.setSelectionRange(0, 0)
+            document.execCommand('insertText', false, 'XX')
+            const afterLocal = read()
+
+            // A remote edit ahead of it, through the collab API.
+            editor.applyTextEdit({ start: 0, end: 0, text: 'YY' }, { source: 'remote' })
+            const afterRemote = read()
+
+            return { before, afterLocal, afterRemote, value: editor.value }
+        })
+
+        expect(outcome.value).toBe('YYXXhello world')
+        expect(outcome.before).toBe('world')
+        expect(outcome.afterLocal).toBe('world')
+        expect(outcome.afterRemote).toBe('world')
+    })
+
+    test('pruneRemoteSelections drops carets from peers that stopped reporting', async ({ page }) => {
+        await mountEditor(page, { value: 'hello world' })
+
+        const outcome = await page.evaluate(() => {
+            const editor = document.getElementById('collab-editor')
+            const now = Date.now()
+            editor.setRemoteSelections([
+                { id: 'gone', label: 'Gone', color: '#ff6b6b', start: 0, end: 5, updatedAt: now - 60000 },
+                { id: 'here', label: 'Here', color: '#4dabf7', start: 6, end: 11, updatedAt: now },
+            ])
+            const removed = editor.pruneRemoteSelections(30000, now)
+            return {
+                removed,
+                remaining: [...editor.getDisplay().querySelectorAll('.code-editor-remote-selection')]
+                    .map((node) => node.dataset.remoteLabel),
+            }
+        })
+
+        expect(outcome.removed).toEqual(['gone'])
+        expect(outcome.remaining).toEqual(['Here'])
+    })
+
+    test('an out-of-range remote edit still applies but reports the desync', async ({ page }) => {
+        await mountEditor(page, { value: 'abc' })
+
+        const outcome = await page.evaluate(() => {
+            const editor = document.getElementById('collab-editor')
+            const events = []
+            editor.addEventListener('collabdesync', (event) => events.push(structuredClone(event.detail)))
+            editor.applyTextEdit({ start: 100, end: 200, text: 'Z' }, { source: 'remote' })
+            editor.applyTextEdit({ start: 0, end: 1, text: 'Q' }, { source: 'remote' })
+            return { events, value: editor.value }
+        })
+
+        expect(outcome.value).toBe('Qbcz'.replace('z', 'Z'))
+        expect(outcome.events).toHaveLength(1)
+        expect(outcome.events[0]).toMatchObject({
+            reason: 'range-out-of-bounds',
+            requested: { start: 100, end: 200 },
+            applied: { start: 3, end: 3 },
+            length: 3,
+            source: 'remote',
+        })
+    })
+
+    test('a remote edit during an IME composition does not duplicate the composed text', async ({ page }) => {
+        await mountEditor(page, { value: 'ab' })
+
+        const outcome = await page.evaluate(() => {
+            const editor = document.getElementById('collab-editor')
+            const textarea = editor.getTextarea()
+            // Write through the native setter, the way a browser updates the
+            // field during a composition: our own property hooks must not see it.
+            const nativeValue = Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, 'value').set
+
+            textarea.focus()
+            textarea.setSelectionRange(2, 2)
+            window.__editorTest.inputEvents = []
+
+            textarea.dispatchEvent(new CompositionEvent('compositionstart', { bubbles: true }))
+            nativeValue.call(textarea, 'abか')
+            textarea.setSelectionRange(3, 3)
+            textarea.dispatchEvent(new Event('input', { bubbles: true }))
+
+            const duringComposition = {
+                value: editor.value,
+                hostInputs: window.__editorTest.inputEvents.length,
+            }
+
+            const deferred = editor.applyTextEdit({ start: 0, end: 0, text: 'R' }, { source: 'remote' })
+            const afterRemote = editor.value
+
+            textarea.dispatchEvent(new CompositionEvent('compositionend', { bubbles: true, data: 'か' }))
+
+            return {
+                duringComposition,
+                deferred: Boolean(deferred.deferred),
+                afterRemote,
+                value: editor.value,
+                hostInputs: window.__editorTest.inputEvents.map((event) => ({ value: event.value, previousValue: event.previousValue })),
+            }
+        })
+
+        // Nothing is announced mid-composition, the peer's edit waits, and the
+        // composed character lands exactly once.
+        expect(outcome.duringComposition.hostInputs).toBe(0)
+        expect(outcome.deferred).toBe(true)
+        expect(outcome.afterRemote).toBe('abか')
+        expect(outcome.value).toBe('Rabか')
+        expect(outcome.hostInputs).toEqual([{ value: 'Rabか', previousValue: 'ab' }])
+    })
+
+    test('forwards its accessible name to the editable textarea', async ({ page }) => {
+        await mountEditor(page, { value: 'abc' })
+
+        const labels = await page.evaluate(() => {
+            const editor = document.getElementById('collab-editor')
+            editor.setAttribute('aria-label', 'Program source')
+            const textarea = editor.getTextarea()
+            const withLabel = textarea.getAttribute('aria-label')
+            editor.removeAttribute('aria-label')
+            return { withLabel, afterRemoval: textarea.getAttribute('aria-label') }
+        })
+
+        expect(labels).toEqual({ withLabel: 'Program source', afterRemoval: null })
     })
 
     test('generated component api docs do not include control-flow pseudo-methods', async ({ page }) => {

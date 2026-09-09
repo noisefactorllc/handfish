@@ -27,6 +27,19 @@ function clamp(value, min, max) {
     return Math.min(Math.max(value, min), max)
 }
 
+/**
+ * Diff two strings into the single replacement that turns one into the other.
+ *
+ * Offset contract: `start` and `end` are JavaScript string indices, which are
+ * UTF-16 code units. Every offset this component accepts or reports uses that
+ * unit: `applyTextEdit`, `replaceRange`, `getSelectionRange`,
+ * `setSelectionRange`, `setRemoteSelection` and the `input` / `selectionchange`
+ * event details. A character outside the Basic Multilingual Plane (an emoji,
+ * for instance) therefore counts as two. Collaboration peers and servers must
+ * agree on this unit; see seance `docs/protocol.md`. Do not convert to code
+ * points here: exactly one side of the wire converts, and that side is the
+ * server.
+ */
 function computeTextEdit(previousValue, nextValue) {
     let start = 0
     const maxPrefix = Math.min(previousValue.length, nextValue.length)
@@ -50,6 +63,28 @@ function computeTextEdit(previousValue, nextValue) {
         end: previousEnd,
         text: nextValue.slice(start, nextEnd),
     }
+}
+
+/**
+ * Map an offset in the pre-edit text to the equivalent offset after `edit` is
+ * applied. Offsets inside the replaced range collapse to the end of the
+ * inserted text, which is what a caret sitting in deleted text should do.
+ */
+function transformOffsetThrough(offset, edit) {
+    const delta = edit.text.length - (edit.end - edit.start)
+    if (offset <= edit.start) return offset
+    if (offset >= edit.end) return offset + delta
+    return edit.start + edit.text.length
+}
+
+function transformEditThrough(edit, applied) {
+    const start = transformOffsetThrough(edit.start, applied)
+    const end = transformOffsetThrough(edit.end, applied)
+    return { start: Math.min(start, end), end: Math.max(start, end), text: edit.text }
+}
+
+function isEmptyEdit(edit) {
+    return !edit || (edit.start === edit.end && edit.text === '')
 }
 
 function parseCssColor(color) {
@@ -421,7 +456,22 @@ if (!document.getElementById(CODE_EDITOR_STYLES_ID)) {
 }
 
 class CodeEditor extends HTMLElement {
-    static collabApiVersion = 1
+    /**
+     * Collaboration API version. Bumped when the collaboration contract
+     * changes so an SDK can feature-detect rather than sniff for methods.
+     *
+     * 1: applyTextEdit / replaceRange / setRemoteSelection(s) /
+     *    clearRemoteSelection(s) / flashLines / getSelectionRange /
+     *    setSelectionRange, the enriched `input` detail, `selectionchange`.
+     * 2: the `value` setter preserves the caret and scroll position instead of
+     *    dropping the caret at the end; remote selections are transformed by
+     *    local and remote edits; programmatic edits during an IME composition
+     *    are deferred to compositionend; an out-of-range edit still clamps but
+     *    now also emits `collabdesync`; `pruneRemoteSelections` was added; a
+     *    caret at a pure insertion point now rides to the end of the inserted
+     *    text, matching the SDK's own selection transform.
+     */
+    static collabApiVersion = 2
 
     static get observedAttributes() {
         return [
@@ -439,6 +489,8 @@ class CodeEditor extends HTMLElement {
             'caret-color',
             'selection-color',
             'line-numbers',
+            'aria-label',
+            'aria-labelledby',
         ]
     }
 
@@ -458,10 +510,16 @@ class CodeEditor extends HTMLElement {
         this._flashTimers = new Map()
         this._selectionState = null
         this._selectionFrame = 0
+        this._composing = false
+        this._compositionBase = ''
+        this._deferredEdits = []
+        this._programmaticDepth = 0
         this._boundScrollHandler = null
         this._boundInputHandler = null
         this._boundKeydownHandler = null
         this._boundSelectionHandler = null
+        this._boundCompositionStartHandler = null
+        this._boundCompositionEndHandler = null
         this._origDescriptor = Object.getOwnPropertyDescriptor(
             HTMLTextAreaElement.prototype,
             'value',
@@ -532,6 +590,10 @@ class CodeEditor extends HTMLElement {
                     this._textarea.disabled = newValue !== null
                 }
                 break
+            case 'aria-label':
+            case 'aria-labelledby':
+                this._syncTextareaLabel()
+                break
             case 'line-numbers':
                 this._showLineNumbers = newValue !== 'false'
                 this._updateGutterVisibility()
@@ -562,13 +624,26 @@ class CodeEditor extends HTMLElement {
     }
 
     set value(value) {
-        this._value = value ?? ''
-        if (this._textarea) {
-            this._origDescriptor.set.call(this._textarea, this._value)
-            this.syncDisplay()
-            this._emitSelectionChangeIfNeeded()
-            requestAnimationFrame(() => this.syncScroll())
+        const next = value ?? ''
+        if (!this._textarea) {
+            this._value = next
+            return
         }
+
+        const previous = this._origDescriptor.get.call(this._textarea)
+        if (previous === next) {
+            this._value = next
+            this.syncDisplay()
+            return
+        }
+
+        // Assigning a textarea's value drops the caret at the end of the text.
+        // A collaborating editor takes this path on every remote update the
+        // SDK cannot express as a range edit (a rebased edit, a snapshot, a
+        // reject recovery), so the local typist would be thrown to the bottom
+        // of the document and would broadcast that as their cursor. Diff the
+        // two strings and carry the caret through the change instead.
+        this._writeValue(next, computeTextEdit(previous, next))
     }
 
     get tokenizer() {
@@ -647,13 +722,48 @@ class CodeEditor extends HTMLElement {
 
     replaceRange(start, end, text, options = {}) {
         const previousValue = this.value
-        const safeStart = clamp(Number.isFinite(start) ? start : 0, 0, previousValue.length)
-        const safeEnd = clamp(Number.isFinite(end) ? end : safeStart, safeStart, previousValue.length)
+        const requestedStart = Number.isFinite(start) ? start : 0
+        const requestedEnd = Number.isFinite(end) ? end : requestedStart
+        const safeStart = clamp(requestedStart, 0, previousValue.length)
+        const safeEnd = clamp(requestedEnd, safeStart, previousValue.length)
         const replacement = text ?? ''
+
+        if (requestedStart !== safeStart || requestedEnd !== safeEnd) {
+            // The requested range does not exist in this document. The edit is
+            // still clamped and applied, because callers have always relied on
+            // that, but a collaborating client needs to hear that its shadow
+            // copy and this editor have diverged rather than silently render
+            // text nobody wrote.
+            this.dispatchEvent(new CustomEvent('collabdesync', {
+                bubbles: true,
+                composed: true,
+                detail: {
+                    reason: 'range-out-of-bounds',
+                    requested: { start: requestedStart, end: requestedEnd },
+                    applied: { start: safeStart, end: safeEnd },
+                    length: previousValue.length,
+                    source: options.source || 'api',
+                },
+            }))
+        }
+
+        if (this._composing) {
+            // Writing to the textarea mid-composition leaves the uncommitted
+            // characters in place without ending the composition, and the IME
+            // then commits them a second time. Hold the edit and apply it
+            // against the composed text (see _flushDeferredEdits).
+            this._deferredEdits.push({ start: safeStart, end: safeEnd, text: replacement })
+            return {
+                value: previousValue,
+                selection: this.getSelectionRange(),
+                deferred: true,
+            }
+        }
+
         const nextValue = `${previousValue.slice(0, safeStart)}${replacement}${previousValue.slice(safeEnd)}`
         const previousSelection = this.getSelectionRange()
 
-        this.value = nextValue
+        this._writeValue(nextValue, { start: safeStart, end: safeEnd, text: replacement })
 
         const selectMode = options.select || 'preserve'
         const nextSelection = this._selectionAfterEdit(previousSelection, safeStart, safeEnd, replacement, selectMode)
@@ -719,6 +829,33 @@ class CodeEditor extends HTMLElement {
         this.setRemoteSelections([])
     }
 
+    /**
+     * Drop remote selections older than `maxAgeMs`, measured against the
+     * `updatedAt` stamp recorded when each was last set. A peer that closed
+     * its tab stops sending cursors but its caret would otherwise sit in the
+     * document until the whole session ends.
+     *
+     * @param {number} maxAgeMs
+     * @param {number} [now] - injectable clock; defaults to Date.now()
+     * @returns {string[]} ids that were removed
+     */
+    pruneRemoteSelections(maxAgeMs, now) {
+        // The clock is resolved in the body rather than as a default argument
+        // because scripts/generate-component-api.js cannot parse a parameter
+        // list containing a call, and a public method missing from the
+        // published API docs may as well not exist.
+        const at = Number.isFinite(now) ? now : Date.now()
+        if (!Number.isFinite(maxAgeMs) || maxAgeMs <= 0) return []
+        const stale = this._remoteSelections
+            .filter((selection) => Number.isFinite(selection.updatedAt) && at - selection.updatedAt > maxAgeMs)
+            .map((selection) => selection.id)
+        if (stale.length) {
+            const dropped = new Set(stale)
+            this.setRemoteSelections(this._remoteSelections.filter((selection) => !dropped.has(selection.id)))
+        }
+        return stale
+    }
+
     flashLines(startLine, endLine, options = {}) {
         const requestedTone = options.tone || (options.error ? 'error' : 'eval')
         const tone = ['eval', 'error', 'remote'].includes(requestedTone) ? requestedTone : 'eval'
@@ -768,6 +905,108 @@ class CodeEditor extends HTMLElement {
         })
     }
 
+    /**
+     * The one place text is written into the textarea. Preserves the caret and
+     * the scroll position across the change, keeps remote carets pointing at
+     * the same characters, and routes the write through the browser's own undo
+     * stack when it can.
+     *
+     * @param {string} nextValue
+     * @param {{start: number, end: number, text: string}} edit - nextValue expressed as a replacement
+     */
+    _writeValue(nextValue, edit) {
+        const textarea = this._textarea
+        if (!textarea) {
+            this._value = nextValue
+            return
+        }
+
+        const previousSelection = this.getSelectionRange()
+        const scrollTop = textarea.scrollTop
+
+        if (!this._applyThroughUndoStack(edit, nextValue)) {
+            this._origDescriptor.set.call(textarea, nextValue)
+        }
+        this._value = nextValue
+
+        const mapped = this._selectionAfterEdit(
+            previousSelection,
+            edit.start,
+            edit.end,
+            edit.text,
+            'preserve',
+        )
+        textarea.setSelectionRange(mapped.start, mapped.end, mapped.direction)
+        textarea.scrollTop = scrollTop
+
+        this._transformRemoteSelections(edit)
+        this.syncDisplay()
+        this._emitSelectionChangeIfNeeded()
+        requestAnimationFrame(() => this.syncScroll())
+    }
+
+    /**
+     * Apply an edit as if the user had typed it, so the browser keeps the
+     * undo history the local typist built up. Assigning `.value` resets that
+     * history, which meant one remote keystroke threw away every local undo
+     * step. Only possible while the textarea holds focus; the caller falls
+     * back to a plain assignment otherwise.
+     *
+     * @returns {boolean} true when the textarea already holds `expectedValue`
+     */
+    _applyThroughUndoStack(edit, expectedValue) {
+        const textarea = this._textarea
+        if (!textarea || typeof document === 'undefined') return false
+        if (document.activeElement !== textarea) return false
+        if (typeof document.execCommand !== 'function') return false
+
+        this._programmaticDepth += 1
+        try {
+            textarea.setSelectionRange(edit.start, edit.end)
+            const applied = edit.text
+                ? document.execCommand('insertText', false, edit.text)
+                : document.execCommand('delete')
+            if (!applied || this._origDescriptor.get.call(textarea) !== expectedValue) {
+                this._origDescriptor.set.call(textarea, expectedValue)
+            }
+            return true
+        } catch {
+            return false
+        } finally {
+            this._programmaticDepth -= 1
+        }
+    }
+
+    /**
+     * Move every remote caret so it still points at the character it pointed
+     * at before `edit`. Without this a peer's caret drifts into unrelated text
+     * on every keystroke anyone makes, until that peer happens to move.
+     */
+    _transformRemoteSelections(edit) {
+        if (isEmptyEdit(edit) || !this._remoteSelections.length) return
+        this._remoteSelections = this._remoteSelections.map((selection) => {
+            const start = transformOffsetThrough(selection.start, edit)
+            const end = transformOffsetThrough(selection.end, edit)
+            return { ...selection, start: Math.min(start, end), end: Math.max(start, end) }
+        })
+    }
+
+    /**
+     * Apply edits held back during a composition, rebased onto the text the
+     * IME just committed. The composition arrived after the peers' edits were
+     * computed, so each held edit shifts by whatever the composition inserted.
+     */
+    _flushDeferredEdits(compositionEdit) {
+        const deferred = this._deferredEdits
+        this._deferredEdits = []
+        for (const edit of deferred) {
+            const rebased = isEmptyEdit(compositionEdit)
+                ? edit
+                : transformEditThrough(edit, compositionEdit)
+            this.replaceRange(rebased.start, rebased.end, rebased.text, { source: 'remote' })
+        }
+    }
+
     syncScroll() {
         if (!this._textarea) return
         const scrollTop = this._textarea.scrollTop
@@ -793,6 +1032,7 @@ class CodeEditor extends HTMLElement {
         this._textarea.placeholder = this.getAttribute('placeholder') || ''
         this._textarea.readOnly = this.hasAttribute('readonly')
         this._textarea.disabled = this.hasAttribute('disabled')
+        this._syncTextareaLabel()
 
         this._display = document.createElement('div')
         this._display.className = 'code-editor-display'
@@ -814,8 +1054,12 @@ class CodeEditor extends HTMLElement {
                 return self._origDescriptor.get.call(this)
             },
             set(value) {
+                // Deliberately does not touch self._value: that field holds the
+                // last text this component announced, and _handleInput diffs
+                // against it. An app that writes the textarea directly and then
+                // dispatches `input` (the common insert-at-cursor helper) must
+                // still produce a real edit in the event detail.
                 self._origDescriptor.set.call(this, value)
-                self._value = value ?? ''
                 self.syncDisplay()
                 requestAnimationFrame(() => self.syncScroll())
             },
@@ -880,6 +1124,21 @@ class CodeEditor extends HTMLElement {
         return `color-mix(in srgb, ${color} ${opacity * 100}%, transparent ${(1 - opacity) * 100}%)`
     }
 
+    /**
+     * The editable surface is the inner textarea, so the host's accessible
+     * name has to reach it: a screen reader otherwise announces an unlabelled
+     * text field.
+     */
+    _syncTextareaLabel() {
+        if (!this._textarea) return
+        const label = this.getAttribute('aria-label')
+        const labelledBy = this.getAttribute('aria-labelledby')
+        if (label) this._textarea.setAttribute('aria-label', label)
+        else this._textarea.removeAttribute('aria-label')
+        if (labelledBy) this._textarea.setAttribute('aria-labelledby', labelledBy)
+        else this._textarea.removeAttribute('aria-labelledby')
+    }
+
     _updateGutterVisibility() {
         if (!this._gutter) return
 
@@ -913,6 +1172,8 @@ class CodeEditor extends HTMLElement {
         this._boundInputHandler = (event) => this._handleInput(event)
         this._boundKeydownHandler = (event) => this._handleKeydown(event)
         this._boundSelectionHandler = () => this._emitSelectionChangeIfNeeded()
+        this._boundCompositionStartHandler = () => this._handleCompositionStart()
+        this._boundCompositionEndHandler = () => this._handleCompositionEnd()
 
         this._textarea.addEventListener('scroll', this._boundScrollHandler, { passive: true })
         this._textarea.addEventListener('input', this._boundInputHandler)
@@ -920,6 +1181,9 @@ class CodeEditor extends HTMLElement {
         this._textarea.addEventListener('select', this._boundSelectionHandler)
         this._textarea.addEventListener('keyup', this._boundSelectionHandler)
         this._textarea.addEventListener('mouseup', this._boundSelectionHandler)
+        this._textarea.addEventListener('touchend', this._boundSelectionHandler)
+        this._textarea.addEventListener('compositionstart', this._boundCompositionStartHandler)
+        this._textarea.addEventListener('compositionend', this._boundCompositionEndHandler)
     }
 
     _detachEventListeners() {
@@ -938,15 +1202,41 @@ class CodeEditor extends HTMLElement {
             this._textarea.removeEventListener('select', this._boundSelectionHandler)
             this._textarea.removeEventListener('keyup', this._boundSelectionHandler)
             this._textarea.removeEventListener('mouseup', this._boundSelectionHandler)
+            this._textarea.removeEventListener('touchend', this._boundSelectionHandler)
+        }
+        if (this._boundCompositionStartHandler) {
+            this._textarea.removeEventListener('compositionstart', this._boundCompositionStartHandler)
+        }
+        if (this._boundCompositionEndHandler) {
+            this._textarea.removeEventListener('compositionend', this._boundCompositionEndHandler)
         }
     }
 
     _handleInput() {
         const previousValue = this._value
         const nextValue = this.value
-        const edit = computeTextEdit(previousValue, nextValue)
-
         this._value = nextValue
+
+        // A write we made ourselves (through the undo stack) reports its own
+        // result; re-announcing it here would echo a remote edit back as a
+        // local one.
+        if (this._programmaticDepth > 0) return
+
+        // Half-composed IME text is not an edit anyone else should see. The
+        // whole composition is announced once, at compositionend.
+        if (this._composing) {
+            this.syncDisplay()
+            requestAnimationFrame(() => this.syncScroll())
+            return
+        }
+
+        const edit = computeTextEdit(previousValue, nextValue)
+        if (isEmptyEdit(edit)) {
+            this._emitSelectionChangeIfNeeded()
+            return
+        }
+
+        this._transformRemoteSelections(edit)
         this.syncDisplay()
         requestAnimationFrame(() => this.syncScroll())
 
@@ -957,6 +1247,38 @@ class CodeEditor extends HTMLElement {
             source: 'user',
         })
 
+        this._emitSelectionChangeIfNeeded()
+    }
+
+    _handleCompositionStart() {
+        this._composing = true
+        this._compositionBase = this.value
+    }
+
+    _handleCompositionEnd() {
+        if (!this._composing) return
+        this._composing = false
+
+        const previousValue = this._compositionBase
+        this._compositionBase = ''
+        this._value = this.value
+
+        const compositionEdit = computeTextEdit(previousValue, this._value)
+        this._transformRemoteSelections(compositionEdit)
+        // Peers' edits land first, so the value announced below already
+        // contains them and the SDK's diff sees only what was composed here.
+        this._flushDeferredEdits(compositionEdit)
+
+        const nextValue = this.value
+        this.syncDisplay()
+        if (previousValue !== nextValue) {
+            this._dispatchInputEvent({
+                value: nextValue,
+                previousValue,
+                edit: computeTextEdit(previousValue, nextValue),
+                source: 'user',
+            })
+        }
         this._emitSelectionChangeIfNeeded()
     }
 
@@ -1042,7 +1364,14 @@ class CodeEditor extends HTMLElement {
             return { start: insertedEnd, end: insertedEnd, direction: 'none' }
         }
 
+        const isPureInsert = start === end
+
         const adjust = (position, bias) => {
+            // A caret sitting exactly where text is inserted rides to the end
+            // of the insertion. This matches the SDK's transformSelection, so
+            // the caret lands in the same place whether a remote edit arrives
+            // as a range edit or as a whole-text write.
+            if (isPureInsert) return position < start ? position : position + text.length
             if (position <= start) return position
             if (position >= end) return position + delta
             return bias === 'start' ? start : insertedEnd
@@ -1073,7 +1402,7 @@ class CodeEditor extends HTMLElement {
             color: selection.color ? String(selection.color) : '#5a7fdd',
             start,
             end,
-            updatedAt: selection.updatedAt ?? null,
+            updatedAt: Number.isFinite(selection.updatedAt) ? selection.updatedAt : Date.now(),
         }
     }
 
@@ -1196,6 +1525,8 @@ class CodeEditor extends HTMLElement {
     }
 }
 
-customElements.define('code-editor', CodeEditor)
+if (typeof customElements !== 'undefined' && !customElements.get('code-editor')) {
+    customElements.define('code-editor', CodeEditor)
+}
 
 export { CodeEditor }
