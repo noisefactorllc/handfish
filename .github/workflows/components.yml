@@ -1,0 +1,72 @@
+name: Component tests
+
+# The Playwright component suite covers the collaboration contract the Seance
+# SDK binds to (editor range edits, remote carets, the session dialogs). It was
+# never run anywhere: the shared `ci` job skips Playwright by design, so it
+# stays a fast dep-bump gate, and Deploy only dispatches scaffold. A break in
+# the editor's collab API would have reached every app unnoticed.
+#
+# The suite serves the repo root and loads examples/index.html, which imports
+# dist/handfish.esm.js, so the bundle has to exist first. `npm test` builds it
+# through the pretest script.
+
+on:
+  pull_request:
+    paths:
+      - 'src/**'
+      - 'tests/**'
+      - 'examples/**'
+      - 'scripts/bundle.js'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'playwright.config.js'
+      - '.github/workflows/components.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'src/**'
+      - 'tests/**'
+      - 'examples/**'
+      - 'scripts/bundle.js'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'playwright.config.js'
+      - '.github/workflows/components.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  component-tests:
+    name: Playwright component suite
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Harden runner
+        uses: step-security/harden-runner@ab7a9404c0f3da075243ca237b5fac12c98deaa5 # v2
+        with:
+          egress-policy: audit
+
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
+
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install
+        run: npm ci --ignore-scripts
+
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Run the component suite
+        run: npm test
+
+      - name: Upload the report on failure
+        if: failure()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7
