@@ -323,7 +323,21 @@ class MenuBar extends HTMLElement {
             }
         }
 
+        // Hover follows pointer travel, not panel travel. A browser reports a
+        // panel arriving under a still pointer as a hover, so opening or
+        // moving a panel suspends hover until the pointer itself moves again;
+        // otherwise a resting mouse opens submenus during a keyboard walk.
+        this._pointerPoint = null
+        this._hoverArmed = false
+        this._onPointerTrack = (e) => {
+            const previous = this._pointerPoint
+            if (previous && previous.x === e.clientX && previous.y === e.clientY) return
+            this._pointerPoint = { x: e.clientX, y: e.clientY }
+            this._hoverArmed = true
+        }
+
         this._onPointerOver = (e) => {
+            if (!this._hoverArmed) return
             if (this._openMenuId !== null) {
                 // Submenu hover: entering a submenu owner opens its panel;
                 // entering anything else in the open dropdown (except the
@@ -367,6 +381,7 @@ class MenuBar extends HTMLElement {
             if (this._openMenuId === null) return
             const menu = this._findMenu(this._openMenuId)
             if (!menu) return
+            this._suspendHover()
             this._clampPanel(menu)
             const openOwner = menu.panel.querySelector('.hf-menubar-has-submenu[aria-expanded="true"]')
             const openSub = menu.wrapper.querySelector('.hf-menubar-subpanel:not([hidden])')
@@ -432,9 +447,16 @@ class MenuBar extends HTMLElement {
     connectedCallback() {
         this.addEventListener('click', this._onClick)
         this.addEventListener('pointerover', this._onPointerOver)
+        // Also on move: a pointer already resting on a row gets no further
+        // pointerover when it nudges within that same row.
+        this.addEventListener('pointermove', this._onPointerOver)
         this.addEventListener('keydown', this._onKeyDown)
         this.addEventListener('focusin', this._onFocusIn)
         document.addEventListener('click', this._onDocumentClick)
+        // Capture, so the pointer's position is current before this element's
+        // own hover handling reads it.
+        document.addEventListener('pointermove', this._onPointerTrack, { capture: true, passive: true })
+        document.addEventListener('pointerover', this._onPointerTrack, { capture: true, passive: true })
         window.addEventListener('resize', this._onResize)
         this._sync()
     }
@@ -442,9 +464,12 @@ class MenuBar extends HTMLElement {
     disconnectedCallback() {
         this.removeEventListener('click', this._onClick)
         this.removeEventListener('pointerover', this._onPointerOver)
+        this.removeEventListener('pointermove', this._onPointerOver)
         this.removeEventListener('keydown', this._onKeyDown)
         this.removeEventListener('focusin', this._onFocusIn)
         document.removeEventListener('click', this._onDocumentClick)
+        document.removeEventListener('pointermove', this._onPointerTrack, { capture: true })
+        document.removeEventListener('pointerover', this._onPointerTrack, { capture: true })
         window.removeEventListener('resize', this._onResize)
         unregisterEscapeable(this)
     }
@@ -668,9 +693,20 @@ class MenuBar extends HTMLElement {
         }
     }
 
+    /**
+     * Hover means the pointer moved onto something, so a panel that opens or
+     * moves under a resting pointer must not count as one until the pointer
+     * moves again.
+     * @private
+     */
+    _suspendHover() {
+        this._hoverArmed = false
+    }
+
     _openMenu(menu) {
         if (this._openMenuId !== null && this._openMenuId !== menu.id) this._closeMenu()
         if (this._openMenuId === menu.id) return
+        this._suspendHover()
         this._refreshMenu(menu)
         menu.panel.hidden = false
         menu.trigger.setAttribute('aria-expanded', 'true')
@@ -699,6 +735,7 @@ class MenuBar extends HTMLElement {
     }
 
     _closeSubmenus(scope) {
+        this._suspendHover()
         for (const sub of scope.querySelectorAll('.hf-menubar-subpanel')) {
             sub.hidden = true
             sub.style.left = ''
@@ -716,6 +753,7 @@ class MenuBar extends HTMLElement {
         const subpanel = this._subpanelForOwner.get(itemEl)
         if (!subpanel) return
         const willOpen = subpanel.hidden
+        this._suspendHover()
         const wrapper = itemEl.closest('.hf-menubar-menu')
         if (wrapper) this._closeSubmenus(wrapper)
         subpanel.hidden = !willOpen

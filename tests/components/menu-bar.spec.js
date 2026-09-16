@@ -617,6 +617,61 @@ test.describe('MenuBar submenus (hover + dynamic positioning)', () => {
         await expect(mb.locator('.hf-menubar-subpanel').nth(0)).toBeHidden()
     })
 
+    test('a panel opening under a still pointer is not a hover; moving onto the row still opens it', async ({ page }) => {
+        await mountIsolated(page, SUBMENUS)
+        const toneSub = page.locator('#toneSub')
+        // Learn where the row lands, then park the pointer there with the menu
+        // closed, exactly as a click elsewhere on the page would leave it.
+        await page.click('#mb-iso .hf-menubar-trigger')
+        const row = await toneSub.boundingBox()
+        await page.click('#mb-iso .hf-menubar-trigger')
+        await expect(page.locator('#mb-iso .hf-menubar-panel')).toBeHidden()
+        const point = { x: Math.round(row.x + row.width / 2), y: Math.round(row.y + row.height / 2) }
+        await page.mouse.move(point.x, point.y)
+
+        await page.locator('#mb-iso .hf-menubar-trigger').focus()
+        await page.keyboard.press('Enter')
+        await expect(page.locator('#mb-iso .hf-menubar-panel')).toBeVisible()
+        // The panel now covers the resting pointer, which a browser may report
+        // as a hover at the point the pointer never left.
+        await page.evaluate(({ x, y }) => document.getElementById('toneSub')
+            .dispatchEvent(new PointerEvent('pointerover', { bubbles: true, clientX: x, clientY: y })), point)
+        await expect(toneSub).toHaveAttribute('aria-expanded', 'false')
+        await expect(page.locator('#mb-iso .hf-menubar-subpanel').first()).toBeHidden()
+        await expect(page.locator('#plainItem')).toBeFocused()
+
+        await page.mouse.move(point.x + 2, point.y + 1)
+        await expect(toneSub).toHaveAttribute('aria-expanded', 'true')
+        await expect(page.locator('#mb-iso .hf-menubar-subpanel').first()).toBeVisible()
+    })
+
+    test('a subpanel opening under a still pointer does not hijack the keyboard walk', async ({ page }) => {
+        await mountIsolated(page, SUBMENUS)
+        await page.click('#mb-iso .hf-menubar-trigger')
+        const sub = page.locator('#mb-iso .hf-menubar-subpanel').first()
+        await page.evaluate(() => document.getElementById('toneSub').dispatchEvent(new PointerEvent('pointerover', { bubbles: true })))
+        await expect(sub).toBeVisible()
+        const subRow = await page.locator('#toneA').boundingBox()
+        await page.click('#mb-iso .hf-menubar-trigger')
+        await expect(page.locator('#mb-iso .hf-menubar-panel')).toBeHidden()
+        const point = { x: Math.round(subRow.x + subRow.width / 2), y: Math.round(subRow.y + subRow.height / 2) }
+        await page.mouse.move(point.x, point.y)
+
+        await page.locator('#mb-iso .hf-menubar-trigger').focus()
+        await page.keyboard.press('Enter')
+        await page.keyboard.press('ArrowDown')
+        await expect(page.locator('#toneSub')).toBeFocused()
+        await page.keyboard.press('ArrowRight')
+        await expect(sub).toBeVisible()
+        await expect(page.locator('#toneA')).toBeFocused()
+        // The subpanel has arrived under the resting pointer: a hover reported
+        // there must not close the subpanel out from under the keyboard.
+        await page.evaluate(({ x, y }) => document.getElementById('toneA')
+            .dispatchEvent(new PointerEvent('pointerover', { bubbles: true, clientX: x, clientY: y })), point)
+        await expect(sub).toBeVisible()
+        await expect(page.locator('#toneSub')).toHaveAttribute('aria-expanded', 'true')
+    })
+
     test('subpanel flips to the left when it would overflow the right viewport edge', async ({ page }) => {
         await page.setViewportSize({ width: 340, height: 500 })
         await mountIsolated(page, SUBMENUS)
