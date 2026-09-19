@@ -1,35 +1,17 @@
 name: API check
 
-# Catches drift in docs/component-api.json. Whenever a component, utility,
-# theme, or the generator script itself changes, the regenerated JSON must
-# match what's committed. If they differ, the contributor needs to run
-# `node scripts/generate-component-api.js` and commit the updated JSON.
-#
-# This protects downstream consumers (notably the handfish-design Claude
-# Code plugin) that regenerate their docs from this JSON. Without this
-# check, an attribute rename could land here and silently invalidate
-# downstream documentation until the next manual audit.
+# Validate the committed component API artifact when that artifact changes.
+# Mixed source and documentation commits run this check; source-only commits
+# do not run documentation tests. Downstream plugins consume this JSON.
 
 on:
   pull_request:
     paths:
-      - 'src/components/**'
-      - 'src/utils/**'
-      - 'src/styles/themes/**'
-      - 'src/index.js'
-      - 'scripts/generate-component-api.js'
       - 'docs/component-api.json'
-      - '.github/workflows/api-check.yml'
   push:
     branches: [main]
     paths:
-      - 'src/components/**'
-      - 'src/utils/**'
-      - 'src/styles/themes/**'
-      - 'src/index.js'
-      - 'scripts/generate-component-api.js'
       - 'docs/component-api.json'
-      - '.github/workflows/api-check.yml'
 
 jobs:
   verify-component-api-json:
