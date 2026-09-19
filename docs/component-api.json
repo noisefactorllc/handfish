@@ -206,7 +206,9 @@
           "detailKeys": [
             "reason",
             "requested",
-            "end"
+            "applied",
+            "length",
+            "source"
           ]
         },
         {

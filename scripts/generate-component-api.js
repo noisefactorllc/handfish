@@ -32,6 +32,7 @@ import { readFileSync, writeFileSync, readdirSync, statSync, existsSync, mkdirSy
 import { join, dirname, basename } from 'path'
 import { fileURLToPath } from 'url'
 import { execSync } from 'child_process'
+import { extractEvents } from './extract-events.js'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const repoRoot = join(__dirname, '..')
@@ -206,48 +207,6 @@ function extractFormAssociated(source, className) {
     const re = /static\s+formAssociated\s*=\s*(true|false)/
     const match = haystack.match(re)
     return match ? match[1] === 'true' : false
-}
-
-/**
- * Extract dispatchEvent calls. Returns array of { name, type, detailKeys }
- * where type is 'Event' or 'CustomEvent' and detailKeys is the array of
- * keys in the literal `detail` object passed to CustomEvent (or null if
- * not statically extractable).
- */
-function extractEvents(source) {
-    const re = /dispatchEvent\s*\(\s*new\s+(Event|CustomEvent)\s*\(\s*['"]([^'"]+)['"]([\s\S]*?)\)\s*\)/g
-    const events = new Map()
-    for (const m of [...source.matchAll(re)]) {
-        const [, type, name, rest] = m
-        let detailKeys = null
-        if (type === 'CustomEvent') {
-            // Look for `detail: { ... }` in the rest
-            const detailMatch = rest.match(/detail\s*:\s*\{([\s\S]*?)\}/)
-            if (detailMatch) {
-                detailKeys = detailMatch[1]
-                    .split(',')
-                    .map(s => s.trim())
-                    .filter(s => s && !s.startsWith('//'))
-                    .map(s => s.split(':')[0].trim())
-                    .map(s => s.replace(/^\.\.\./, '...').replace(/^['"]|['"]$/g, ''))
-                    .filter(s => s)
-            }
-        }
-        const key = `${name}:${type}`
-        if (events.has(key)) {
-            const existing = events.get(key)
-            if (detailKeys && existing.detailKeys) {
-                // Merge if multiple dispatch sites have the same event with different detail shapes
-                const merged = Array.from(new Set([...existing.detailKeys, ...detailKeys]))
-                events.set(key, { ...existing, detailKeys: merged })
-            } else if (detailKeys) {
-                events.set(key, { ...existing, detailKeys })
-            }
-        } else {
-            events.set(key, { name, type, detailKeys })
-        }
-    }
-    return Array.from(events.values())
 }
 
 function extractPublicApi(source, className, extendsPattern = 'HTMLElement') {

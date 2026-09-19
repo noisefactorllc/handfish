@@ -1,4 +1,27 @@
 import { test, expect } from '@playwright/test'
+import { extractEvents } from '../../scripts/extract-events.js'
+
+test('component API event extraction ignores nested values and comments', () => {
+    const source = `
+        this.dispatchEvent(new CustomEvent('fixture', {
+            note: 'detail: { falseKey: true }',
+            // detail: { commentedKey: true },
+            metadata: { detail: { nestedFalseKey: true } },
+            detail: {
+                reason: 'comma, and brace } stay inside the string',
+                requested: { start: 1, end: 2 }, // nested range, with comma
+                applied: [1, 2], /* array result, with comma */
+                source: 'remote',
+            },
+        }))
+    `
+
+    expect(extractEvents(source)).toEqual([{
+        name: 'fixture',
+        type: 'CustomEvent',
+        detailKeys: ['reason', 'requested', 'applied', 'source'],
+    }])
+})
 
 async function getNativeCaretDirection(page) {
     // Chromium maps a requested "none" to "forward" on Linux, while macOS
@@ -755,6 +778,7 @@ test.describe('CodeEditor collaboration contract', () => {
         )
         const methodNames = new Set((codeEditor.api || []).map((entry) => entry.name))
         const eventNames = new Set((codeEditor.events || []).map((entry) => entry.name))
+        const desyncEvent = codeEditor.events.find((entry) => entry.name === 'collabdesync')
 
         expect(codeEditor.description).toContain('Code Editor Web Component')
         expect(methodNames.has('if')).toBe(false)
@@ -764,6 +788,7 @@ test.describe('CodeEditor collaboration contract', () => {
         expect(allMethodNames.has('switch')).toBe(false)
         expect(allMethodNames.has('while')).toBe(false)
         expect(eventNames.has('forceevalblock')).toBe(true)
+        expect(desyncEvent.detailKeys).toEqual(['reason', 'requested', 'applied', 'length', 'source'])
     })
 })
 
