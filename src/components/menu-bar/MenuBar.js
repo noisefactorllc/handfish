@@ -891,8 +891,9 @@ class MenuBar extends HTMLElement {
     _applyAriaLabel(el, value, { refresh = false } = {}) {
         const dynamic = typeof value === 'function'
         if (refresh && !dynamic) return
-        const label = this._resolve(value)
-        if (label != null && label !== '') el.setAttribute('aria-label', label)
+        // Truthiness, as the static path always used: `false` or `0` sets no label.
+        const label = dynamic ? value() : value
+        if (label) el.setAttribute('aria-label', label)
         else if (dynamic) el.removeAttribute('aria-label')
     }
 
@@ -1163,6 +1164,10 @@ class MenuBar extends HTMLElement {
         }
         this._applyAriaLabel(trigger, triggerSpec.ariaLabel)
         this._applyCommon(trigger, triggerSpec)
+        // A function label outranks attrs, as it does on segmented groups
+        // (whose render pass ends in a refresh); a static one keeps its old
+        // precedence, below attrs.
+        this._applyAriaLabel(trigger, triggerSpec.ariaLabel, { refresh: true })
 
         const panel = document.createElement('div')
         panel.className = 'hf-menu hf-menubar-panel'

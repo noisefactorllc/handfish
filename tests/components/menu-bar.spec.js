@@ -634,6 +634,25 @@ test.describe('MenuBar review fixes', () => {
         await expect(trigger).toHaveAttribute('aria-label', 'patched by app')
         await expect(group).toHaveAttribute('aria-label', 'from attrs')
     })
+
+    test('falsy static ariaLabel sets none; a function label outranks attrs on both', async ({ page }) => {
+        const mb = await mount(page, `{ regions: {
+            left: [
+                { type: 'menu', id: 'a', trigger: { label: 'a', ariaLabel: false }, items: [ { id: 'ia', label: 'one' } ] },
+                { type: 'menu', id: 'b', trigger: { label: 'b', ariaLabel: 0 }, items: [ { id: 'ib', label: 'two' } ] },
+                { type: 'menu', id: 'c', trigger: { label: 'c', ariaLabel: () => 'dynamic', attrs: { 'aria-label': 'from attrs' } },
+                  items: [ { id: 'ic', label: 'three' } ] },
+            ],
+            right: [ { type: 'segmented', id: 'seg', ariaLabel: () => 'dynamic', attrs: { 'aria-label': 'from attrs' }, buttons: [
+                { id: 'segA', label: 'A', pressed: true },
+            ] } ],
+        } }`)
+        const triggers = mb.locator('.hf-menubar-trigger')
+        await expect(triggers.nth(0)).not.toHaveAttribute('aria-label', /./)
+        await expect(triggers.nth(1)).not.toHaveAttribute('aria-label', /./)
+        await expect(triggers.nth(2)).toHaveAttribute('aria-label', 'dynamic')
+        await expect(mb.locator('.hf-menubar-segmented')).toHaveAttribute('aria-label', 'dynamic')
+    })
 })
 
 const SUBMENUS = `{
