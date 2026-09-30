@@ -496,7 +496,7 @@ class MenuBar extends HTMLElement {
             if (label !== undefined && !((menu.config.trigger || {}).html) && !((menu.config.trigger || {}).icon)) {
                 if (menu.trigger.textContent !== label) menu.trigger.textContent = label ?? ''
             }
-            this._applyAriaLabel(menu.trigger, (menu.config.trigger || {}).ariaLabel)
+            this._applyAriaLabel(menu.trigger, (menu.config.trigger || {}).ariaLabel, { refresh: true })
             this._refreshMenu(menu)
         }
         this._refreshControls()
@@ -883,10 +883,17 @@ class MenuBar extends HTMLElement {
      * Set aria-label from a static or function-valued config field. Labels
      * are often i18n lookups (`() => t('menu')`); writing the raw field would
      * stringify the function's source into the accessible name.
+     *
+     * On refresh only a function is re-pulled, so a static label behaves as
+     * it always has: an `attrs['aria-label']` or a later setAttribute by the
+     * app still wins. A function that yields nothing removes the label.
      */
-    _applyAriaLabel(el, value) {
+    _applyAriaLabel(el, value, { refresh = false } = {}) {
+        const dynamic = typeof value === 'function'
+        if (refresh && !dynamic) return
         const label = this._resolve(value)
         if (label != null && label !== '') el.setAttribute('aria-label', label)
+        else if (dynamic) el.removeAttribute('aria-label')
     }
 
     _barLabel() {
@@ -1032,7 +1039,7 @@ class MenuBar extends HTMLElement {
 
     _refreshSegmented(control, group) {
         group.hidden = !!this._resolve(this._fieldFor(control, 'hidden'))
-        this._applyAriaLabel(group, this._fieldFor(control, 'ariaLabel'))
+        this._applyAriaLabel(group, this._fieldFor(control, 'ariaLabel'), { refresh: true })
         const segments = group.querySelectorAll('.hf-menubar-segment')
         const buttons = control.buttons || []
         segments.forEach((seg, i) => {

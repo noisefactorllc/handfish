@@ -604,6 +604,35 @@ test.describe('MenuBar review fixes', () => {
         })
         await expect(trigger).toHaveAttribute('aria-label', 'menú')
         await expect(group).toHaveAttribute('aria-label', 'modo de vista')
+
+        // A function that yields nothing clears the label rather than leaving
+        // a stale one behind.
+        await page.evaluate(() => {
+            window.__lbl = { logo: '', seg: '' }
+            document.getElementById('mb-test').refresh()
+        })
+        await expect(trigger).not.toHaveAttribute('aria-label', /./)
+        await expect(group).not.toHaveAttribute('aria-label', /./)
+    })
+
+    test('static ariaLabel keeps its old precedence: attrs and app writes still win', async ({ page }) => {
+        const mb = await mount(page, `{ regions: {
+            left: [ { type: 'menu', id: 'logo', trigger: { label: 'm', ariaLabel: 'static', attrs: { 'aria-label': 'from attrs' } },
+                      items: [ { id: 'i1', label: 'one' } ] } ],
+            right: [ { type: 'segmented', id: 'seg', ariaLabel: 'static', attrs: { 'aria-label': 'from attrs' }, buttons: [
+                { id: 'segA', label: 'A', pressed: true },
+            ] } ],
+        } }`)
+        const trigger = mb.locator('.hf-menubar-trigger')
+        const group = mb.locator('.hf-menubar-segmented')
+        await expect(trigger).toHaveAttribute('aria-label', 'from attrs')
+        await expect(group).toHaveAttribute('aria-label', 'from attrs')
+        await page.evaluate(() => {
+            document.querySelector('#mb-test .hf-menubar-trigger').setAttribute('aria-label', 'patched by app')
+            document.getElementById('mb-test').refresh()
+        })
+        await expect(trigger).toHaveAttribute('aria-label', 'patched by app')
+        await expect(group).toHaveAttribute('aria-label', 'from attrs')
     })
 })
 
