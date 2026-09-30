@@ -496,6 +496,7 @@ class MenuBar extends HTMLElement {
             if (label !== undefined && !((menu.config.trigger || {}).html) && !((menu.config.trigger || {}).icon)) {
                 if (menu.trigger.textContent !== label) menu.trigger.textContent = label ?? ''
             }
+            this._applyAriaLabel(menu.trigger, (menu.config.trigger || {}).ariaLabel)
             this._refreshMenu(menu)
         }
         this._refreshControls()
@@ -878,6 +879,16 @@ class MenuBar extends HTMLElement {
         return typeof value === 'function' ? value() : value
     }
 
+    /**
+     * Set aria-label from a static or function-valued config field. Labels
+     * are often i18n lookups (`() => t('menu')`); writing the raw field would
+     * stringify the function's source into the accessible name.
+     */
+    _applyAriaLabel(el, value) {
+        const label = this._resolve(value)
+        if (label != null && label !== '') el.setAttribute('aria-label', label)
+    }
+
     _barLabel() {
         return (this._config && this._config.ariaLabel) || this.getAttribute('bar-label') || 'Application menu'
     }
@@ -948,7 +959,7 @@ class MenuBar extends HTMLElement {
                 const group = document.createElement('div')
                 group.className = 'hf-menubar-segmented'
                 group.setAttribute('role', 'group')
-                if (control.ariaLabel) group.setAttribute('aria-label', control.ariaLabel)
+                this._applyAriaLabel(group, this._fieldFor(control, 'ariaLabel'))
                 this._applyCommon(group, control)
                 for (const buttonSpec of control.buttons || []) {
                     const seg = document.createElement('button')
@@ -1021,6 +1032,7 @@ class MenuBar extends HTMLElement {
 
     _refreshSegmented(control, group) {
         group.hidden = !!this._resolve(this._fieldFor(control, 'hidden'))
+        this._applyAriaLabel(group, this._fieldFor(control, 'ariaLabel'))
         const segments = group.querySelectorAll('.hf-menubar-segment')
         const buttons = control.buttons || []
         segments.forEach((seg, i) => {
@@ -1142,7 +1154,7 @@ class MenuBar extends HTMLElement {
         } else {
             trigger.textContent = this._resolve(triggerSpec.label) ?? ''
         }
-        if (triggerSpec.ariaLabel) trigger.setAttribute('aria-label', triggerSpec.ariaLabel)
+        this._applyAriaLabel(trigger, triggerSpec.ariaLabel)
         this._applyCommon(trigger, triggerSpec)
 
         const panel = document.createElement('div')

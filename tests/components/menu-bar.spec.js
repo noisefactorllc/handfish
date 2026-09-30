@@ -580,6 +580,31 @@ test.describe('MenuBar review fixes', () => {
         await expect(mb.locator('#segB')).toBeEnabled()
         await expect(mb.locator('#segB')).toHaveAttribute('title', 'now allowed')
     })
+
+    test('function-valued ariaLabel on triggers and segmented groups resolves and re-pulls on refresh()', async ({ page }) => {
+        // Apps pass i18n lookups here (`() => t('menu')`). Setting the raw
+        // field wrote the function's source text into the accessible name.
+        const mb = await mount(page, `(() => {
+            window.__lbl = { logo: 'menu', seg: 'view mode' }
+            return { regions: {
+                left: [ { type: 'menu', id: 'logo', trigger: { html: '<svg viewBox="0 0 10 10"></svg>', ariaLabel: () => window.__lbl.logo },
+                          items: [ { id: 'i1', label: 'one' } ] } ],
+                right: [ { type: 'segmented', id: 'seg', ariaLabel: () => window.__lbl.seg, buttons: [
+                    { id: 'segA', label: 'A', pressed: true },
+                ] } ],
+            } }
+        })()`)
+        const trigger = mb.locator('.hf-menubar-trigger')
+        const group = mb.locator('.hf-menubar-segmented')
+        await expect(trigger).toHaveAttribute('aria-label', 'menu')
+        await expect(group).toHaveAttribute('aria-label', 'view mode')
+        await page.evaluate(() => {
+            window.__lbl = { logo: 'menú', seg: 'modo de vista' }
+            document.getElementById('mb-test').refresh()
+        })
+        await expect(trigger).toHaveAttribute('aria-label', 'menú')
+        await expect(group).toHaveAttribute('aria-label', 'modo de vista')
+    })
 })
 
 const SUBMENUS = `{
