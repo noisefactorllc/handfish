@@ -17,7 +17,7 @@
   "scripts": {
     "dev": "npx serve . -p 3000",
     "build": "node scripts/bundle.js",
-    "pretest": "npm run build",
+    "pretest": "npm run build && npx playwright install chromium",
     "test": "npx playwright test",
     "test:update": "npx playwright test --update-snapshots"
   },

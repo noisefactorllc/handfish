@@ -32,8 +32,10 @@
     --hf-yellow: oklch(88.0% 0.170 95);
     --hf-blue: oklch(70.0% 0.140 195);
 
-    /* Typography — everything monospace */
-    --hf-font-family: 'Courier New', 'Noto Sans Mono', 'Noto Sans Mono Blank';
+    /* Typography — everything monospace. The bundled Noto Sans Mono leads so
+       rendering does not depend on the host's 'Courier New' substitution
+       (Liberation Mono on Linux CI, DejaVu Sans Mono on slim sandboxes). */
+    --hf-font-family: 'Noto Sans Mono', 'Noto Sans Mono Blank', 'Courier New';
 
     /* Dense terminal sizing */
     --hf-size-base: 0.8125rem;
