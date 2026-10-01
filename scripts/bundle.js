@@ -119,6 +119,8 @@ async function buildBundle() {
         console.log(`  - site/index.html (dist/ paths rewritten to /${version}/)`)
     }
 
+    fs.copyFileSync(path.join(repoRoot, 'favicon.png'), path.join(siteDir, 'favicon.png'))
+
     // Examples page → site/examples/
     const examplesDir = path.join(repoRoot, 'examples')
     const siteExamplesDir = path.join(siteDir, 'examples')
