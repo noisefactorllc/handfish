@@ -13,6 +13,9 @@ on:
     paths:
       - 'docs/component-api.json'
 
+permissions:
+  contents: read
+
 jobs:
   verify-component-api-json:
     name: Verify docs/component-api.json matches source

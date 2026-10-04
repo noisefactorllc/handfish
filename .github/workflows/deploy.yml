@@ -22,6 +22,9 @@ on:
       - 'index.html'
       - '.github/workflows/deploy.yml'
 
+# The scaffold dispatch authenticates with a GitHub App token, not GITHUB_TOKEN.
+permissions: {}
+
 concurrency:
   group: deploy-${{ github.ref }}
   cancel-in-progress: false
