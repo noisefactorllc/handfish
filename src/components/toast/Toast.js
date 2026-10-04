@@ -215,7 +215,7 @@ function showToast(message, options = {}) {
     toast.innerHTML = `
         <span class="hf-toast-icon" aria-hidden="true">${icon}</span>
         <div class="hf-toast-content">
-            <p class="hf-toast-message">${message}</p>
+            <p class="hf-toast-message"></p>
         </div>
         ${dismissible ? '<button class="hf-toast-close"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 2l8 8M10 2l-8 8"/></svg></button>' : ''}
         ${duration > 0 && showProgress ? `
@@ -224,6 +224,9 @@ function showToast(message, options = {}) {
             </div>
         ` : ''}
     `
+
+    // Message is plain text; never interpret it as markup
+    toast.querySelector('.hf-toast-message').textContent = String(message)
 
     // Add to container
     container.appendChild(toast)

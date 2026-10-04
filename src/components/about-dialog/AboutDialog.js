@@ -420,7 +420,9 @@ export class AboutDialog {
 
         const labels = this._config.labels
         const parts = []
-        const versionText = nm.version ? nm.version.replace(/-.*$/, '') : labels.unavailable
+        const versionText = nm.version
+            ? String(nm.version).split('-')[0]
+            : labels.unavailable
         parts.push(`<div class="hf-about-noisemaker-heading">${labelSpan(labels.noisemakerEngine)}: ${isolatedValue(versionText)}</div>`)
 
         if (nm.hash) {

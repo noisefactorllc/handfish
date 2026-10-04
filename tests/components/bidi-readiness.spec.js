@@ -205,6 +205,16 @@ test.describe('Bidi readiness and label overrides', () => {
         await expect(page.locator('.hf-toast-close')).toHaveAttribute('aria-label', 'إغلاق التنبيه')
     })
 
+    test('toast renders the message as text, not markup', async ({ page }) => {
+        await page.evaluate(() => {
+            window.Handfish.showToast('<img src=x onerror="window.__toastXss=1">bold', { duration: 0 })
+        })
+
+        await expect(page.locator('.hf-toast-message')).toHaveText('<img src=x onerror="window.__toastXss=1">bold')
+        await expect(page.locator('.hf-toast-message img')).toHaveCount(0)
+        expect(await page.evaluate(() => window.__toastXss)).toBeUndefined()
+    })
+
     test('toast keeps version 0 physical right placement in RTL', async ({ page }) => {
         await page.evaluate(() => {
             window.Handfish.showToast('مرحبا', { duration: 0 })

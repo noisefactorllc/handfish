@@ -201,7 +201,7 @@ export function extractEvents(source) {
                     .map(s => s.trim())
                     .filter(s => s && !s.startsWith('//'))
                     .map(s => s.split(':')[0].trim())
-                    .map(s => s.replace(/^\.\.\./, '...').replace(/^['"]|['"]$/g, ''))
+                    .map(s => s.replace(/^['"]|['"]$/g, ''))
                     .filter(s => s)
             }
         }
