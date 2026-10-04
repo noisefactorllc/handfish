@@ -41,6 +41,7 @@ if (typeof document !== 'undefined' && !document.getElementById(TOOLTIP_STYLES_I
 
 let tooltipElement = null
 let activeTarget = null
+let lastPointerOverCoords = null
 let initialized = false
 
 function ensureTooltipElement() {
@@ -155,8 +156,25 @@ function handlePointerOver(event) {
     const target = event.target instanceof Element ? event.target.closest('.tooltip') : null
     if (!target) { return }
 
+    const x = event.clientX
+    const y = event.clientY
+    const stationary = lastPointerOverCoords !== null
+        && lastPointerOverCoords.x === x && lastPointerOverCoords.y === y
+    lastPointerOverCoords = { x, y }
+
     if (target === activeTarget) {
         updateTooltipPosition()
+        return
+    }
+
+    // After a focus change, browsers re-dispatch a pointerover at the resting
+    // pointer position without any real pointer movement. A pointerover that
+    // repeats the previous one's exact coordinates is that synthetic
+    // re-dispatch: keep the tooltip on the focused element instead of letting
+    // the idle hover target steal it.
+    const focusOwner = document.activeElement
+    if (stationary && activeTarget && focusOwner
+        && (activeTarget === focusOwner || activeTarget.contains(focusOwner))) {
         return
     }
 
