@@ -41,7 +41,10 @@ if (typeof document !== 'undefined' && !document.getElementById(TOOLTIP_STYLES_I
 
 let tooltipElement = null
 let activeTarget = null
-let lastPointerOverCoords = null
+let lastPointerCoords = null
+let eventSeq = 0
+let lastFocusChangeSeq = 0
+let lastPointerMoveSeq = 0
 let initialized = false
 
 function ensureTooltipElement() {
@@ -152,15 +155,14 @@ function hideTooltip(target) {
     activeTarget = null
 }
 
+function handlePointerMove(event) {
+    lastPointerCoords = { x: event.clientX, y: event.clientY }
+    lastPointerMoveSeq = ++eventSeq
+}
+
 function handlePointerOver(event) {
     const target = event.target instanceof Element ? event.target.closest('.tooltip') : null
     if (!target) { return }
-
-    const x = event.clientX
-    const y = event.clientY
-    const stationary = lastPointerOverCoords !== null
-        && lastPointerOverCoords.x === x && lastPointerOverCoords.y === y
-    lastPointerOverCoords = { x, y }
 
     if (target === activeTarget) {
         updateTooltipPosition()
@@ -168,12 +170,14 @@ function handlePointerOver(event) {
     }
 
     // After a focus change, browsers re-dispatch a pointerover at the resting
-    // pointer position without any real pointer movement. A pointerover that
-    // repeats the previous one's exact coordinates is that synthetic
-    // re-dispatch: keep the tooltip on the focused element instead of letting
-    // the idle hover target steal it.
+    // pointer position without any real pointer movement. Suppress that
+    // synthetic re-dispatch so the focused element keeps its tooltip. A
+    // genuine hover is produced by real pointer movement, so any pointermove
+    // after the focus change clears this guard.
     const focusOwner = document.activeElement
-    if (stationary && activeTarget && focusOwner
+    const stationary = lastPointerCoords !== null
+        && lastPointerCoords.x === event.clientX && lastPointerCoords.y === event.clientY
+    if (lastFocusChangeSeq > lastPointerMoveSeq && stationary && activeTarget && focusOwner
         && (activeTarget === focusOwner || activeTarget.contains(focusOwner))) {
         return
     }
@@ -200,12 +204,14 @@ function handlePointerDown(event) {
 }
 
 function handleFocusIn(event) {
+    lastFocusChangeSeq = ++eventSeq
     const target = event.target instanceof Element ? event.target.closest('.tooltip') : null
     if (!target) { return }
     showTooltip(target)
 }
 
 function handleFocusOut(event) {
+    lastFocusChangeSeq = ++eventSeq
     if (!activeTarget) { return }
     const target = event.target instanceof Element ? event.target.closest('.tooltip') : null
     if (target !== activeTarget) { return }
@@ -228,6 +234,7 @@ export function initializeTooltips() {
     ensureTooltipElement()
 
     document.addEventListener('pointerover', handlePointerOver, true)
+    document.addEventListener('pointermove', handlePointerMove, true)
     document.addEventListener('pointerout', handlePointerOut, true)
     document.addEventListener('pointerdown', handlePointerDown, true)
     document.addEventListener('focusin', handleFocusIn, true)
