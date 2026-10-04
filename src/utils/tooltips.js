@@ -25,7 +25,10 @@ if (typeof document !== 'undefined' && !document.getElementById(TOOLTIP_STYLES_I
             border: var(--hf-border-width) solid var(--hf-border, rgba(255, 255, 255, 0.08));
             border-radius: var(--hf-radius-sm, 0.25rem);
             pointer-events: none;
-            white-space: nowrap;
+            box-sizing: border-box;
+            white-space: normal;
+            overflow-wrap: anywhere;
+            overflow: hidden;
             transform: translateX(-50%);
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
         }
@@ -77,10 +80,12 @@ function updateTooltipPosition() {
     }
 
     const rect = activeTarget.getBoundingClientRect()
-    const tooltipWidth = tooltipElement.offsetWidth
-    const tooltipHeight = tooltipElement.offsetHeight
     const viewportWidth = document.documentElement.clientWidth || window.innerWidth
     const viewportHeight = window.innerHeight
+    tooltipElement.style.maxWidth = `${Math.max(0, viewportWidth - 2 * TOOLTIP_MARGIN)}px`
+    tooltipElement.style.maxHeight = `${Math.max(0, viewportHeight - 2 * TOOLTIP_MARGIN)}px`
+    const tooltipWidth = tooltipElement.offsetWidth
+    const tooltipHeight = tooltipElement.offsetHeight
 
     const halfWidth = tooltipWidth / 2
     let centerX = rect.left + (rect.width / 2)
