@@ -44,10 +44,14 @@ test('hover and keyboard tooltips stay inside the viewport at every edge', async
     expect(bounds.text).toContain('long tooltip')
     expectOnScreen(bounds)
 
+    // Leave the hovered control before testing keyboard focus, so a pointer
+    // still parked on the first button cannot compete with the focus tooltip.
+    await page.mouse.move(160, 120)
+    await expect(page.locator('#hf-tooltip-layer')).toBeHidden()
     await page.locator('#top-left').focus()
+    await expect(page.locator('#hf-tooltip-layer')).toHaveText('Top left')
     bounds = await tooltipBounds(page)
     expect(bounds.position).toBe('below')
-    expect(bounds.text).toBe('Top left')
     expectOnScreen(bounds)
 
     await page.locator('#bottom-right').focus()
