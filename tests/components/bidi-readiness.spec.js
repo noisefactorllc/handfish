@@ -215,6 +215,14 @@ test.describe('Bidi readiness and label overrides', () => {
         expect(await page.evaluate(() => window.__toastXss)).toBeUndefined()
     })
 
+    test('toast html option renders trusted markup only when opted in', async ({ page }) => {
+        await page.evaluate(() => {
+            window.Handfish.showInfo('Saved. <a href="https://example.test/" class="upgrade-link">Start</a>', { duration: 0, html: true })
+        })
+        await expect(page.locator('.hf-toast-message a.upgrade-link')).toHaveCount(1)
+        await expect(page.locator('.hf-toast-message')).toHaveText('Saved. Start')
+    })
+
     test('toast keeps version 0 physical right placement in RTL', async ({ page }) => {
         await page.evaluate(() => {
             window.Handfish.showToast('مرحبا', { duration: 0 })

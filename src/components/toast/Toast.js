@@ -191,6 +191,8 @@ function getContainer() {
  * @param {boolean} [options.dismissible=true] - Show close button
  * @param {string} [options.dismissLabel='Dismiss'] - Accessible label for close button
  * @param {boolean} [options.showProgress=false] - Show progress bar for auto-dismiss
+ * @param {boolean} [options.html=false] - Treat message as markup (innerHTML). TRUSTED, developer-authored
+ *   content only (e.g. a literal containing a link). Never pass user, agent or network input with this set.
  * @returns {Object} Toast controller with dismiss() method
  */
 function showToast(message, options = {}) {
@@ -199,7 +201,8 @@ function showToast(message, options = {}) {
         duration = 2000,
         dismissible = true,
         dismissLabel = 'Dismiss',
-        showProgress = false
+        showProgress = false,
+        html = false
     } = options
 
     const container = getContainer()
@@ -225,8 +228,13 @@ function showToast(message, options = {}) {
         ` : ''}
     `
 
-    // Message is plain text; never interpret it as markup
-    toast.querySelector('.hf-toast-message').textContent = String(message)
+    // Message is plain text unless the caller explicitly opts in to trusted markup
+    const messageEl = toast.querySelector('.hf-toast-message')
+    if (html === true) {
+        messageEl.innerHTML = String(message)
+    } else {
+        messageEl.textContent = String(message)
+    }
 
     // Add to container
     container.appendChild(toast)
