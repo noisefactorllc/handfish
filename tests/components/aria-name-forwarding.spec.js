@@ -13,17 +13,16 @@ test.describe('accessible-name forwarding', () => {
 
     test('slider-value forwards aria-label to the range input and value display', async ({ page }) => {
         const host = page.locator('slider-value#sv')
+        // Both inner widgets are focusable, so both must carry the name:
+        // the value display's own text is its value, not a name.
         await expect(host.locator('.slider')).toHaveAccessibleName('Phase')
-        // The contenteditable value display is named by its own value text;
-        // forwarding the host label there would announce it twice per control.
-        await expect(host.locator('.value-display')).not.toHaveAttribute('aria-label')
-        await expect(host.locator('.value-display')).not.toHaveAttribute('aria-labelledby')
+        await expect(host.locator('.value-display')).toHaveAccessibleName('Phase')
     })
 
     test('slider-value resolves aria-labelledby against the label span', async ({ page }) => {
         const host = page.locator('slider-value#sv-lbl-host')
         await expect(host.locator('.slider')).toHaveAccessibleName('Lfo rate')
-        await expect(host.locator('.value-display')).not.toHaveAttribute('aria-labelledby')
+        await expect(host.locator('.value-display')).toHaveAccessibleName('Lfo rate')
     })
 
     test('toggle-switch forwards the host name to the switch track', async ({ page }) => {

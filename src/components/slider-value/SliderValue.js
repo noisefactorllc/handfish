@@ -434,22 +434,23 @@ class SliderValue extends HTMLElement {
     }
 
     /**
-     * The focusable widget is the inner range input, so the host's
-     * accessible name has to reach it; a screen reader otherwise announces
-     * an unlabelled slider. The contenteditable value display keeps its own
-     * name from its value text — forwarding the label there too would
-     * announce the same name twice per control. Mirrors the code-editor's
-     * aria-label/aria-labelledby forwarding.
+     * Both inner widgets are focusable (the range input and the
+     * contenteditable value display), so the host's accessible name has to
+     * reach both; a screen reader otherwise announces an unlabelled control.
+     * The display's own text is its value, not a name, so it does not
+     * suffice. Mirrors the code-editor's aria-label/aria-labelledby
+     * forwarding.
      */
     _syncAccessibleName() {
-        const slider = this.querySelector('.slider')
-        if (!slider) return
         const label = this.getAttribute('aria-label')
         const labelledBy = this.getAttribute('aria-labelledby')
-        if (label) slider.setAttribute('aria-label', label)
-        else slider.removeAttribute('aria-label')
-        if (labelledBy) slider.setAttribute('aria-labelledby', labelledBy)
-        else slider.removeAttribute('aria-labelledby')
+
+        for (const widget of this.querySelectorAll('.slider, .value-display')) {
+            if (label) widget.setAttribute('aria-label', label)
+            else widget.removeAttribute('aria-label')
+            if (labelledBy) widget.setAttribute('aria-labelledby', labelledBy)
+            else widget.removeAttribute('aria-labelledby')
+        }
     }
 
     _updateFormValue() {
