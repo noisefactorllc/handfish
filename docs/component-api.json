@@ -256,7 +256,9 @@
         "value",
         "disabled",
         "name",
-        "color-mode"
+        "color-mode",
+        "aria-label",
+        "aria-labelledby"
       ],
       "api": [
         {
@@ -1288,7 +1290,9 @@
         "empty-text",
         "dialog-title",
         "dialog-label",
-        "close-label"
+        "close-label",
+        "aria-label",
+        "aria-labelledby"
       ],
       "api": [
         {
@@ -1455,7 +1459,9 @@
         "disabled",
         "name",
         "type",
-        "format"
+        "format",
+        "aria-label",
+        "aria-labelledby"
       ],
       "api": [
         {
@@ -1685,7 +1691,9 @@
       "formAssociated": false,
       "observedAttributes": [
         "checked",
-        "disabled"
+        "disabled",
+        "aria-label",
+        "aria-labelledby"
       ],
       "api": [
         {

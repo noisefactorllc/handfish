@@ -124,7 +124,7 @@ class ToggleSwitch extends HTMLElement {
     }
 
     static get observedAttributes() {
-        return ['checked', 'disabled']
+        return ['checked', 'disabled', 'aria-label', 'aria-labelledby']
     }
 
     connectedCallback() {
@@ -137,10 +137,27 @@ class ToggleSwitch extends HTMLElement {
             this._setupEventListeners()
             this._listenersAttached = true
         }
+        this._syncAccessibleName()
     }
 
     disconnectedCallback() {
         // Clean up event listeners if needed
+    }
+
+    /**
+     * The focusable widget is the inner switch track, so the host's
+     * accessible name has to reach it; a screen reader otherwise announces
+     * an unlabelled switch. Mirrors the code-editor's aria-label /
+     * aria-labelledby forwarding.
+     */
+    _syncAccessibleName() {
+        if (!this._track) return
+        const label = this.getAttribute('aria-label')
+        const labelledBy = this.getAttribute('aria-labelledby')
+        if (label) this._track.setAttribute('aria-label', label)
+        else this._track.removeAttribute('aria-label')
+        if (labelledBy) this._track.setAttribute('aria-labelledby', labelledBy)
+        else this._track.removeAttribute('aria-labelledby')
     }
 
     attributeChangedCallback(name, oldVal, newVal) {
@@ -150,6 +167,8 @@ class ToggleSwitch extends HTMLElement {
         } else if (name === 'disabled') {
             this._disabled = newVal !== null
             this._updateVisualState()
+        } else if (name === 'aria-label' || name === 'aria-labelledby') {
+            this._syncAccessibleName()
         }
     }
 

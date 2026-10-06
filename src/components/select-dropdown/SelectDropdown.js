@@ -298,7 +298,7 @@ class SelectDropdown extends HTMLElement {
     static formAssociated = true
 
     static get observedAttributes() {
-        return ['value', 'disabled', 'name', 'placeholder', 'empty-text', 'dialog-title', 'dialog-label', 'close-label']
+        return ['value', 'disabled', 'name', 'placeholder', 'empty-text', 'dialog-title', 'dialog-label', 'close-label', 'aria-label', 'aria-labelledby']
     }
 
     constructor() {
@@ -354,6 +354,7 @@ class SelectDropdown extends HTMLElement {
         this._renderDropdown()
         this._updateDisplay()
         this._updateFormValue()
+        this._syncAccessibleName()
     }
 
     disconnectedCallback() {
@@ -386,6 +387,10 @@ class SelectDropdown extends HTMLElement {
                 this._updateLabels()
                 this._renderDropdown()
                 this._updateDisplay()
+                break
+            case 'aria-label':
+            case 'aria-labelledby':
+                this._syncAccessibleName()
                 break
         }
     }
@@ -998,6 +1003,23 @@ class SelectDropdown extends HTMLElement {
         if (this.disabled) {
             this._close()
         }
+    }
+
+    /**
+     * The focusable widget is the inner trigger button, so the host's
+     * accessible name has to reach it; a screen reader otherwise announces
+     * an unlabelled button. Mirrors the code-editor's aria-label /
+     * aria-labelledby forwarding.
+     */
+    _syncAccessibleName() {
+        const trigger = this.querySelector('.select-trigger')
+        if (!trigger) return
+        const label = this.getAttribute('aria-label')
+        const labelledBy = this.getAttribute('aria-labelledby')
+        if (label) trigger.setAttribute('aria-label', label)
+        else trigger.removeAttribute('aria-label')
+        if (labelledBy) trigger.setAttribute('aria-labelledby', labelledBy)
+        else trigger.removeAttribute('aria-labelledby')
     }
 
     _updateFormValue() {

@@ -116,7 +116,7 @@ class SliderValue extends HTMLElement {
     static formAssociated = true
 
     static get observedAttributes() {
-        return ['value', 'min', 'max', 'step', 'disabled', 'name', 'type', 'format']
+        return ['value', 'min', 'max', 'step', 'disabled', 'name', 'type', 'format', 'aria-label', 'aria-labelledby']
     }
 
     constructor() {
@@ -164,6 +164,7 @@ class SliderValue extends HTMLElement {
         this._updateSlider()
         this._updateValueDisplay()
         this._updateFormValue()
+        this._syncAccessibleName()
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
@@ -198,6 +199,10 @@ class SliderValue extends HTMLElement {
                 break
             case 'disabled':
                 this._updateDisabledState()
+                break
+            case 'aria-label':
+            case 'aria-labelledby':
+                this._syncAccessibleName()
                 break
         }
     }
@@ -426,6 +431,25 @@ class SliderValue extends HTMLElement {
         if (slider) {
             slider.disabled = this.disabled
         }
+    }
+
+    /**
+     * The focusable widget is the inner range input, so the host's
+     * accessible name has to reach it; a screen reader otherwise announces
+     * an unlabelled slider. The contenteditable value display keeps its own
+     * name from its value text — forwarding the label there too would
+     * announce the same name twice per control. Mirrors the code-editor's
+     * aria-label/aria-labelledby forwarding.
+     */
+    _syncAccessibleName() {
+        const slider = this.querySelector('.slider')
+        if (!slider) return
+        const label = this.getAttribute('aria-label')
+        const labelledBy = this.getAttribute('aria-labelledby')
+        if (label) slider.setAttribute('aria-label', label)
+        else slider.removeAttribute('aria-label')
+        if (labelledBy) slider.setAttribute('aria-labelledby', labelledBy)
+        else slider.removeAttribute('aria-labelledby')
     }
 
     _updateFormValue() {

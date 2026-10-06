@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="neutral-dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>aria-name-forwarding — test fixture</title>
+    <link rel="stylesheet" href="../../dist/styles/index.css">
+    <link rel="stylesheet" href="../../dist/styles/themes/neutral.css">
+    <style> body { margin: 0; background: var(--hf-bg-base); padding: 40px; } </style>
+    <script type="module">
+        import '../../dist/handfish.esm.js'
+        Promise.all([
+            customElements.whenDefined('slider-value'),
+            customElements.whenDefined('toggle-switch'),
+            customElements.whenDefined('select-dropdown'),
+            customElements.whenDefined('color-picker'),
+        ]).then(() => { window.__ready = true })
+    </script>
+</head>
+<body>
+    <!-- aria-label on the host -->
+    <slider-value id="sv" aria-label="Phase" min="0" max="1" step="0.01" value="0.5"></slider-value>
+    <toggle-switch id="ts" aria-label="Enable reverb"></toggle-switch>
+    <select-dropdown id="sd" aria-label="Tempo divider">
+        <option value="1">1/4</option>
+        <option value="2">1/2</option>
+        <option value="4" selected>1</option>
+    </select-dropdown>
+    <color-picker id="cp" aria-label="Accent color" value="#33cc88"></color-picker>
+
+    <!-- aria-labelledby on the host -->
+    <span id="sv-lbl">Lfo rate</span>
+    <slider-value id="sv-lbl-host" aria-labelledby="sv-lbl" min="0" max="10" step="0.1" value="3"></slider-value>
+    <span id="ts-lbl">Freeze playback</span>
+    <toggle-switch id="ts-lbl-host" aria-labelledby="ts-lbl"></toggle-switch>
+    <span id="sd-lbl">Warp mode</span>
+    <select-dropdown id="sd-lbl-host" aria-labelledby="sd-lbl">
+        <option value="off">off</option>
+        <option value="on">on</option>
+    </select-dropdown>
+    <span id="cp-lbl">Background hue</span>
+    <color-picker id="cp-lbl-host" aria-labelledby="cp-lbl" value="#112233"></color-picker>
+
+    <!-- no label: forwarded names must stay unset -->
+    <slider-value id="sv-plain" min="0" max="1" step="0.01" value="0.25"></slider-value>
+    <toggle-switch id="ts-plain"></toggle-switch>
+</body>
+</html>

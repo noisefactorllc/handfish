@@ -166,7 +166,7 @@ class ColorPicker extends HTMLElement {
     static formAssociated = true
 
     static get observedAttributes() {
-        return ['value', 'disabled', 'name', 'color-mode']
+        return ['value', 'disabled', 'name', 'color-mode', 'aria-label', 'aria-labelledby']
     }
 
     constructor() {
@@ -199,6 +199,7 @@ class ColorPicker extends HTMLElement {
         }
         this._updateSwatch()
         this._updateFormValue()
+        this._syncAccessibleName()
     }
 
     disconnectedCallback() {
@@ -218,6 +219,10 @@ class ColorPicker extends HTMLElement {
             case 'color-mode':
                 this._colorMode = newValue || 'rgb'
                 this._updateSwatch()
+                break
+            case 'aria-label':
+            case 'aria-labelledby':
+                this._syncAccessibleName()
                 break
         }
     }
@@ -458,6 +463,23 @@ class ColorPicker extends HTMLElement {
             this._updateSwatch()
             this._updateFormValue()
         }
+    }
+
+    /**
+     * The focusable widget is the inner swatch button, so the host's
+     * accessible name has to reach it; a screen reader otherwise announces
+     * an unlabelled button. Mirrors the code-editor's aria-label /
+     * aria-labelledby forwarding.
+     */
+    _syncAccessibleName() {
+        const button = this.querySelector('.swatch-button')
+        if (!button) return
+        const label = this.getAttribute('aria-label')
+        const labelledBy = this.getAttribute('aria-labelledby')
+        if (label) button.setAttribute('aria-label', label)
+        else button.removeAttribute('aria-label')
+        if (labelledBy) button.setAttribute('aria-labelledby', labelledBy)
+        else button.removeAttribute('aria-labelledby')
     }
 
     _updateFormValue() {
