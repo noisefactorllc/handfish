@@ -156,8 +156,21 @@ function hideTooltip(target) {
 }
 
 function handlePointerMove(event) {
+    const previous = lastPointerCoords
     lastPointerCoords = { x: event.clientX, y: event.clientY }
     lastPointerMoveSeq = ++eventSeq
+
+    // A pointerout on the active anchor is the usual leave signal, but it can
+    // be missed: after the DOM around a hovering pointer is replaced, Chromium
+    // reports the new hit test with relatedTarget=null and dispatches no
+    // pointerout at all, leaving the tooltip stuck. Hide on real pointer
+    // movement whose target is not the active anchor. Synthetic re-dispatches
+    // repeat the exact resting coordinates, so they are ignored.
+    if (!activeTarget || !tooltipElement || tooltipElement.hasAttribute('hidden')) { return }
+    if (previous && previous.x === event.clientX && previous.y === event.clientY) { return }
+    const target = event.target instanceof Element ? event.target.closest('.tooltip') : null
+    if (target === activeTarget || (target && activeTarget.contains(target))) { return }
+    hideTooltip()
 }
 
 function handlePointerOver(event) {
