@@ -59,6 +59,30 @@ test('hover and keyboard tooltips stay inside the viewport at every edge', async
     expectOnScreen(await tooltipBounds(page))
 })
 
+test('pointer movement does not dismiss a focus-triggered tooltip', async ({ page }) => {
+    await page.setViewportSize({ width: 320, height: 240 })
+    await page.goto('/')
+    await page.setContent(`
+      <button id="only" class="tooltip" data-title="Focused anchor" style="position:fixed;top:100px;left:40px">F</button>
+    `)
+    await page.addScriptTag({ type: 'module', content: `
+      import { initializeTooltips } from '/src/utils/tooltips.js'
+      initializeTooltips()
+      window.__tooltipsReady = true
+    ` })
+    await page.waitForFunction(() => window.__tooltipsReady)
+
+    await page.locator('#only').focus()
+    await expect(page.locator('#hf-tooltip-layer')).toHaveText('Focused anchor')
+
+    // Real pointer movement away from the focused control must not dismiss
+    // its tooltip; the focus tooltip stays until the control loses focus.
+    await page.mouse.move(10, 10)
+    await page.mouse.move(160, 120)
+    await expect(page.locator('#hf-tooltip-layer')).toHaveText('Focused anchor')
+    expectOnScreen(await tooltipBounds(page))
+})
+
 test('a genuine re-hover after a focus change is not suppressed', async ({ page }) => {
     await page.setViewportSize({ width: 480, height: 320 })
     await page.goto('/')

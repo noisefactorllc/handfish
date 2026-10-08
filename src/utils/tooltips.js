@@ -170,6 +170,10 @@ function handlePointerMove(event) {
     if (previous && previous.x === event.clientX && previous.y === event.clientY) { return }
     const target = event.target instanceof Element ? event.target.closest('.tooltip') : null
     if (target === activeTarget || (target && activeTarget.contains(target))) { return }
+    // A tooltip opened by keyboard focus stays while its control keeps
+    // focus, even when the pointer moves away from it.
+    const focusOwner = document.activeElement
+    if (focusOwner && (activeTarget === focusOwner || activeTarget.contains(focusOwner))) { return }
     hideTooltip()
 }
 
