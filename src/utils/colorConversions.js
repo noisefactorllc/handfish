@@ -384,8 +384,11 @@ export function getMaxAB(l) {
 
 /**
  * Parse hex color string to RGB
- * @param {string} hex - Hex color string (#RGB, #RRGGBB, with or without #)
- * @returns {{r: number, g: number, b: number}|null} RGB values or null if invalid
+ * @param {string} hex - Hex color string (#RGB, #RGBA, #RRGGBB, #RRGGBBAA, with or without #)
+ * @returns {{r: number, g: number, b: number, a?: number}|null} RGB values
+ *   (0-255) plus alpha `a` (0-1) when the input carries an alpha channel, or
+ *   null if invalid. Alpha-bearing strings are what `rgbToHexWithAlpha` and
+ *   ColorWheel's `valueWithAlpha` emit, so any emitted value parses back.
  */
 export function parseHex(hex) {
     if (!hex || typeof hex !== 'string') return null
@@ -393,19 +396,25 @@ export function parseHex(hex) {
     let h = hex.trim()
     if (h.startsWith('#')) h = h.slice(1)
 
-    // Support 3-char shorthand
-    if (h.length === 3) {
-        h = h[0] + h[0] + h[1] + h[1] + h[2] + h[2]
+    // Support 3- and 4-char shorthands
+    if (h.length === 3 || h.length === 4) {
+        h = h.split('').map(c => c + c).join('')
     }
 
-    if (h.length !== 6) return null
-    if (!/^[0-9a-fA-F]{6}$/.test(h)) return null
+    if (h.length !== 6 && h.length !== 8) return null
+    if (!/^[0-9a-fA-F]+$/.test(h)) return null
 
-    return {
+    const rgb = {
         r: parseInt(h.slice(0, 2), 16),
         g: parseInt(h.slice(2, 4), 16),
         b: parseInt(h.slice(4, 6), 16)
     }
+
+    if (h.length === 8) {
+        rgb.a = parseInt(h.slice(6, 8), 16) / 255
+    }
+
+    return rgb
 }
 
 /**

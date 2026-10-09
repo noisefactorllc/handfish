@@ -435,10 +435,12 @@ class ColorWheel extends HTMLElement {
             case 'value':
                 this._setValueFromAttribute(newVal)
                 break
-            case 'alpha':
-                this._alpha = clamp(parseFloat(newVal) || 1, 0, 1)
+            case 'alpha': {
+                const parsedAlpha = parseFloat(newVal)
+                this._alpha = clamp(Number.isFinite(parsedAlpha) ? parsedAlpha : 1, 0, 1)
                 this._updateAlphaUI()
                 break
+            }
             case 'mode':
                 if (['hsv', 'oklab', 'oklch'].includes(newVal)) {
                     this._mode = newVal
@@ -462,7 +464,7 @@ class ColorWheel extends HTMLElement {
     set value(val) {
         const rgb = parseHex(val)
         if (rgb) {
-            this._rgb = rgb
+            this._adoptParsedHex(rgb)
             this._updateFromRGB()
             this._redrawAll()
             this._updateFormValue()
@@ -529,7 +531,7 @@ class ColorWheel extends HTMLElement {
         if (opts.value) {
             const rgb = parseHex(opts.value)
             if (rgb) {
-                this._rgb = rgb
+                this._adoptParsedHex(rgb)
                 this._updateFromRGB()
             }
         }
@@ -565,10 +567,19 @@ class ColorWheel extends HTMLElement {
     // Internal: Value Management
     // ========================================================================
 
-    _setValueFromAttribute(hex) {
-        const rgb = parseHex(hex)
+    // Adopt an {r,g,b,a?} parse result: 8-digit values set the wheel's alpha
+    // as well as its RGB, so every hex entry path sees the same behavior.
+    _adoptParsedHex(rgb) {
+        if (typeof rgb.a === 'number') {
+            this._alpha = clamp(rgb.a, 0, 1)
+        }
+        this._rgb = { r: rgb.r, g: rgb.g, b: rgb.b }
+    }
+
+    _setValueFromAttribute(val) {
+        const rgb = parseHex(val)
         if (rgb) {
-            this._rgb = rgb
+            this._adoptParsedHex(rgb)
             this._updateFromRGB()
             this._redrawAll()
         }
@@ -662,7 +673,7 @@ class ColorWheel extends HTMLElement {
                         </div>
                     </div>
                     <div class="hex-input-container">
-                        <input type="text" class="hex-input" name="hex-input" placeholder="#000000" maxlength="7" spellcheck="false" autocomplete="off" aria-label="Hex color value">
+                        <input type="text" class="hex-input" name="hex-input" placeholder="#000000" maxlength="9" spellcheck="false" autocomplete="off" aria-label="Hex color value">
                     </div>
                 </div>
 
@@ -1269,7 +1280,7 @@ class ColorWheel extends HTMLElement {
         const input = this.querySelector('.hex-input')
         const rgb = parseHex(input.value)
         if (rgb) {
-            this._rgb = rgb
+            this._adoptParsedHex(rgb)
             this._updateFromRGB()
             this._redrawAll()
             this._emitInput()
@@ -1281,7 +1292,7 @@ class ColorWheel extends HTMLElement {
         const input = this.querySelector('.hex-input')
         const rgb = parseHex(input.value)
         if (rgb) {
-            this._rgb = rgb
+            this._adoptParsedHex(rgb)
             this._updateFromRGB()
             this._redrawAll()
             this._updateFormValue()
