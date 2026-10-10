@@ -344,16 +344,28 @@ class DropdownMenu extends HTMLElement {
         // Move existing children to the dropdown content
         const existingItems = Array.from(this.children)
 
-        this.innerHTML = `
-            <button class="dropdown-trigger" type="button">
-                <span class="material-symbols trigger-icon" style="${icon ? '' : 'display:none'}">${icon}</span>
-                <span class="trigger-text">${label}</span>
-            </button>
-            <div class="dropdown-content ${alignClass}"></div>
-        `
+        // Built as DOM with textContent: label and icon are data, not markup.
+        const trigger = document.createElement('button')
+        trigger.type = 'button'
+        trigger.className = 'dropdown-trigger'
+        const iconEl = document.createElement('span')
+        iconEl.className = 'material-symbols trigger-icon'
+        iconEl.textContent = icon
+        if (!icon) iconEl.style.display = 'none'
+        const textEl = document.createElement('span')
+        textEl.className = 'trigger-text'
+        textEl.textContent = label
+        trigger.appendChild(iconEl)
+        trigger.appendChild(textEl)
+
+        const content = document.createElement('div')
+        content.className = `dropdown-content ${alignClass}`
+
+        this.textContent = ''
+        this.appendChild(trigger)
+        this.appendChild(content)
 
         // Put items back
-        const content = this.querySelector('.dropdown-content')
         existingItems.forEach(item => content.appendChild(item))
     }
 
@@ -521,9 +533,12 @@ class DropdownMenu extends HTMLElement {
      */
     setItems(items) {
         const content = this.querySelector('.dropdown-content')
-        content.innerHTML = items.map(item =>
-            `<dropdown-item value="${item.value}"${item.destructive ? ' destructive' : ''}>${item.label}</dropdown-item>`
-        ).join('')
+        // Rebuilt through addItem's DOM path: item labels and values are data
+        // and must never be parsed as HTML.
+        content.textContent = ''
+        for (const item of items || []) {
+            this.addItem(item.value, item.label, { destructive: item.destructive })
+        }
     }
 
     /**
