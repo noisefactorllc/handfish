@@ -325,7 +325,7 @@ test.describe('Bidi readiness and label overrides', () => {
         await page.evaluate(() => {
             const dialog = new window.Handfish.AboutDialog({
                 name: 'Noisedeck',
-                repo: 'noisefactorllc/noisedeck'
+                repo: 'noisefactorllc/handfish'
             })
             dialog.setBuild({ hash: 'feature/release.locked+candidate' })
             dialog.setNoisemaker({ hash: 'engine/v1@beta' })
@@ -336,7 +336,7 @@ test.describe('Bidi readiness and label overrides', () => {
         const dialog = page.locator('dialog.hf-about')
         await expect(dialog.locator('.hf-about-build-hash a')).toHaveAttribute(
             'href',
-            'https://github.com/noisefactorllc/noisedeck/tree/feature/release.locked%2Bcandidate'
+            'https://github.com/noisefactorllc/handfish/tree/feature/release.locked%2Bcandidate'
         )
         await expect(dialog.locator('.hf-about-noisemaker-hash a')).toHaveAttribute(
             'href',

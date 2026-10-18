@@ -173,4 +173,4 @@ npm run dev
 # http://localhost:3000/examples/
 ```
 
-The examples page is deployed to `https://handfish.noisefactor.io/examples/` via the scaffold CDN.
+The examples page is deployed to `https://handfish.noisefactor.io/examples/` via the CDN.
