@@ -53,7 +53,7 @@ test.describe('AboutDialog', () => {
         await expect(dialog.locator('.hf-about-build-date')).toContainText('Deployed: 2026-04-01 14:30')
         const buildLink = dialog.locator('.hf-about-build-hash a')
         await expect(buildLink).toHaveText('a1b2c3d4')
-        await expect(buildLink).toHaveAttribute('href', 'https://github.com/noisefactorllc/noisedeck/tree/a1b2c3d4')
+        await expect(buildLink).toHaveAttribute('href', 'https://github.com/noisefactorllc/handfish/tree/a1b2c3d4')
     })
 
     test('full dialog shows noisemaker engine section with version, build, and deployed', async ({ page }) => {
