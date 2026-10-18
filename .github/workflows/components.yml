@@ -3,7 +3,7 @@ name: Component tests
 # The Playwright component suite covers the collaboration contract the Seance
 # SDK binds to (editor range edits, remote carets, the session dialogs). It was
 # never run anywhere: the shared `ci` job skips Playwright by design, so it
-# stays a fast dep-bump gate, and Deploy only dispatches scaffold. A break in
+# stays a fast dep-bump gate, and Deploy only dispatches the release. A break in
 # the editor's collab API would have reached every app unnoticed.
 #
 # The suite serves the repo root and loads examples/index.html, which imports

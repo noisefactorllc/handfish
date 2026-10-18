@@ -1,13 +1,11 @@
 name: Deploy
 
-# Under the tag-on-commit scheme, scaffold is the sole authority for
-# handfish releases. This workflow just fires the workflow_dispatch at
-# scaffold, which clones handfish, computes next patch from existing
-# tags, builds, deploys library bundles and the site page to the CDN
+# Under the tag-on-commit scheme, the library release workflow is the sole
+# authority for handfish releases. This workflow just fires its
+# workflow_dispatch; the release clones handfish, computes next patch from
+# existing tags, builds, deploys library bundles and the site page to the CDN
 # origin, atomically updates the rolling MAJOR.MINOR symlink, creates
 # the vMAJOR.MINOR.PATCH git tag on this repo, and purges the CDN.
-#
-# See the policy document in scaffold for the full contract.
 
 on:
   workflow_dispatch:
@@ -22,7 +20,7 @@ on:
       - 'index.html'
       - '.github/workflows/deploy.yml'
 
-# The scaffold dispatch authenticates with a GitHub App token, not GITHUB_TOKEN.
+# The release dispatch authenticates with a GitHub App token, not GITHUB_TOKEN.
 permissions: {}
 
 concurrency:
@@ -30,28 +28,43 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  trigger-scaffold-release:
-    name: Dispatch scaffold library-release
+  dispatch-release:
+    name: Dispatch the library release
     runs-on: ubuntu-latest
     if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/main'
 
     steps:
-      - name: Mint scaffold GitHub App token
+      - name: Check the release dispatch configuration
+        env:
+          RELEASE_REPOSITORY: ${{ secrets.RELEASE_REPOSITORY }}
+          LIBRARY_RELEASE_WORKFLOW: ${{ secrets.LIBRARY_RELEASE_WORKFLOW }}
+        run: |
+          missing=""
+          [ -n "$RELEASE_REPOSITORY" ] || missing="$missing RELEASE_REPOSITORY"
+          [ -n "$LIBRARY_RELEASE_WORKFLOW" ] || missing="$missing LIBRARY_RELEASE_WORKFLOW"
+          if [ -n "$missing" ]; then
+            echo "::error::The release dispatch is not configured. Empty or unset secret(s):$missing"
+            exit 1
+          fi
+
+      - name: Mint release GitHub App token
         id: app-token
         uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
         with:
           client-id: Iv23liy6T6BW0BXuZRzx
           private-key: ${{ secrets.EHSRE_APP_PRIVATE_KEY }}
           owner: noisefactorllc
-          repositories: scaffold
+          repositories: ${{ secrets.RELEASE_REPOSITORY }}
 
-      - name: Dispatch scaffold library-release for handfish
+      - name: Dispatch the library release for handfish
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          RELEASE_REPOSITORY: ${{ secrets.RELEASE_REPOSITORY }}
+          LIBRARY_RELEASE_WORKFLOW: ${{ secrets.LIBRARY_RELEASE_WORKFLOW }}
         run: |
-          gh workflow run library-release.yml \
-            --repo noisefactorllc/scaffold \
+          gh workflow run "$LIBRARY_RELEASE_WORKFLOW" \
+            --repo "$GITHUB_REPOSITORY_OWNER/$RELEASE_REPOSITORY" \
             --ref main \
             -f library=handfish \
             -f sha=${{ github.sha }}
-          echo "Dispatched scaffold library-release for handfish @ ${{ github.sha }}"
+          echo "Dispatched the library release for handfish @ ${{ github.sha }}"
