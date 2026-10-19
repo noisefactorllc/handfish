@@ -6,6 +6,135 @@
   "custom_elements": [
     {
       "kind": "custom-element",
+      "tag": "agent-connect-dialog",
+      "className": "AgentConnectDialog",
+      "directory": "agent-connect-dialog",
+      "sourceFile": "src/components/agent-connect-dialog/AgentConnectDialog.js",
+      "formAssociated": false,
+      "observedAttributes": [
+        "state",
+        "prompt",
+        "connected",
+        "lead",
+        "online-title",
+        "online-button",
+        "copy-title",
+        "copy-button",
+        "confirm-title",
+        "waiting-note",
+        "connected-note"
+      ],
+      "api": [
+        {
+          "kind": "get",
+          "name": "state",
+          "static": false,
+          "signature": "get state()"
+        },
+        {
+          "kind": "set",
+          "name": "state",
+          "static": false,
+          "signature": "set state(value)"
+        },
+        {
+          "kind": "get",
+          "name": "prompt",
+          "static": false,
+          "signature": "get prompt()"
+        },
+        {
+          "kind": "set",
+          "name": "prompt",
+          "static": false,
+          "signature": "set prompt(value)"
+        },
+        {
+          "kind": "get",
+          "name": "connected",
+          "static": false,
+          "signature": "get connected()"
+        },
+        {
+          "kind": "set",
+          "name": "connected",
+          "static": false,
+          "signature": "set connected(value)"
+        },
+        {
+          "kind": "get",
+          "name": "open",
+          "static": false,
+          "signature": "get open()"
+        },
+        {
+          "kind": "get",
+          "name": "lead",
+          "static": false,
+          "signature": "get lead()"
+        },
+        {
+          "kind": "set",
+          "name": "lead",
+          "static": false,
+          "signature": "set lead(value)"
+        },
+        {
+          "kind": "get",
+          "name": "step",
+          "static": false,
+          "signature": "get step()"
+        },
+        {
+          "kind": "method",
+          "name": "show",
+          "static": false,
+          "signature": "show()"
+        },
+        {
+          "kind": "method",
+          "name": "hide",
+          "static": false,
+          "signature": "hide({ emitCancel = false } = {})"
+        }
+      ],
+      "events": [
+        {
+          "name": "cancel",
+          "type": "CustomEvent",
+          "detailKeys": null
+        },
+        {
+          "name": "connected",
+          "type": "CustomEvent",
+          "detailKeys": null
+        },
+        {
+          "name": "copy-failed",
+          "type": "CustomEvent",
+          "detailKeys": [
+            "prompt",
+            "error"
+          ]
+        },
+        {
+          "name": "prompt-copied",
+          "type": "CustomEvent",
+          "detailKeys": [
+            "prompt"
+          ]
+        },
+        {
+          "name": "go-online",
+          "type": "CustomEvent",
+          "detailKeys": null
+        }
+      ],
+      "description": "Agent Connect Dialog Component",
+      "relatedTags": []
+    },
+    {
+      "kind": "custom-element",
       "tag": "code-editor",
       "className": "CodeEditor",
       "directory": "code-editor",
@@ -2160,7 +2289,9 @@
     ]
   },
   "index_exports": [
+    "AGENT_TOOL_URL",
     "AboutDialog",
+    "AgentConnectDialog",
     "BeatScheduler",
     "CodeEditor",
     "ColorPicker",
@@ -2187,6 +2318,7 @@
     "ToggleSwitch",
     "Vector2dPicker",
     "Vector3dPicker",
+    "agentConnectPrompt",
     "applyEditorTheme",
     "applyEditorThemeGlobal",
     "closeTopmost",
