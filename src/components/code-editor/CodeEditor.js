@@ -534,6 +534,7 @@ class CodeEditor extends HTMLElement {
         this._value = ''
         this._showLineNumbers = true
         this._resizeObserver = null
+        this._boundFontsHandler = null
         this._tokenizer = defaultTokenizer
         this._remoteSelections = []
         this._flashMarks = []
@@ -574,6 +575,14 @@ class CodeEditor extends HTMLElement {
             this._syncLineHeights()
         })
         this._resizeObserver.observe(this)
+
+        // A web font that lands after the last measure re-wraps long lines
+        // without changing the value or this element's box, so neither of the
+        // other triggers would move the line numbers.
+        this._boundFontsHandler = () => {
+            requestAnimationFrame(() => this._syncLineHeights())
+        }
+        document.fonts?.addEventListener('loadingdone', this._boundFontsHandler)
     }
 
     disconnectedCallback() {
@@ -582,6 +591,11 @@ class CodeEditor extends HTMLElement {
         if (this._resizeObserver) {
             this._resizeObserver.disconnect()
             this._resizeObserver = null
+        }
+
+        if (this._boundFontsHandler) {
+            document.fonts?.removeEventListener('loadingdone', this._boundFontsHandler)
+            this._boundFontsHandler = null
         }
 
         if (this._selectionFrame) {
