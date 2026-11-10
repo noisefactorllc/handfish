@@ -97,6 +97,38 @@ test.describe('SelectDropdown', () => {
         await expect(dropdown).not.toBeVisible()
     })
 
+    test('click outside closes dropdown after the control is reconnected', async ({ page }) => {
+        const select = page.locator('select-dropdown#select1')
+        const trigger = select.locator('.select-trigger')
+        const dropdown = select.locator('.inline-dropdown')
+
+        // Remove and reinsert the same instance in place.
+        await select.evaluate(el => {
+            const parent = el.parentNode
+            const next = el.nextSibling
+            el.remove()
+            parent.insertBefore(el, next)
+        })
+
+        await trigger.click()
+        await expect(dropdown).toBeVisible()
+        await page.locator('body').click({ position: { x: 10, y: 10 } })
+        await expect(dropdown).not.toBeVisible()
+
+        // Disconnection removes the document listener: an outside click on a
+        // detached instance does not reach it.
+        const detachedCalls = await select.evaluate(el => {
+            let calls = 0
+            const handler = el._documentClickHandler
+            el._documentClickHandler = (e) => { calls++; handler(e) }
+            el.remove()
+            document.body.click()
+            el._documentClickHandler = handler
+            return calls
+        })
+        expect(detachedCalls).toBe(0)
+    })
+
     test('disabled blocks interaction', async ({ page }) => {
         // Disable first select programmatically
         const select = page.locator('select-dropdown#select1')

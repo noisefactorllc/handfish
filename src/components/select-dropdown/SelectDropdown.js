@@ -351,6 +351,9 @@ class SelectDropdown extends HTMLElement {
             this._setupEventListeners()
             this._listenersAttached = true
         }
+        // disconnectedCallback removes the document listener, so every
+        // connection adds it back. Adding the same handler twice is a no-op.
+        document.addEventListener('click', this._documentClickHandler)
         this._renderDropdown()
         this._updateDisplay()
         this._updateFormValue()
@@ -574,7 +577,6 @@ class SelectDropdown extends HTMLElement {
                 this._close()
             }
         }
-        document.addEventListener('click', this._documentClickHandler)
 
         trigger.addEventListener('keydown', (e) => this._handleKeydown(e))
         inlineDropdown.addEventListener('keydown', (e) => this._handleKeydown(e))
