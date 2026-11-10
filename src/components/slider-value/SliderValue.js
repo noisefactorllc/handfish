@@ -164,6 +164,7 @@ class SliderValue extends HTMLElement {
         this._updateSlider()
         this._updateValueDisplay()
         this._updateFormValue()
+        this._updateDisabledState()
         this._syncAccessibleName()
     }
 
@@ -430,6 +431,10 @@ class SliderValue extends HTMLElement {
         const slider = this.querySelector('.slider')
         if (slider) {
             slider.disabled = this.disabled
+        }
+        const valueDisplay = this.querySelector('.value-display')
+        if (valueDisplay) {
+            valueDisplay.contentEditable = this.disabled ? 'false' : 'true'
         }
     }
 

@@ -94,4 +94,42 @@ test.describe('SliderValue', () => {
         // Verify the disabled attribute is present
         await expect(slider).toHaveAttribute('disabled', '')
     })
+
+    // Sends ArrowRight to the range, then types into the value display, and
+    // returns the value after each keyboard path.
+    const keyboardEdits = async (page, slider) => {
+        await slider.locator('input[type="range"]').focus()
+        await page.keyboard.press('ArrowRight')
+        const afterArrow = await slider.evaluate(el => el.value)
+        await slider.locator('.value-display').focus()
+        await page.keyboard.press('Control+A')
+        await page.keyboard.type('77')
+        await page.keyboard.press('Tab')
+        const afterTyping = await slider.evaluate(el => el.value)
+        return { afterArrow, afterTyping }
+    }
+
+    test('an initially disabled slider rejects keyboard changes', async ({ page }) => {
+        await page.evaluate(() => {
+            document.body.insertAdjacentHTML('beforeend',
+                '<slider-value id="disabled-at-connect" min="0" max="100" step="1" value="20" disabled></slider-value>')
+        })
+        const slider = page.locator('slider-value#disabled-at-connect')
+        expect(await keyboardEdits(page, slider)).toEqual({ afterArrow: 20, afterTyping: 20 })
+    })
+
+    test('a slider disabled after connection rejects keyboard changes', async ({ page }) => {
+        await page.evaluate(() => {
+            document.body.insertAdjacentHTML('beforeend',
+                '<slider-value id="disabled-later" min="0" max="100" step="1" value="20"></slider-value>')
+            document.getElementById('disabled-later').disabled = true
+        })
+        const slider = page.locator('slider-value#disabled-later')
+        expect(await keyboardEdits(page, slider)).toEqual({ afterArrow: 20, afterTyping: 20 })
+
+        // Enabling it again restores both keyboard paths.
+        await slider.evaluate(el => { el.disabled = false })
+        expect(await keyboardEdits(page, slider)).toEqual({ afterArrow: 21, afterTyping: 77 })
+    })
+
 })
