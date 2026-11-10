@@ -219,7 +219,8 @@ class SliderValue extends HTMLElement {
 
     /** @param {number} val - New value */
     set value(val) {
-        const numVal = parseFloat(val) || 0
+        // Clamp to the bounds only: values between steps stay as given.
+        const numVal = Math.min(this._max, Math.max(this._min, parseFloat(val) || 0))
         if (this._value === numVal) return
 
         this._value = numVal

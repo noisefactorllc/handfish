@@ -132,4 +132,28 @@ test.describe('SliderValue', () => {
         expect(await keyboardEdits(page, slider)).toEqual({ afterArrow: 21, afterTyping: 77 })
     })
 
+    test('assigning the value property respects min and max', async ({ page }) => {
+        const state = await page.evaluate(() => {
+            const form = document.createElement('form')
+            form.innerHTML = '<slider-value name="gain" min="10" max="100" step="1"></slider-value>'
+            document.body.appendChild(form)
+            const slider = form.querySelector('slider-value')
+            const read = () => ({
+                value: slider.value,
+                range: slider.querySelector('input').value,
+                display: slider.querySelector('.value-display').textContent,
+                submitted: new FormData(form).get('gain'),
+            })
+            slider.value = 999
+            const above = read()
+            slider.value = -5
+            const below = read()
+            slider.value = 42
+            const inside = read()
+            return { above, below, inside }
+        })
+        expect(state.above).toEqual({ value: 100, range: '100', display: '100', submitted: '100' })
+        expect(state.below).toEqual({ value: 10, range: '10', display: '10', submitted: '10' })
+        expect(state.inside).toEqual({ value: 42, range: '42', display: '42', submitted: '42' })
+    })
 })
