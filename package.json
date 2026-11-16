@@ -37,7 +37,7 @@
   "devDependencies": {
     "@playwright/test": "^1.65.0",
     "esbuild": "^0.28.2",
-    "serve": "^14.0.0"
+    "serve": "^14.2.7"
   },
   "overrides": {
     "compression": "1.8.2"
