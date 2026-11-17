@@ -2,6 +2,7 @@ import { defineConfig } from '@playwright/test'
 import { mkdtempSync, writeFileSync, copyFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
+import { fileURLToPath } from 'node:url'
 
 // Deterministic mono rendering for the visual goldens: hosts without the
 // MS-font aliases substitute 'Courier New' with different-metric fonts (e.g.
@@ -11,8 +12,8 @@ import { join } from 'node:path'
 // Liberation Mono in every environment so the goldens are host-independent.
 // Test-only: the shipped theme CSS and the goldens are not changed.
 const fontDir = mkdtempSync(join(tmpdir(), 'hf-fontconfig-'))
-copyFileSync(new URL('./tests/fonts/LiberationMono-Regular.ttf', import.meta.url).pathname, join(fontDir, 'LiberationMono-Regular.ttf'))
-copyFileSync(new URL('./tests/fonts/LiberationMono-Bold.ttf', import.meta.url).pathname, join(fontDir, 'LiberationMono-Bold.ttf'))
+copyFileSync(fileURLToPath(new URL('./tests/fonts/LiberationMono-Regular.ttf', import.meta.url)), join(fontDir, 'LiberationMono-Regular.ttf'))
+copyFileSync(fileURLToPath(new URL('./tests/fonts/LiberationMono-Bold.ttf', import.meta.url)), join(fontDir, 'LiberationMono-Bold.ttf'))
 writeFileSync(join(fontDir, 'fonts.conf'), `<?xml version="1.0"?>
 <!DOCTYPE fontconfig SYSTEM "fonts.dtd">
 <fontconfig>
