@@ -498,6 +498,9 @@ class ColorPicker extends HTMLElement {
 }
 
 // Register the custom element
-customElements.define('color-picker', ColorPicker)
+// A page that already defined this name keeps its own element.
+if (!customElements.get('color-picker')) {
+    customElements.define('color-picker', ColorPicker)
+}
 
 export { ColorPicker }

@@ -665,10 +665,10 @@ class ColorWheel extends HTMLElement {
 
                 <div class="preview-row">
                     <div class="preview-swatches">
-                        <div class="preview-swatch preview-current" title="Current color">
+                        <div class="preview-swatch preview-current tooltip" data-title="Current color" aria-label="Current color">
                             <div class="preview-swatch-color" data-preview="current"></div>
                         </div>
-                        <div class="preview-swatch preview-previous" title="Previous color (click to revert)">
+                        <div class="preview-swatch preview-previous tooltip" data-title="Previous color (click to revert)" aria-label="Previous color (click to revert)">
                             <div class="preview-swatch-color" data-preview="previous"></div>
                         </div>
                     </div>
@@ -1538,6 +1538,9 @@ class ColorWheel extends HTMLElement {
 }
 
 // Register the custom element
-customElements.define('color-wheel', ColorWheel)
+// A page that already defined this name keeps its own element.
+if (!customElements.get('color-wheel')) {
+    customElements.define('color-wheel', ColorWheel)
+}
 
 export { ColorWheel }

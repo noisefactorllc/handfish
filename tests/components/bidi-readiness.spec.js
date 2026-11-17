@@ -58,9 +58,9 @@ test.describe('Bidi readiness and label overrides', () => {
 
         const group = page.locator('#bidi-justify')
         await expect(group).toHaveCSS('direction', 'rtl')
-        await expect(group.locator('[data-value="left"]')).toHaveAttribute('title', 'محاذاة للبداية')
-        await expect(group.locator('[data-value="center"]')).toHaveAttribute('title', 'توسيط')
-        await expect(group.locator('[data-value="right"]')).toHaveAttribute('title', 'محاذاة للنهاية')
+        await expect(group.locator('[data-value="left"]')).toHaveAttribute('data-title', 'محاذاة للبداية')
+        await expect(group.locator('[data-value="center"]')).toHaveAttribute('data-title', 'توسيط')
+        await expect(group.locator('[data-value="right"]')).toHaveAttribute('data-title', 'محاذاة للنهاية')
 
         const borderProp = await group.locator('[data-value="left"]').evaluate(el =>
             getComputedStyle(el).borderRightWidth

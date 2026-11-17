@@ -330,7 +330,7 @@ test.describe('MenuBar controls', () => {
         await expect(mb.locator('#backend-webgl2')).toHaveAttribute('aria-pressed', 'true')
         await expect(mb.locator('#backend-webgpu')).toHaveAttribute('aria-pressed', 'false')
         await expect(mb.locator('#backend-webgpu')).toBeDisabled()
-        await expect(mb.locator('#backend-webgpu')).toHaveAttribute('title', 'WebGPU unavailable')
+        await expect(mb.locator('#backend-webgpu')).toHaveAttribute('data-title', 'WebGPU unavailable')
         await expect(mb.locator('#playPauseBtn .hf-icon')).toHaveText('pause')
         await expect(mb.locator('#playPauseBtn')).toHaveAttribute('data-title', 'pause')
         await expect(mb.locator('#playPauseBtn')).toHaveClass(/tooltip/)
@@ -578,7 +578,7 @@ test.describe('MenuBar review fixes', () => {
         await mb.locator('.hf-menubar-trigger').click()
         await expect(mb.locator('#sepX')).not.toBeHidden()
         await expect(mb.locator('#segB')).toBeEnabled()
-        await expect(mb.locator('#segB')).toHaveAttribute('title', 'now allowed')
+        await expect(mb.locator('#segB')).toHaveAttribute('data-title', 'now allowed')
     })
 
     test('function-valued ariaLabel on triggers and segmented groups resolves and re-pulls on refresh()', async ({ page }) => {

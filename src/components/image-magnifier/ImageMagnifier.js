@@ -467,6 +467,9 @@ class ImageMagnifier extends HTMLElement {
 }
 
 // Register the custom element
-customElements.define('image-magnifier', ImageMagnifier)
+// A page that already defined this name keeps its own element.
+if (!customElements.get('image-magnifier')) {
+    customElements.define('image-magnifier', ImageMagnifier)
+}
 
 export { ImageMagnifier }

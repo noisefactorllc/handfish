@@ -581,7 +581,13 @@ class DropdownItem extends HTMLElement {
 }
 
 // Register components
-customElements.define('dropdown-menu', DropdownMenu)
-customElements.define('dropdown-item', DropdownItem)
+// A page that already defined this name keeps its own element.
+if (!customElements.get('dropdown-menu')) {
+    customElements.define('dropdown-menu', DropdownMenu)
+}
+// A page that already defined this name keeps its own element.
+if (!customElements.get('dropdown-item')) {
+    customElements.define('dropdown-item', DropdownItem)
+}
 
 export { DropdownMenu, DropdownItem }

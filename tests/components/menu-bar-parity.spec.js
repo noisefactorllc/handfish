@@ -260,7 +260,7 @@ test('shade: label swaps, segmented backend switch, center filename', async ({ p
     await expect(mb.locator('#backend-switch')).toBeVisible()
     await expect(mb.locator('#backend-webgl2')).toHaveAttribute('aria-pressed', 'true')
     await expect(mb.locator('#backend-webgpu')).toBeDisabled()
-    await expect(mb.locator('#backend-webgpu')).toHaveAttribute('title', 'WebGPU not available in this browser')
+    await expect(mb.locator('#backend-webgpu')).toHaveAttribute('data-title', 'WebGPU not available in this browser')
     await page.evaluate(() => { window.__parity.state.gpuAvailable = true; document.getElementById('mb-parity').refresh() })
     await expect(mb.locator('#backend-webgpu')).toBeEnabled()
     await mb.locator('#backend-webgpu').click()

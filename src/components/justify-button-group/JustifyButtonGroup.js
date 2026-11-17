@@ -251,7 +251,9 @@ class JustifyButtonGroup extends HTMLElement {
             right: this.getAttribute('right-label') || 'Align right',
         }
         this.querySelectorAll('.justify-btn').forEach(btn => {
-            btn.setAttribute('title', labels[btn.dataset.value])
+            btn.classList.add('tooltip')
+            btn.dataset.title = labels[btn.dataset.value]
+            btn.setAttribute('aria-label', labels[btn.dataset.value])
         })
     }
 

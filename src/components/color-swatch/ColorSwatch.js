@@ -369,6 +369,9 @@ class ColorSwatch extends HTMLElement {
     }
 }
 
-customElements.define('color-swatch', ColorSwatch)
+// A page that already defined this name keeps its own element.
+if (!customElements.get('color-swatch')) {
+    customElements.define('color-swatch', ColorSwatch)
+}
 
 export { ColorSwatch }

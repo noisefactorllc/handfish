@@ -1032,6 +1032,9 @@ class SelectDropdown extends HTMLElement {
 }
 
 // Register the custom element
-customElements.define('select-dropdown', SelectDropdown)
+// A page that already defined this name keeps its own element.
+if (!customElements.get('select-dropdown')) {
+    customElements.define('select-dropdown', SelectDropdown)
+}
 
 export { SelectDropdown }

@@ -489,6 +489,9 @@ class SliderValue extends HTMLElement {
     }
 }
 
-customElements.define('slider-value', SliderValue)
+// A page that already defined this name keeps its own element.
+if (!customElements.get('slider-value')) {
+    customElements.define('slider-value', SliderValue)
+}
 
 export { SliderValue }

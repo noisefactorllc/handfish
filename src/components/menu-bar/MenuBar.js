@@ -1051,7 +1051,10 @@ class MenuBar extends HTMLElement {
             seg.classList.toggle('active', pressed)
             seg.disabled = !!this._resolve(this._fieldFor(spec, 'disabled'))
             const title = this._resolve(this._fieldFor(spec, 'title'))
-            if (title != null) seg.title = title
+            if (title != null) {
+                seg.classList.add('tooltip')
+                seg.dataset.title = title
+            }
         })
     }
 
@@ -1322,6 +1325,9 @@ class MenuBar extends HTMLElement {
     }
 }
 
-customElements.define('menu-bar', MenuBar)
+// A page that already defined this name keeps its own element.
+if (!customElements.get('menu-bar')) {
+    customElements.define('menu-bar', MenuBar)
+}
 
 export { MenuBar }

@@ -254,7 +254,7 @@ class GradientStops extends HTMLElement {
         handle.innerHTML = `
             <div class="stop-pointer"></div>
             <div class="stop-body"></div>
-            <button class="stop-delete" title="Delete color">×</button>
+            <button class="stop-delete tooltip" data-title="Delete color" aria-label="Delete color">×</button>
         `
 
         // Click to select
@@ -448,6 +448,9 @@ class GradientStops extends HTMLElement {
     }
 }
 
-customElements.define('gradient-stops', GradientStops)
+// A page that already defined this name keeps its own element.
+if (!customElements.get('gradient-stops')) {
+    customElements.define('gradient-stops', GradientStops)
+}
 
 export { GradientStops }

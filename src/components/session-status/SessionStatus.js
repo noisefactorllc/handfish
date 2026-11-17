@@ -193,6 +193,9 @@ class SessionStatus extends HTMLElement {
     }
 }
 
-customElements.define('session-status', SessionStatus)
+// A page that already defined this name keeps its own element.
+if (!customElements.get('session-status')) {
+    customElements.define('session-status', SessionStatus)
+}
 
 export { SessionStatus }

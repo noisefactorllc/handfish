@@ -1272,6 +1272,9 @@ class Vector3dPicker extends HTMLElement {
 }
 
 // Register the custom element
-customElements.define('vector3d-picker', Vector3dPicker)
+// A page that already defined this name keeps its own element.
+if (!customElements.get('vector3d-picker')) {
+    customElements.define('vector3d-picker', Vector3dPicker)
+}
 
 export { Vector3dPicker }

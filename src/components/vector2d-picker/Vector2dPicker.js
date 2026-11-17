@@ -1185,5 +1185,8 @@ class Vector2dPicker extends HTMLElement {
     }
 }
 
-customElements.define('vector2d-picker', Vector2dPicker)
+// A page that already defined this name keeps its own element.
+if (!customElements.get('vector2d-picker')) {
+    customElements.define('vector2d-picker', Vector2dPicker)
+}
 export { Vector2dPicker }
