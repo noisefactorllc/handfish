@@ -66,40 +66,6 @@ if (!document.getElementById(STYLES_ID)) {
                 0 0 0 4px var(--hf-accent);
         }
 
-        /* Hex tooltip */
-        color-swatch .swatch-tooltip {
-            position: absolute;
-            bottom: calc(100% + 6px);
-            left: 50%;
-            transform: translateX(-50%);
-            padding: 4px 8px;
-            background: var(--hf-bg-base);
-            border: var(--hf-border-width) solid var(--hf-bg-elevated);
-            border-radius: var(--hf-radius-sm, 0.25rem);
-            color: var(--hf-text-normal);
-            font-family: var(--hf-font-family-mono);
-            font-size: var(--hf-size-xs, 0.625rem);
-            white-space: nowrap;
-            pointer-events: none;
-            opacity: 0;
-            transition: opacity 0.15s ease;
-            z-index: 10;
-        }
-
-        color-swatch .swatch-tooltip::after {
-            content: '';
-            position: absolute;
-            top: 100%;
-            left: 50%;
-            transform: translateX(-50%);
-            border: 4px solid transparent;
-            border-top-color: var(--hf-bg-elevated);
-        }
-
-        color-swatch:hover .swatch-tooltip {
-            opacity: 1;
-        }
-
         /* Size variants */
         color-swatch.small {
             width: 24px;
@@ -256,7 +222,6 @@ class ColorSwatch extends HTMLElement {
     _render() {
         this.innerHTML = `
             <div class="swatch-color"></div>
-            <span class="swatch-tooltip"></span>
         `
 
         // Event listeners
@@ -345,12 +310,8 @@ class ColorSwatch extends HTMLElement {
             colorEl.style.backgroundColor = this._color
         }
 
-        const tooltipEl = this.querySelector('.swatch-tooltip')
-        if (tooltipEl) {
-            tooltipEl.textContent = this._color.toUpperCase()
-        }
-
         this.setAttribute('aria-label', `Color ${this._color}`)
+        this._updateTooltip()
     }
 
     _updateSize() {
@@ -361,10 +322,14 @@ class ColorSwatch extends HTMLElement {
         }
     }
 
+    // show-tooltip shows the hex on hover as a Handfish tooltip.
     _updateTooltip() {
-        const tooltipEl = this.querySelector('.swatch-tooltip')
-        if (tooltipEl) {
-            tooltipEl.style.display = this.hasAttribute('show-tooltip') ? '' : 'none'
+        if (this.hasAttribute('show-tooltip')) {
+            this.classList.add('tooltip')
+            this.dataset.title = this._color.toUpperCase()
+        } else {
+            this.classList.remove('tooltip')
+            delete this.dataset.title
         }
     }
 }
