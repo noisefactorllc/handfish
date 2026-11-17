@@ -116,3 +116,39 @@ test('a genuine re-hover after a focus change is not suppressed', async ({ page 
     await page.mouse.move(edgePoint.x, edgePoint.y, { steps: 4 })
     await expect(page.locator('#hf-tooltip-layer')).toHaveText('Left anchor')
 })
+
+test('a tooltip keeps its width at every edge and stays on screen in any order', async ({ page }) => {
+    await page.setViewportSize({ width: 1000, height: 600 })
+    await page.goto('/')
+    const text = 'Randomize every parameter of the current program and keep the palette'
+    await page.setContent(`
+      <button id="centre" class="tooltip" data-title="${text}" style="position:fixed;top:200px;left:488px">C</button>
+      <button id="left" class="tooltip" data-title="${text}" style="position:fixed;top:200px;left:0">L</button>
+      <button id="right" class="tooltip" data-title="${text}" style="position:fixed;top:200px;right:0">R</button>
+      <button id="corner" class="tooltip" data-title="${text}" style="position:fixed;bottom:0;right:0">B</button>
+    `)
+    await page.addScriptTag({ type: 'module', content: `
+      import { initializeTooltips } from '/src/utils/tooltips.js'
+      initializeTooltips()
+      window.__tooltipsReady = true
+    ` })
+    await page.waitForFunction(() => window.__tooltipsReady)
+
+    const show = async (id) => {
+        await page.mouse.move(500, 400)
+        await expect(page.locator('#hf-tooltip-layer')).toBeHidden()
+        await page.locator(`#${id}`).hover()
+        await expect(page.locator('#hf-tooltip-layer')).toHaveAttribute('data-visible', 'true')
+        return tooltipBounds(page)
+    }
+
+    const centre = await show('centre')
+    const centreWidth = centre.right - centre.left
+    // Right edge, then left edge straight after it, then the corner and the
+    // right edge again: each keeps the width the text has in the centre.
+    for (const id of ['right', 'left', 'corner', 'right', 'centre']) {
+        const bounds = await show(id)
+        expectOnScreen(bounds)
+        expect(bounds.right - bounds.left, `${id} width`).toBeCloseTo(centreWidth, 0)
+    }
+})

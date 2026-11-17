@@ -26,6 +26,11 @@ if (typeof document !== 'undefined' && !document.getElementById(TOOLTIP_STYLES_I
             border-radius: var(--hf-radius-sm, 0.25rem);
             pointer-events: none;
             box-sizing: border-box;
+            /* The text sets the width, capped by the inline max-width. An
+               auto width would shrink to the space between left and the
+               viewport edge, squeezing the text near the right edge and
+               mis-measuring the clamp near the left. */
+            width: max-content;
             white-space: normal;
             overflow-wrap: anywhere;
             overflow: hidden;
