@@ -156,4 +156,49 @@ test.describe('SliderValue', () => {
         expect(state.below).toEqual({ value: 10, range: '10', display: '10', submitted: '10' })
         expect(state.inside).toEqual({ value: 42, range: '42', display: '42', submitted: '42' })
     })
+
+    test('a mouse drag emits input while the button is down and one change on release', async ({ page }) => {
+        const slider = page.locator('slider-value#slider1')
+        const range = slider.locator('input[type="range"]')
+        await slider.evaluate(el => {
+            window.sliderEvents = []
+            for (const type of ['input', 'change']) {
+                el.addEventListener(type, event => window.sliderEvents.push(`${type}:${event.target.tagName}`))
+            }
+        })
+        await range.scrollIntoViewIfNeeded()
+        const box = await range.boundingBox()
+        const y = box.y + box.height / 2
+        await page.mouse.move(box.x + box.width * 0.5, y)
+        await page.mouse.down()
+        await page.mouse.move(box.x + box.width * 0.6, y, { steps: 3 })
+        await page.mouse.move(box.x + box.width * 0.7, y, { steps: 3 })
+        const beforeRelease = await page.evaluate(() => window.sliderEvents.splice(0))
+        await page.mouse.up()
+        const afterRelease = await page.evaluate(() => window.sliderEvents.splice(0))
+
+        // Continuous input from the component only: no committed change and
+        // no second notification from the inner range.
+        expect(beforeRelease.length).toBeGreaterThan(0)
+        expect(new Set(beforeRelease)).toEqual(new Set(['input:SLIDER-VALUE']))
+        // Release commits once.
+        expect(afterRelease).toEqual(['change:SLIDER-VALUE'])
+        expect(await slider.evaluate(el => el.value)).toBeGreaterThan(50)
+    })
+
+    test('a typed value commits one input and one change from the component', async ({ page }) => {
+        const slider = page.locator('slider-value#slider1')
+        const display = slider.locator('.value-display')
+        await slider.evaluate(el => {
+            window.sliderEvents = []
+            for (const type of ['input', 'change']) {
+                el.addEventListener(type, event => window.sliderEvents.push(`${type}:${event.target.tagName}`))
+            }
+        })
+        await display.click()
+        await page.keyboard.press('ControlOrMeta+A')
+        await page.keyboard.type('33')
+        await page.locator('body').click({ position: { x: 10, y: 10 } })
+        expect(await page.evaluate(() => window.sliderEvents)).toEqual(['input:SLIDER-VALUE', 'change:SLIDER-VALUE'])
+    })
 })

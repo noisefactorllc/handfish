@@ -323,13 +323,26 @@ class SliderValue extends HTMLElement {
         const slider = this.querySelector('.slider')
         const valueDisplay = this.querySelector('.value-display')
 
-        slider.addEventListener('input', () => {
+        // A drag reports continuous `input` and commits one `change` when the
+        // range commits (on release, or per key press). The component sends
+        // both itself, so the inner range's own events stop here instead of
+        // reaching host listeners a second time.
+        slider.addEventListener('input', (event) => {
+            event.stopPropagation()
             const rawValue = parseFloat(slider.value)
             this._value = this._type === 'int' ? Math.round(rawValue) : rawValue
             this._updateValueDisplay()
             this._updateFormValue()
-            this._dispatchChange()
+            this._dispatch('input')
         })
+        slider.addEventListener('change', (event) => {
+            event.stopPropagation()
+            this._dispatch('change')
+        })
+
+        // Typing in the value display is not a value change: the typed value
+        // commits on Enter or blur.
+        valueDisplay.addEventListener('input', (event) => event.stopPropagation())
 
         // Handle Enter key on value display
         valueDisplay.addEventListener('keydown', (e) => {
@@ -465,9 +478,14 @@ class SliderValue extends HTMLElement {
         }
     }
 
+    _dispatch(type) {
+        this.dispatchEvent(new Event(type, { bubbles: true, composed: true }))
+    }
+
+    /** A committed value (typed into the display) is both an input and a change. */
     _dispatchChange() {
-        this.dispatchEvent(new Event('input', { bubbles: true, composed: true }))
-        this.dispatchEvent(new Event('change', { bubbles: true, composed: true }))
+        this._dispatch('input')
+        this._dispatch('change')
     }
 }
 
