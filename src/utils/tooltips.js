@@ -46,6 +46,8 @@ if (typeof document !== 'undefined' && !document.getElementById(TOOLTIP_STYLES_I
 
 let tooltipElement = null
 let activeTarget = null
+// Whether keyboard focus, rather than the pointer, opened the active tooltip.
+let activeByFocus = false
 let lastPointerCoords = null
 let eventSeq = 0
 let lastFocusChangeSeq = 0
@@ -124,7 +126,7 @@ function updateTooltipPosition() {
     tooltipElement.dataset.position = position
 }
 
-function showTooltip(target) {
+function showTooltip(target, byFocus = false) {
     const message = getTooltipMessage(target)
     if (!message) {
         hideTooltip()
@@ -135,6 +137,7 @@ function showTooltip(target) {
     if (!element) { return }
 
     activeTarget = target
+    activeByFocus = byFocus
     element.textContent = message
     element.dataset.position = 'below'
     element.dataset.visible = 'true'
@@ -158,6 +161,26 @@ function hideTooltip(target) {
     tooltipElement.style.visibility = 'hidden'
     tooltipElement.setAttribute('hidden', '')
     activeTarget = null
+    activeByFocus = false
+}
+
+/**
+ * Whether focus on an element came from the keyboard. Browsers mark it
+ * :focus-visible, including script focus that follows a key press, but not
+ * focus that a pointer click gives or that a click handler moves. A browser
+ * without :focus-visible treats every focus as keyboard focus.
+ */
+function isKeyboardFocus(element) {
+    try {
+        return element.matches(':focus-visible')
+    } catch {
+        return true
+    }
+}
+
+function focusHoldsTooltip() {
+    const focusOwner = document.activeElement
+    return activeByFocus && !!focusOwner && (activeTarget === focusOwner || activeTarget.contains(focusOwner))
 }
 
 function handlePointerMove(event) {
@@ -177,8 +200,7 @@ function handlePointerMove(event) {
     if (target === activeTarget || (target && activeTarget.contains(target))) { return }
     // A tooltip opened by keyboard focus stays while its control keeps
     // focus, even when the pointer moves away from it.
-    const focusOwner = document.activeElement
-    if (focusOwner && (activeTarget === focusOwner || activeTarget.contains(focusOwner))) { return }
+    if (focusHoldsTooltip()) { return }
     hideTooltip()
 }
 
@@ -196,11 +218,9 @@ function handlePointerOver(event) {
     // synthetic re-dispatch so the focused element keeps its tooltip. A
     // genuine hover is produced by real pointer movement, so any pointermove
     // after the focus change clears this guard.
-    const focusOwner = document.activeElement
     const stationary = lastPointerCoords !== null
         && lastPointerCoords.x === event.clientX && lastPointerCoords.y === event.clientY
-    if (lastFocusChangeSeq > lastPointerMoveSeq && stationary && activeTarget && focusOwner
-        && (activeTarget === focusOwner || activeTarget.contains(focusOwner))) {
+    if (lastFocusChangeSeq > lastPointerMoveSeq && stationary && activeTarget && focusHoldsTooltip()) {
         return
     }
 
@@ -229,7 +249,11 @@ function handleFocusIn(event) {
     lastFocusChangeSeq = ++eventSeq
     const target = event.target instanceof Element ? event.target.closest('.tooltip') : null
     if (!target) { return }
-    showTooltip(target)
+    // Only keyboard focus opens a tooltip. Focus from a pointer click, or
+    // moved by the click's handler to a control the pointer never hovered,
+    // leaves tooltips to the pointer.
+    if (!isKeyboardFocus(event.target)) { return }
+    showTooltip(target, true)
 }
 
 function handleFocusOut(event) {

@@ -152,3 +152,88 @@ test('a tooltip keeps its width at every edge and stays on screen in any order',
         expect(bounds.right - bounds.left, `${id} width`).toBeCloseTo(centreWidth, 0)
     }
 })
+
+// A control whose click hides it and moves focus to another control, as an
+// app's expand tag hands focus to the close button it reveals.
+async function openHandoffPage(page) {
+    await page.setViewportSize({ width: 480, height: 320 })
+    await page.goto('/')
+    await page.setContent(`
+      <button id="expand" class="tooltip" data-title="Expand" style="position:fixed;top:100px;left:40px">E</button>
+      <button id="collapse" class="tooltip" data-title="Collapse" style="position:fixed;top:100px;left:200px" hidden>C</button>
+      <script>
+        const expand = document.getElementById('expand')
+        const collapse = document.getElementById('collapse')
+        expand.addEventListener('click', () => { expand.hidden = true; collapse.hidden = false; collapse.focus() })
+      </script>
+    `)
+    await page.addScriptTag({ type: 'module', content: `
+      import { initializeTooltips } from '/src/utils/tooltips.js'
+      initializeTooltips()
+      window.__tooltipsReady = true
+    ` })
+    await page.waitForFunction(() => window.__tooltipsReady)
+}
+
+// WebKit on macOS moves Tab focus to buttons only with Option held.
+const tabKey = browserName => (browserName === 'webkit' && process.platform === 'darwin' ? 'Alt+Tab' : 'Tab')
+
+const tooltipShown = page => page.locator('#hf-tooltip-layer').evaluate(el => !el.hidden && el.dataset.visible === 'true')
+
+test('focus that a pointer click moves to another control opens no tooltip', async ({ page }) => {
+    await openHandoffPage(page)
+    const box = await page.locator('#expand').boundingBox()
+    await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2, { steps: 4 })
+    await expect(page.locator('#hf-tooltip-layer')).toHaveText('Expand')
+    await page.mouse.down()
+    await page.mouse.up()
+    await expect(page.locator('#collapse')).toBeFocused()
+
+    // The revealed control was never hovered: its tooltip must not open.
+    expect(await page.locator('#hf-tooltip-layer').textContent()).not.toBe('Collapse')
+    // Moving the pointer away leaves no tooltip open.
+    await page.mouse.move(400, 280, { steps: 4 })
+    await page.mouse.move(440, 300, { steps: 4 })
+    expect(await tooltipShown(page)).toBe(false)
+    await expect(page.locator('#collapse')).toBeFocused()
+})
+
+test('a clicked control closes its tooltip when the pointer leaves it', async ({ page }) => {
+    await openHandoffPage(page)
+    const box = await page.locator('#collapse').evaluate(el => { el.hidden = false; const r = el.getBoundingClientRect(); return { x: r.x, y: r.y, width: r.width, height: r.height } })
+    await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2, { steps: 4 })
+    await expect(page.locator('#hf-tooltip-layer')).toHaveText('Collapse')
+    await page.mouse.down()
+    await page.mouse.up()
+    await page.mouse.move(400, 280, { steps: 4 })
+    await page.mouse.move(440, 300, { steps: 4 })
+    expect(await tooltipShown(page)).toBe(false)
+})
+
+test('keyboard focus shows a tooltip and keeps it while the control has focus', async ({ page, browserName }) => {
+    await openHandoffPage(page)
+    await page.mouse.move(440, 300)
+    await page.keyboard.press(tabKey(browserName))
+    await expect(page.locator('#expand')).toBeFocused()
+    await expect(page.locator('#hf-tooltip-layer')).toHaveText('Expand')
+    expect(await tooltipShown(page)).toBe(true)
+
+    // Pointer movement elsewhere does not dismiss a tooltip that focus opened.
+    await page.mouse.move(400, 280, { steps: 4 })
+    await page.mouse.move(440, 300, { steps: 4 })
+    await expect(page.locator('#hf-tooltip-layer')).toHaveText('Expand')
+    expect(await tooltipShown(page)).toBe(true)
+})
+
+test('focus that a keyboard action moves to another control shows its tooltip', async ({ page, browserName }) => {
+    await openHandoffPage(page)
+    await page.mouse.move(440, 300)
+    await page.keyboard.press(tabKey(browserName))
+    await expect(page.locator('#expand')).toBeFocused()
+    await page.keyboard.press('Enter')
+    await expect(page.locator('#collapse')).toBeFocused()
+    await expect(page.locator('#hf-tooltip-layer')).toHaveText('Collapse')
+    expect(await tooltipShown(page)).toBe(true)
+    await page.mouse.move(400, 280, { steps: 4 })
+    await expect(page.locator('#hf-tooltip-layer')).toHaveText('Collapse')
+})
