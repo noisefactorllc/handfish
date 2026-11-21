@@ -24,8 +24,14 @@ writeFileSync(join(fontDir, 'fonts.conf'), `<?xml version="1.0"?>
 </fontconfig>
 `)
 
+const port = Number(process.env.HANDFISH_TEST_PORT || 3000)
+if (!Number.isInteger(port) || port < 1 || port > 65535) throw new Error('Invalid HANDFISH_TEST_PORT')
+const baseURL = `http://127.0.0.1:${port}`
+
 export default defineConfig({
     testDir: './tests',
+    forbidOnly: !!process.env.CI,
+    reporter: [['list'], ['./tests/strict-reporter.js']],
     snapshotDir: './tests/snapshots',
     snapshotPathTemplate: '{snapshotDir}/{arg}{ext}',
     // Sandboxed runners often cap threads at ~256 (cgroup pids.max) and /dev/shm
@@ -35,13 +41,14 @@ export default defineConfig({
     // assertions and tolerances.
     workers: process.env.CI ? undefined : 1,
     use: {
-        baseURL: 'http://localhost:3000',
+        baseURL,
+        headless: true,
         viewport: { width: 1280, height: 720 },
     },
     webServer: {
-        command: 'npx serve -l tcp://localhost:3000',
-        port: 3000,
-        reuseExistingServer: true,
+        command: `node node_modules/serve/build/main.js -l tcp://127.0.0.1:${port}`,
+        url: baseURL,
+        reuseExistingServer: false,
     },
     projects: [
         {

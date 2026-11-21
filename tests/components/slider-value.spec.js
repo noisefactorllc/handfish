@@ -35,8 +35,8 @@ test.describe('SliderValue', () => {
 
         // Focus the contenteditable display
         await display.click()
-        // Select all (Meta+A on Mac) and type new value
-        await page.keyboard.press('Meta+A')
+        // Select all using the platform's editing shortcut.
+        await page.keyboard.press('ControlOrMeta+A')
         await page.keyboard.type('33')
         // Blur by clicking elsewhere
         await page.locator('body').click({ position: { x: 10, y: 10 } })
@@ -75,7 +75,7 @@ test.describe('SliderValue', () => {
 
         // Try to set value above max
         await display.click()
-        await page.keyboard.press('Control+A')
+        await page.keyboard.press('ControlOrMeta+A')
         await page.keyboard.type('999')
         await page.keyboard.press('Tab')
 
@@ -102,7 +102,7 @@ test.describe('SliderValue', () => {
         await page.keyboard.press('ArrowRight')
         const afterArrow = await slider.evaluate(el => el.value)
         await slider.locator('.value-display').focus()
-        await page.keyboard.press('Control+A')
+        await page.keyboard.press('ControlOrMeta+A')
         await page.keyboard.type('77')
         await page.keyboard.press('Tab')
         const afterTyping = await slider.evaluate(el => el.value)
@@ -200,5 +200,38 @@ test.describe('SliderValue', () => {
         await page.keyboard.type('33')
         await page.locator('body').click({ position: { x: 10, y: 10 } })
         expect(await page.evaluate(() => window.sliderEvents)).toEqual(['input:SLIDER-VALUE', 'change:SLIDER-VALUE'])
+    })
+
+    test('percent input commits the normalized stepped value to its form', async ({ page }) => {
+        await page.evaluate(() => {
+            const form = document.createElement('form')
+            form.id = 'percent-form'
+            form.innerHTML = '<slider-value id="percent-slider" name="mix" min="0" max="1" step="0.05" value="0.2" format="percent"></slider-value>'
+            document.body.appendChild(form)
+        })
+        const slider = page.locator('#percent-slider')
+        await slider.locator('.value-display').fill('76%')
+        await page.keyboard.press('Tab')
+        expect(await slider.evaluate(el => ({
+            value: el.value,
+            display: el.querySelector('.value-display').textContent,
+            submitted: new FormData(el.closest('form')).get('mix'),
+        }))).toEqual({ value: 0.75, display: '75%', submitted: '0.75' })
+    })
+
+    test('invalid typed text restores the value without emitting a committed change', async ({ page }) => {
+        const slider = page.locator('slider-value#slider1')
+        await slider.evaluate(el => {
+            el.value = 42
+            window.invalidEditEvents = []
+            for (const type of ['input', 'change']) {
+                el.addEventListener(type, () => window.invalidEditEvents.push(type))
+            }
+        })
+        await slider.locator('.value-display').fill('not a number')
+        await page.keyboard.press('Tab')
+        expect(await slider.evaluate(el => el.value)).toBe(42)
+        await expect(slider.locator('.value-display')).toHaveText('42')
+        expect(await page.evaluate(() => window.invalidEditEvents)).toEqual([])
     })
 })

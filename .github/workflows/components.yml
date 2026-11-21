@@ -7,31 +7,12 @@ name: Component tests
 # the editor's collab API would have reached every app unnoticed.
 #
 # The suite serves the repo root and loads examples/index.html, which imports
-# dist/handfish.esm.js, so the bundle has to exist first. `npm test` builds it
-# through the pretest script.
+# dist/handfish.esm.js. Build that bundle before starting the test runner.
 
 on:
   pull_request:
-    paths:
-      - 'src/**'
-      - 'tests/**'
-      - 'examples/**'
-      - 'scripts/bundle.js'
-      - 'package.json'
-      - 'package-lock.json'
-      - 'playwright.config.js'
-      - '.github/workflows/components.yml'
   push:
     branches: [main]
-    paths:
-      - 'src/**'
-      - 'tests/**'
-      - 'examples/**'
-      - 'scripts/bundle.js'
-      - 'package.json'
-      - 'package-lock.json'
-      - 'playwright.config.js'
-      - '.github/workflows/components.yml'
 
 permissions:
   contents: read
@@ -40,6 +21,7 @@ jobs:
   component-tests:
     name: Playwright component suite
     runs-on: ubuntu-latest
+    timeout-minutes: 20
 
     steps:
       - name: Harden runner
@@ -55,13 +37,15 @@ jobs:
           cache: 'npm'
 
       - name: Install
-        run: npm ci --ignore-scripts
+        run: npm ci --ignore-scripts --no-bin-links
 
       - name: Install Chromium
-        run: npx playwright install --with-deps chromium
+        run: node node_modules/@playwright/test/cli.js install --with-deps chromium
 
       - name: Run the component suite
-        run: npm test
+        run: |
+          npm run build
+          node node_modules/@playwright/test/cli.js test
 
       - name: Upload the report on failure
         if: failure()
